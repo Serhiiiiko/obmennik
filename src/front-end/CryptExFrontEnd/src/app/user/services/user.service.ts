@@ -33,7 +33,9 @@ export class UserService {
     this.languages = [
       { Id: "en-us", DisplayText: "English" },
       { Id: "fr-fr", DisplayText: "Français" },
-      { Id: "de-de", DisplayText: "Deutsch" }
+      { Id: "de-de", DisplayText: "Deutsch"},
+      {  Id: "ru-ru", DisplayText: "Русский"
+       }
     ];
 
     this.currencies = [
