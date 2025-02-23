@@ -7,6 +7,7 @@ import { AuthenticationGuard } from '../guards/authentication.guard';
 import { PreviewTransactionComponent } from './components/preview-transaction/preview-transaction.component';
 import { TransactionHistoryComponent } from './components/transaction-history/transaction-history.component';
 
+
 const routes: Routes = [
   {
     path: 'crypto/:identifier',

@@ -13,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 import { WalletModule } from '../wallet/wallet.module';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
+import { HomeExchangeComponent } from './components/home/home-exchange/home-exchange.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { StatusBadgeComponent } from './components/status-badge/status-badge.com
     NotFoundComponent,
     ForbiddenComponent,
     UnauthorizedComponent,
+    HomeExchangeComponent,
     StatusBadgeComponent
   ],
   imports: [
@@ -38,6 +40,7 @@ import { StatusBadgeComponent } from './components/status-badge/status-badge.com
     HeaderComponent,
     FooterComponent,
     HomeComponent,
+    HomeExchangeComponent,
     StatusBadgeComponent
   ]
 })

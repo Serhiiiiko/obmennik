@@ -1,0 +1,87 @@
+<!-- Верхняя часть страницы с «баннером» -->
+
+<div class="bg-green-400 text-white py-5">
+    <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
+      <h1 class="text-2xl font-bold mb-2 md:mb-0">
+        Обменник
+      </h1>
+      <p class="text-sm">
+        Быстрый и надёжный обмен валют 24/7. Предлагаем выгодные курсы, мгновенную обработку транзакций 
+        и круглосуточную поддержку. Попробуйте наш сервис уже сегодня!
+      </p>
+    </div>
+  </div>
+  
+  
+  <!-- Если assets ещё не подгрузились -->
+  <!-- Уменьшили py-20 до py-5, убрали min-h-screen -->
+  <div *ngIf="assets == null" class="text-center py-5 bg-green-50">
+    <h3 class="text-3xl font-bold text-gray-700">
+      {{ 'Global.Loading' | translate }}
+    </h3>
+  </div>
+  
+  <!-- Основной блок, когда assets уже подгружены -->
+  <!-- Убрали min-h-screen и заменили py-10 на py-5 -->
+  <div *ngIf="assets != null" class="bg-green-50">
+    <div class="container mx-auto px-4 py-5">
+      <!-- Карточка с формой обмена -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Левая колонка: «Отдаёте» -->
+          <div>
+            <h2 class="text-lg font-bold mb-2">Отдаёте</h2>
+            <select
+              (change)="leftAssetChanged($event)"
+              class="w-full p-2 border border-gray-300 rounded-md
+                     focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
+            >
+              <option
+                *ngFor="let asset of assets"
+                [value]="asset.id"
+                [selected]="asset.id == dto.leftAssetId"
+              >
+                {{ asset.fullName }} ({{ asset.ticker }})
+              </option>
+            </select>
+  
+    
+          </div>
+  
+          <!-- Правая колонка: «Получаете» -->
+          <div>
+            <h2 class="text-lg font-bold mb-2">Получаете</h2>
+            <select
+              (change)="rightAssetChanged($event)"
+              class="w-full p-2 border border-gray-300 rounded-md
+                     focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
+            >
+              <option
+                *ngFor="let asset of assets"
+                [value]="asset.id"
+                [selected]="asset.id == dto.rightAssetId"
+              >
+                {{ asset.fullName }} ({{ asset.ticker }})
+              </option>
+            </select>
+  
+            
+          </div>
+        </div>
+  
+        <!-- Кнопка «Обменять» -->
+        <div class="mt-6 text-center">
+          <button
+            type="button"
+            class="px-6 py-3 bg-green-500 text-white rounded-md font-semibold
+                   hover:bg-green-600 focus:bg-green-700
+                   transition-colors duration-300"
+            (click)="doLock()"
+          >
+            Обменять
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

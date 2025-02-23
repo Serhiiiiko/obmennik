@@ -8,10 +8,11 @@ import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { CurrencyService } from '../../services/currency.service';
 
 
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
   sub: Subscription;

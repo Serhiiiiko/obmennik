@@ -12,13 +12,15 @@ import { TransactionHistoryComponent } from './components/transaction-history/tr
 
 
 
+
 @NgModule({
   declarations: [
     BuySellComponent,
     CryptoComponent,
     TransactionStatusPageComponent,
     PreviewTransactionComponent,
-    TransactionHistoryComponent
+    TransactionHistoryComponent,
+    
   ],
   imports: [
     CommonModule,

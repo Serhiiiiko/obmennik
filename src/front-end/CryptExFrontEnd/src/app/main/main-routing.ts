@@ -5,6 +5,7 @@ import {ContactComponent} from './components/contact/contact.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+import { HomeExchangeComponent } from './components/home/home-exchange/home-exchange.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: 'forbidden',
     component: ForbiddenComponent
+  },
+  {
+    path: 'home-exchange',
+    component: HomeExchangeComponent
   }
 ];
 
