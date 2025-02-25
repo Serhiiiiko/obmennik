@@ -1,0 +1,34 @@
+<!-- Кнопки управления (по желанию можно скрыть, если нужна только автопрокрутка) -->
+
+<div class="flex justify-center mb-4">
+  <button
+    (click)="prev()"
+    class="px-4 py-2 bg-green-500 text-white rounded mr-2 hover:bg-green-600 transition-colors"
+  >
+    Предыдущие
+  </button>
+  <button
+    (click)="next()"
+    class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+  >
+    Следующие
+  </button>
+</div>
+
+<!-- Обёртка с анимацией. Привязываем триггер `carouselAnimation` к currentIndex -->
+<div
+  class="grid grid-cols-3 grid-rows-2 gap-4 max-w-5xl mx-auto overflow-hidden"
+  [@carouselAnimation]="currentIndex"
+>
+  <!-- Отображаем ровно 6 отзывов (2 ряда по 3) -->
+  <div
+    *ngFor="let testimonial of currentTestimonials"
+    class="border border-gray-300 rounded-lg p-4 shadow-sm bg-white"
+  >
+    <h3 class="text-lg font-semibold mb-2">{{ testimonial.author }}</h3>
+    <p class="text-sm mb-2">
+      {{ testimonial.text }}
+    </p>
+    <small class="text-gray-500">{{ testimonial.date }}</small>
+  </div>
+</div>
