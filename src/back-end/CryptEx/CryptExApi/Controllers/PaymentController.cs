@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CryptExApi.Extensions;
+using CryptExApi.Models.DTO;
 using CryptExApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -84,6 +85,23 @@ namespace CryptExApi.Controllers
                 }
             } catch (Exception ex) {
                 logger.LogWarning(ex, "Could not return deposits.");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("crypto/notify")]
+        public async Task<IActionResult> NotifyCryptoPayment([FromBody] CryptoPaymentNotificationDto dto)
+        {
+            try
+            {
+                var user = await HttpContext.GetUser();
+                await depositService.NotifyCryptoPayment(user, dto);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Could not process payment notification.");
                 return exceptionHandler.Handle(ex, Request);
             }
         }

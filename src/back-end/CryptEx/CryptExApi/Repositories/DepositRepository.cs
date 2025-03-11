@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using CryptExApi.Data;
 using CryptExApi.Exceptions;
+using CryptExApi.Models;
 using CryptExApi.Models.Database;
+using CryptExApi.Models.DTO;
 using CryptExApi.Models.ViewModel.Payment;
 using CryptExApi.Utilities;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +20,7 @@ namespace CryptExApi.Repositories
         Task<List<DepositViewModel>> GetDeposits(Guid userId);
 
         Task<CryptoDepositViewModel> DepositCrypto(AppUser user, Guid walletId);
+        Task NotifyCryptoPayment(AppUser user, CryptoPaymentNotificationDto dto);
     }
 
     public class DepositRepository : IDepositRepository
@@ -34,6 +37,40 @@ namespace CryptExApi.Repositories
             return await GetDeposits(user.Id);
         }
 
+        // Existing constructor and methods
+
+        public async Task NotifyCryptoPayment(AppUser user, CryptoPaymentNotificationDto dto)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
+
+            // Get the deposit record from the database
+            var deposit = await dbContext.CryptoDeposits
+                .Include(x => x.Wallet)
+                .SingleOrDefaultAsync(x => x.Id == dto.DepositId && x.UserId == user.Id);
+
+            if (deposit == null)
+                throw new NotFoundException("Deposit not found.");
+
+            if (deposit.Status != PaymentStatus.NotProcessed)
+                throw new BadRequestException("This deposit is already being processed.");
+
+            // Update the deposit with user-provided information
+            deposit.Status = PaymentStatus.AwaitingVerification;
+            deposit.Amount = dto.AmountSent;
+            deposit.TransactionId = dto.TransactionHash; // Using existing field for transaction hash
+
+            // If you want to store both hash and sender address in the existing field
+            if (!string.IsNullOrEmpty(dto.SenderWalletAddress))
+            {
+                deposit.TransactionId = $"Hash: {dto.TransactionHash}, From: {dto.SenderWalletAddress}";
+            }
+
+            await dbContext.SaveChangesAsync();
+        }
         public async Task<List<DepositViewModel>> GetDeposits(Guid userId)
         {
             var fiatDeposits = dbContext.FiatDeposits

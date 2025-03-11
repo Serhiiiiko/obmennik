@@ -45,5 +45,6 @@ namespace CryptExApi.Services
         {
             await paymentRepository.WithdrawFiat(userId, amount);
         }
+
     }
 }

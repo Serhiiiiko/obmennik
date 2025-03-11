@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CryptExApi.Data;
 using CryptExApi.Extensions;
 using CryptExApi.Models.Database;
+using CryptExApi.Models.DTO;
 using CryptExApi.Models.SignalR;
 using CryptExApi.Models.ViewModel;
 using CryptExApi.Models.ViewModel.Payment;
@@ -28,6 +29,8 @@ namespace CryptExApi.Services
         Task<FiatDeposit> CreateFiatDeposit(AppUser user, Session session);
 
         Task UpdateDeposits(Guid userId);
+
+        Task NotifyCryptoPayment(AppUser user, CryptoPaymentNotificationDto dto);
     }
 
     public class DepositService : IDepositService
@@ -47,6 +50,15 @@ namespace CryptExApi.Services
             this.stripeRepository = stripeRepository;
             this.walletRepository = walletRepository;
             this.userManager = userManager;
+        }
+
+        public async Task NotifyCryptoPayment(AppUser user, CryptoPaymentNotificationDto dto)
+        {
+            // Call repository to update the deposit
+            await repository.NotifyCryptoPayment(user, dto);
+
+            // Notify all connected clients about the update
+            await UpdateDeposits(user.Id);
         }
 
         public async Task<FiatDepositViewModel> CreatePaymentSession(decimal amount, AppUser user)

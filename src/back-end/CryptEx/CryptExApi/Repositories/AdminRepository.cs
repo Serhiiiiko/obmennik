@@ -6,6 +6,7 @@ using CryptExApi.Data;
 using CryptExApi.Exceptions;
 using CryptExApi.Models;
 using CryptExApi.Models.Database;
+using CryptExApi.Models.DTO;
 using CryptExApi.Models.ViewModel;
 using CryptExApi.Models.ViewModel.Admin;
 using CryptExApi.Models.ViewModel.Payment;
@@ -28,6 +29,8 @@ namespace CryptExApi.Repositories
         Task SetCryptoDepositStatus(Guid sessionId, PaymentStatus status);
 
         Task SetDepositAmount(Guid id, decimal amount);
+        Task<List<FullDepositViewModel>> GetPendingCryptoDeposits();
+        Task VerifyCryptoDeposit(VerifyCryptoDepositDto dto);
     }
     public class AdminRepository : IAdminRepository
     {
@@ -36,6 +39,35 @@ namespace CryptExApi.Repositories
         public AdminRepository(CryptExDbContext dbContext)
         {
             this.dbContext = dbContext;
+        }
+
+        public async Task<List<FullDepositViewModel>> GetPendingCryptoDeposits()
+        {
+            var deposits = await dbContext.CryptoDeposits
+                .Include(x => x.User)
+                .Include(x => x.Wallet)
+                .Where(x => x.Status == PaymentStatus.AwaitingVerification)
+                .ToListAsync();
+
+            return deposits.Select(x => FullDepositViewModel.FromDeposit(x)).ToList();
+        }
+
+        public async Task VerifyCryptoDeposit(VerifyCryptoDepositDto dto)
+        {
+            var deposit = await dbContext.CryptoDeposits
+                .Include(x => x.User)
+                .SingleOrDefaultAsync(x => x.Id == dto.DepositId);
+
+            if (deposit == null)
+                throw new NotFoundException("Deposit not found.");
+
+            if (deposit.Status != PaymentStatus.AwaitingVerification)
+                throw new BadRequestException("This deposit is not awaiting verification.");
+
+            deposit.Status = dto.IsVerified ? PaymentStatus.Success : PaymentStatus.Failed;
+            deposit.Amount = dto.FinalAmount; // Admin can adjust the final amount
+
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<List<UserViewModel>> SearchUser(string query)

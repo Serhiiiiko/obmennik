@@ -24,5 +24,9 @@ namespace CryptExApi.Models.Database
         public Guid UserId { get; set; }
 
         public AppUser User { get; set; }
+        public string SenderWalletAddress { get; set; }
+        public string TransactionHash { get; set; }
+        public DateTime? UserNotificationTime { get; set; }
+        public string AdminNotes { get; set; }
     }
 }

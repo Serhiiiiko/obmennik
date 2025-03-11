@@ -23,6 +23,11 @@
         /// <summary>
         /// The transaction is pending. (Most commonly this would indicate that the transaction was made using a payment method that takes time to process, like a bank wire)
         /// </summary>
-        Pending = 2
+        Pending = 2,
+
+        /// <summary>
+        /// User claims to have sent the funds, awaiting admin verification.
+        /// </summary>
+        AwaitingVerification = 3
     }
 }
