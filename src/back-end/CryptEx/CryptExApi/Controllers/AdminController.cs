@@ -185,6 +185,25 @@ namespace CryptExApi.Controllers
             }
         }
 
+        // Add to AdminController.cs
+        [HttpPost("setWalletAddress")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> SetWalletAddress([FromQuery] Guid walletId, [FromQuery] string address)
+        {
+            try
+            {
+                await adminService.SetWalletAddress(walletId, address);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Couldn't set wallet address");
+                return exHandler.Handle(ex, Request);
+            }
+        }
+
         [HttpPost("setAccountStatus")]
         public async Task<IActionResult> SetAccountStatus([FromQuery] Guid userId, [FromQuery] AccountStatus status)
         {

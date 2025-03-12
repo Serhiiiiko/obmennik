@@ -377,7 +377,7 @@ namespace CryptExApi.Repositories
             else
                 rate = resp.Data.Amount;
 
-            memoryCache.Set(cacheKey, rate, TimeSpan.FromSeconds(60));
+            memoryCache.Set(cacheKey, rate, TimeSpan.FromSeconds(30));
             
             return rate;
         }

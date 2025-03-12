@@ -160,6 +160,7 @@ namespace CryptExApi
             StripeConfiguration.ApiKey = Configuration["StripePrivateKey"];
 
             services.AddTransient<ICoinbaseClient, CoinbaseClient>();
+            services.AddHostedService<CryptoPriceUpdateService>();
 
             services.AddTransient<IAdminRepository, AdminRepository>();
             services.AddTransient<IAssetConvertRepository, AssetConvertRepository>();

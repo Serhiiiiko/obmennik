@@ -28,6 +28,8 @@ namespace CryptExApi.Services
         Task<List<FullBankAccountViewModel>> GetPendingBankAccounts();
 
         Task SetBankAccountStatus(Guid id, BankAccountStatus status);
+        Task SetWalletAddress(Guid walletId, string address);
+
     }
 
     public class AdminService : IAdminService
@@ -79,6 +81,10 @@ namespace CryptExApi.Services
         public async Task SetBankAccountStatus(Guid id, BankAccountStatus status)
         {
             await adminRepo.SetBankAccountStatus(id, status);
+        }
+        public async Task SetWalletAddress(Guid walletId, string address)
+        {
+            await adminRepo.SetWalletAddress(walletId, address);
         }
     }
 }

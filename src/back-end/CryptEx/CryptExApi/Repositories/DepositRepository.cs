@@ -97,6 +97,9 @@ namespace CryptExApi.Repositories
             if (wallet == null || wallet.Type != WalletType.Crypto)
                 throw new BadRequestException("Invalid wallet Id provided.");
 
+            if (!wallet.IsAddressConfigured)
+                throw new BadRequestException("This cryptocurrency doesn't have a configured wallet address yet. Please contact admin.");
+
             var deposit = await dbContext.CryptoDeposits.AddAsync(new CryptoDeposit
             {
                 Amount = 0,
@@ -112,7 +115,7 @@ namespace CryptExApi.Repositories
             await dbContext.SaveChangesAsync();
 
             var result = CryptoDepositViewModel.FromCryptoDeposit(deposit.Entity);
-            result.WalletAddress = StringUtilities.SecureRandom(32, StringUtilities.AllowedChars.AlphabetNumbers);
+            result.WalletAddress = wallet.AdminWalletAddress;
 
             return result;
         }

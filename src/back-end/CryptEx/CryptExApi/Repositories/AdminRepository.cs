@@ -31,6 +31,7 @@ namespace CryptExApi.Repositories
         Task SetDepositAmount(Guid id, decimal amount);
         Task<List<FullDepositViewModel>> GetPendingCryptoDeposits();
         Task VerifyCryptoDeposit(VerifyCryptoDepositDto dto);
+        Task SetWalletAddress(Guid walletId, string address);
     }
     public class AdminRepository : IAdminRepository
     {
@@ -205,6 +206,21 @@ namespace CryptExApi.Repositories
                 cryptoDeposit.Amount = amount;
             if (fiatDeposit == null && cryptoDeposit == null)
                 throw new NotFoundException("No deposit with the specified id found.");
+
+            await dbContext.SaveChangesAsync();
+        }
+        public async Task SetWalletAddress(Guid walletId, string address)
+        {
+            var wallet = await dbContext.Wallets.SingleOrDefaultAsync(w => w.Id == walletId);
+
+            if (wallet == null)
+                throw new NotFoundException("Wallet not found.");
+
+            if (wallet.Type != WalletType.Crypto)
+                throw new BadRequestException("Only crypto wallets can have addresses configured.");
+
+            wallet.AdminWalletAddress = address;
+            wallet.IsAddressConfigured = true;
 
             await dbContext.SaveChangesAsync();
         }

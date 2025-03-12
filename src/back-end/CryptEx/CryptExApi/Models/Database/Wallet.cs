@@ -14,6 +14,8 @@ namespace CryptExApi.Models.Database
         public string FullName { get; set; }
 
         public WalletType Type { get; set; }
+        public string AdminWalletAddress { get; set; }
+        public bool IsAddressConfigured { get; set; } = false;
     }
 
     public enum WalletType
