@@ -91,6 +91,8 @@ namespace CryptExApi.Services
             return await walletsRepository.GetCryptoWallets(user);
         }
 
+
+
         public async Task<TotalsViewModel> GetTotals(AppUser user)
         {
             var right = WalletViewModel.FromWallet(await walletsRepository.GetFiatFull(user.PreferedCurrency));

@@ -15,10 +15,11 @@ export class ManualDepositComponent implements OnInit {
   walletTicker: string;
   walletAddress: string = '';
   userEmail: string = '';
-  senderWalletAddress: string = ''; // New field for sender's wallet address
+  senderWalletAddress: string = '';
   transactionHash: string = '';
   amount: number = 0;
   sourceCurrency: string = '';
+  targetCurrency: string = '';
   isLoading: boolean = true;
   isSubmitted: boolean = false;
   
@@ -56,19 +57,29 @@ export class ManualDepositComponent implements OnInit {
       const response = await this.walletService.GetWalletInfo(this.walletId);
       
       if (response.success) {
+        // This is the target currency wallet
         this.walletTicker = response.content.ticker;
-        this.walletAddress = response.content.adminWalletAddress;
+        this.targetCurrency = this.walletTicker;
         
-        if (!this.walletAddress) {
-          this.snackbar.ShowSnackbar(new SnackBarCreate(
-            "Address Not Configured", 
-            "No deposit address has been configured for this currency. Please contact support.", 
-            AlertType.Error
-          ));
-          this.router.navigate(['/buy-sell']);
+        // We need to get the admin wallet address for the SOURCE currency, not the target currency
+        const sourceWalletResponse = await this.walletService.GetWalletByTicker(this.sourceCurrency);
+        
+        if (sourceWalletResponse.success && sourceWalletResponse.content.adminWalletAddress) {
+          this.walletAddress = sourceWalletResponse.content.adminWalletAddress;
+          
+          if (!this.walletAddress) {
+            this.snackbar.ShowSnackbar(new SnackBarCreate(
+              "Address Not Configured", 
+              `No deposit address has been configured for ${this.sourceCurrency}. Please contact support.`, 
+              AlertType.Error
+            ));
+            this.router.navigate(['/buy-sell']);
+          }
+          
+          this.isLoading = false;
+        } else {
+          this.handleError();
         }
-        
-        this.isLoading = false;
       } else {
         this.handleError();
       }

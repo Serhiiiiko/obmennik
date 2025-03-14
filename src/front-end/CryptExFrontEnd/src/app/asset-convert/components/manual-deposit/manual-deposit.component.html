@@ -16,7 +16,12 @@
             <p class="font-semibold">Amount to deposit:</p>
             <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
           </div>
-  
+          
+          <!-- Added description to explain the process more clearly -->
+          <p class="text-sm text-gray-600 mb-4">
+            Please provide your {{ targetCurrency }} wallet address where you'll receive the converted funds.
+          </p>
+
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">
               {{ 'BuySell.ManualDeposit.YourEmail' | translate }}
@@ -34,10 +39,10 @@
             </p>
           </div>
 
-          <!-- New wallet address field -->
+          <!-- Updated wallet address field label for clarity -->
           <div class="mb-6">
             <label class="block text-gray-700 text-sm font-bold mb-2">
-              Your {{ sourceCurrency }} Wallet Address
+              Your {{ targetCurrency }} Receiving Wallet Address
             </label>
             <input 
               type="text" 
@@ -72,15 +77,16 @@
         <div *ngIf="!isLoading && isSubmitted" class="py-4">
           <h4 class="font-semibold text-xl mb-4">{{ 'BuySell.ManualDeposit.DepositInstructions' | translate }}</h4>
           
+          <!-- Updated deposit instructions for clarity -->
           <div class="bg-gray-100 p-4 rounded-md mb-6">
-            <p class="mb-2 font-bold">{{ walletTicker }} {{ 'BuySell.ManualDeposit.DepositAddress' | translate }}:</p>
+            <p class="mb-2 font-bold">Send {{ sourceCurrency }} to this deposit address:</p>
             <p class="font-mono bg-white p-2 border border-gray-300 rounded break-all">{{ walletAddress }}</p>
           </div>
           
           <!-- Display amount information again on the success screen -->
           <div *ngIf="amount > 0" class="mb-6 bg-gray-100 p-3 rounded-md">
-            <p class="font-semibold">Amount to deposit:</p>
-            <p class="text-xl font-bold">{{ amount }} {{ walletTicker }}</p>
+            <p class="font-semibold">Amount to send:</p>
+            <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
           </div>
           
           <p class="text-sm text-gray-600 mb-6">
