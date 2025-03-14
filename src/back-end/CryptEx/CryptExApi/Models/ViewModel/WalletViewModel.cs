@@ -16,6 +16,9 @@ namespace CryptExApi.Models.ViewModel
 
         public WalletType Type { get; set; }
 
+        public string AdminWalletAddress { get; set; }
+        public bool IsAddressConfigured { get; set; }
+
         /// <summary>Wallet paired with the selected currency (e.g: BTCUSD)</summary>
         public WalletPairViewModel SelectedCurrencyPair { get; set; }
 
@@ -25,7 +28,9 @@ namespace CryptExApi.Models.ViewModel
             Ticker = wallet.Ticker,
             FullName = wallet.FullName,
             Type = wallet.Type,
-            SelectedCurrencyPair = pair
+            SelectedCurrencyPair = pair,
+            AdminWalletAddress = wallet.AdminWalletAddress,
+            IsAddressConfigured = wallet.IsAddressConfigured
         };
     }
 }
