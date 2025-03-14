@@ -1,4 +1,3 @@
-// src/front-end/CryptExFrontEnd/src/app/admin/components/wallet-addresses/wallet-addresses.component.ts
 import { Component, OnInit } from '@angular/core';
 import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
 import { SnackbarService } from 'src/app/services/snackbar.service';
@@ -11,11 +10,14 @@ import { AdminService } from '../../services/admin.service';
   styleUrls: ['./wallet-addresses.component.scss']
 })
 export class WalletAddressesComponent implements OnInit {
+  wallets: WalletViewModel[] = [];
   cryptoWallets: WalletViewModel[] = [];
+  fiatWallets: WalletViewModel[] = [];
   loading = true;
   walletAddresses: { [key: string]: string } = {};
   savingWallets: { [key: string]: boolean } = {};
-
+  errorMessages: { [key: string]: string } = {};
+  
   constructor(
     private adminService: AdminService, 
     private snackbar: SnackbarService
@@ -27,21 +29,26 @@ export class WalletAddressesComponent implements OnInit {
 
   async loadWallets() {
     try {
-      const result = await this.adminService.GetCryptoWallets();
+      const result = await this.adminService.GetWallets();
       if (result.success) {
-        // Filter to get only crypto wallets
-        this.cryptoWallets = result.content.filter(wallet => wallet.type === WalletType.Crypto);
+        // Store all wallets
+        this.wallets = result.content;
         
-        // Initialize form values
-        this.cryptoWallets.forEach(wallet => {
-          // Initialize with empty string or the current address if it exists
-          this.walletAddresses[wallet.id] = '';
+        // Filter wallets by type
+        this.cryptoWallets = this.wallets.filter(wallet => wallet.type === WalletType.Crypto);
+        this.fiatWallets = this.wallets.filter(wallet => wallet.type === WalletType.Fiat);
+        
+        // Initialize form values for all wallets
+        this.wallets.forEach(wallet => {
+          // Initialize with existing address or empty string
+          this.walletAddresses[wallet.id] = wallet.adminWalletAddress || '';
           this.savingWallets[wallet.id] = false;
+          this.errorMessages[wallet.id] = null;
         });
       } else {
         this.snackbar.ShowSnackbar(new SnackBarCreate(
           "Error", 
-          "Failed to load cryptocurrency wallets", 
+          "Failed to load wallets", 
           AlertType.Error
         ));
       }
@@ -58,13 +65,13 @@ export class WalletAddressesComponent implements OnInit {
 
   async saveWalletAddress(walletId: string) {
     const address = this.walletAddresses[walletId];
+    const wallet = this.wallets.find(w => w.id === walletId);
+    
+    // Clear previous error message
+    this.errorMessages[walletId] = null;
     
     if (!address || address.trim() === '') {
-      this.snackbar.ShowSnackbar(new SnackBarCreate(
-        "Validation Error", 
-        "Wallet address cannot be empty", 
-        AlertType.Warning
-      ));
+      this.errorMessages[walletId] = "Wallet address cannot be empty";
       return;
     }
 
@@ -76,29 +83,28 @@ export class WalletAddressesComponent implements OnInit {
       if (result.success) {
         this.snackbar.ShowSnackbar(new SnackBarCreate(
           "Success", 
-          `Wallet address for ${this.getWalletName(walletId)} has been updated`, 
+          `Wallet address updated successfully`, 
           AlertType.Success
         ));
+        
+        // Update the wallet address in our local data
+        if (wallet) {
+          wallet.adminWalletAddress = address;
+          wallet.isAddressConfigured = true;
+        }
       } else {
-        this.snackbar.ShowSnackbar(new SnackBarCreate(
-          "Error", 
-          "Failed to update wallet address", 
-          AlertType.Error
-        ));
+        // Show error message on the specific wallet
+        this.errorMessages[walletId] = "Failed to update wallet address";
       }
     } catch (error) {
-      this.snackbar.ShowSnackbar(new SnackBarCreate(
-        "Error", 
-        "An unexpected error occurred", 
-        AlertType.Error
-      ));
+      this.errorMessages[walletId] = "Failed to update wallet address";
     } finally {
       this.savingWallets[walletId] = false;
     }
   }
 
   getWalletName(walletId: string): string {
-    const wallet = this.cryptoWallets.find(w => w.id === walletId);
+    const wallet = this.wallets.find(w => w.id === walletId);
     return wallet ? wallet.fullName : 'Unknown Wallet';
   }
 }

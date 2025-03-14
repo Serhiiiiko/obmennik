@@ -29,6 +29,11 @@ export class AdminService {
   public async GetCryptoWallets(): Promise<ApiResult<WalletViewModel[]>> {
     return this.http.Get("Wallets/list");
   }
+
+  // New method to get all wallets (both crypto and fiat)
+  public async GetWallets(): Promise<ApiResult<WalletViewModel[]>> {
+    return this.http.Get("Wallets/list");
+  }
   
   public async GetFullUser(id: string): Promise<ApiResult<FullUserViewModel>> {
     return this.http.Get("Admin/user", { params: new HttpParams().set("userId", id) });
@@ -62,7 +67,7 @@ export class AdminService {
     return this.http.Post("Admin/setAccountStatus", null, { params: new HttpParams().set("userId", id).set("status", accountStatus.toString()) });
   }
 
-  // New methods for pending transactions
+  // Methods for pending transactions
   public async GetPendingTransactions(): Promise<ApiResult<AssetConverssionViewModel[]>> {
     return this.http.Get("Admin/pendingTransactions");
   }

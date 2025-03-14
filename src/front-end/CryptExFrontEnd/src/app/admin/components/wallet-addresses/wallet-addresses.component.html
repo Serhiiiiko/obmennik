@@ -1,42 +1,97 @@
-<!-- src/front-end/CryptExFrontEnd/src/app/admin/components/wallet-addresses/wallet-addresses.component.html -->
-<h1 class="text-2xl">{{ 'Admin.WalletAddresses.Title' | translate }}</h1>
-<p class="mt-2 text-gray-600">{{ 'Admin.WalletAddresses.Description' | translate }}</p>
-
-<div class="mt-5" *ngIf="loading">
-  <p>{{ 'Global.Loading' | translate }}</p>
-</div>
-
-<div class="mt-5 w-full" *ngIf="!loading">
-  <div *ngIf="cryptoWallets.length === 0" class="text-lg text-gray-700">
-    {{ 'Admin.WalletAddresses.NoWallets' | translate }}
-  </div>
-
-  <div *ngIf="cryptoWallets.length > 0" class="space-y-4">
-    <div *ngFor="let wallet of cryptoWallets" class="bg-white rounded-lg shadow p-4">
-      <div class="flex items-center mb-3">
-        <img class="h-8 w-8 mr-3 rounded-full" src="/assets/images/crypto/{{wallet.ticker}}.svg" alt="{{wallet.ticker}} logo">
-        <h3 class="text-lg font-medium text-gray-900">{{wallet.fullName}} ({{wallet.ticker}})</h3>
+<div class="container mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-2">{{ 'Admin.WalletAddresses.Title' | translate }}</h1>
+    <p class="mb-6 text-gray-600">{{ 'Admin.WalletAddresses.Description' | translate }}</p>
+  
+    <div *ngIf="loading" class="flex justify-center py-8">
+      <p>{{ 'Global.Loading' | translate }}</p>
+    </div>
+  
+    <!-- Cryptocurrencies Section - No explicit heading for each currency -->
+    <div *ngIf="!loading">
+      <div *ngIf="cryptoWallets.length === 0" class="text-lg text-gray-700 mb-4">
+        {{ 'Admin.WalletAddresses.NoWallets' | translate }}
       </div>
-      
-      <div class="flex items-center space-x-3">
-        <div class="flex-grow">
-          <input 
-            type="text" 
-            [(ngModel)]="walletAddresses[wallet.id]" 
-            placeholder="{{ 'Admin.WalletAddresses.EnterAddress' | translate }}"
-            class="block w-full shadow-sm py-2 px-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            [disabled]="savingWallets[wallet.id]"
-          >
+  
+      <div *ngIf="cryptoWallets.length > 0" class="space-y-6">
+        <div *ngFor="let wallet of cryptoWallets" class="mb-4">
+          <div class="flex items-center mb-2">
+            <img class="h-6 w-6 mr-2" src="/assets/images/crypto/{{wallet.ticker}}.svg" alt="{{wallet.ticker}} logo">
+            <h3 class="text-lg font-medium">{{wallet.fullName}} ({{wallet.ticker}})</h3>
+          </div>
+          
+          <div class="flex items-center space-x-3">
+            <div class="flex-grow relative">
+              <input 
+                type="text" 
+                [(ngModel)]="walletAddresses[wallet.id]" 
+                placeholder="Enter blockchain wallet address"
+                class="block w-full shadow-sm py-2 px-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                [disabled]="savingWallets[wallet.id]"
+              >
+              <div *ngIf="errorMessages[wallet.id]" class="absolute mt-1 text-red-600 text-sm">
+                {{ errorMessages[wallet.id] }}
+              </div>
+            </div>
+            <button 
+              (click)="saveWalletAddress(wallet.id)"
+              [disabled]="savingWallets[wallet.id]"
+              class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            >
+              Save Address
+            </button>
+          </div>
         </div>
-        <button 
-          (click)="saveWalletAddress(wallet.id)"
-          [disabled]="savingWallets[wallet.id]"
-          class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-        >
-          <span *ngIf="!savingWallets[wallet.id]">{{ 'Admin.WalletAddresses.Save' | translate }}</span>
-          <span *ngIf="savingWallets[wallet.id]">{{ 'Global.Saving' | translate }}</span>
-        </button>
+      </div>
+    </div>
+  
+    <!-- Fiat Currencies Section -->
+    <div *ngIf="!loading" class="mt-8">
+      <h2 class="text-xl font-semibold mb-4 text-indigo-700">Fiat Currencies</h2>
+      <div *ngIf="fiatWallets.length === 0" class="text-lg text-gray-700 mb-4">
+        No fiat currency wallets found.
+      </div>
+  
+      <div *ngIf="fiatWallets.length > 0" class="space-y-6">
+        <div *ngFor="let wallet of fiatWallets" class="mb-4">
+          <div class="flex items-center mb-2">
+            <h3 class="text-lg font-medium">{{wallet.fullName}} ({{wallet.ticker}})</h3>
+          </div>
+          
+          <div class="flex items-center space-x-3 relative">
+            <div class="flex-grow">
+              <input 
+                type="text" 
+                [(ngModel)]="walletAddresses[wallet.id]" 
+                placeholder="Enter payment processor ID or account reference"
+                class="block w-full shadow-sm py-2 px-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                [disabled]="savingWallets[wallet.id]"
+              >
+            </div>
+            <button 
+              (click)="saveWalletAddress(wallet.id)"
+              [disabled]="savingWallets[wallet.id]"
+              class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            >
+              Save Address
+            </button>
+          </div>
+          
+          <!-- Error message display for each wallet -->
+          <div *ngIf="errorMessages[wallet.id]" class="mt-2 p-2 bg-red-100 text-red-800 rounded-md flex items-center">
+            <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+            </svg>
+            <div>
+              <div class="font-bold">Error</div>
+              <div>{{ errorMessages[wallet.id] }}</div>
+            </div>
+            <button (click)="errorMessages[wallet.id] = null" class="ml-auto">
+              <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>

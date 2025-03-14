@@ -138,7 +138,8 @@ namespace CryptExApi.Repositories
         {
             var fiatDeposits = new List<FiatDeposit>();
 
-            if (type == WalletType.Fiat) {
+            if (type == WalletType.Fiat)
+            {
                 fiatDeposits = dbContext.FiatDeposits
                     .Include(x => x.Wallet)
                     .Include(x => x.User)
@@ -149,7 +150,8 @@ namespace CryptExApi.Repositories
 
             var cryptoDeposits = new List<CryptoDeposit>();
 
-            if (type == WalletType.Crypto) {
+            if (type == WalletType.Crypto)
+            {
                 cryptoDeposits = dbContext.CryptoDeposits
                     .Include(x => x.Wallet)
                     .Include(x => x.User)
@@ -209,6 +211,8 @@ namespace CryptExApi.Repositories
 
             await dbContext.SaveChangesAsync();
         }
+
+        // Модифицированный метод для поддержки установки адресов как для крипто, так и для фиатных кошельков
         public async Task SetWalletAddress(Guid walletId, string address)
         {
             var wallet = await dbContext.Wallets.SingleOrDefaultAsync(w => w.Id == walletId);
@@ -216,8 +220,9 @@ namespace CryptExApi.Repositories
             if (wallet == null)
                 throw new NotFoundException("Wallet not found.");
 
-            if (wallet.Type != WalletType.Crypto)
-                throw new BadRequestException("Only crypto wallets can have addresses configured.");
+            // Удалена проверка на тип кошелька, чтобы поддерживать как крипто, так и фиатные кошельки
+            // if (wallet.Type != WalletType.Crypto)
+            //     throw new BadRequestException("Only crypto wallets can have addresses configured.");
 
             wallet.AdminWalletAddress = address;
             wallet.IsAddressConfigured = true;

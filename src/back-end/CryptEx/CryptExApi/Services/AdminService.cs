@@ -6,6 +6,7 @@ using CryptExApi.Models;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.ViewModel;
 using CryptExApi.Models.ViewModel.Admin;
+using CryptExApi.Models.ViewModel.AssetConvert;
 using CryptExApi.Models.ViewModel.Payment;
 using CryptExApi.Repositories;
 

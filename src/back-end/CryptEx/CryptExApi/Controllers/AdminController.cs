@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using CryptExApi.Models;
 using CryptExApi.Models.Database;
@@ -23,13 +22,20 @@ namespace CryptExApi.Controllers
         private readonly IExceptionHandlerService exHandler;
         private readonly IAdminService adminService;
         private readonly IUserService userService;
+        private readonly IAssetConvertService assetConvertService;
 
-        public AdminController(ILogger<AdminController> logger, IExceptionHandlerService exHandler, IAdminService adminService, IUserService userService)
+        public AdminController(
+            ILogger<AdminController> logger,
+            IExceptionHandlerService exHandler,
+            IAdminService adminService,
+            IUserService userService,
+            IAssetConvertService assetConvertService)
         {
             this.logger = logger;
             this.exHandler = exHandler;
             this.adminService = adminService;
             this.userService = userService;
+            this.assetConvertService = assetConvertService;
         }
 
         [HttpGet("user")]
@@ -185,7 +191,7 @@ namespace CryptExApi.Controllers
             }
         }
 
-        // Add to AdminController.cs
+        // Добавьте этот метод в AdminController.cs или обновите существующий
         [HttpPost("setWalletAddress")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

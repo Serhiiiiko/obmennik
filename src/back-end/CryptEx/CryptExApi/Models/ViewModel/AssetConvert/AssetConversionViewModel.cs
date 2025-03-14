@@ -15,7 +15,6 @@ namespace CryptExApi.Models.ViewModel.AssetConvert
         public PaymentStatus Status { get; set; }
 
         public WalletPairViewModel Pair { get; set; }
-        public object CreatedAt { get; internal set; }
 
         public static AssetConversionViewModel FromAssetConversion(AssetConversion t) => new()
         {
