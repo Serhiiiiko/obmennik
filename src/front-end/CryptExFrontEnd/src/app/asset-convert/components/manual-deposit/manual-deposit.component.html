@@ -7,8 +7,15 @@
           <p>{{ 'Global.Loading' | translate }}</p>
         </div>
   
+        <!-- Form before submission -->
         <div *ngIf="!isLoading && !isSubmitted">
           <p class="mb-5">{{ 'BuySell.ManualDeposit.Description' | translate }}</p>
+  
+          <!-- Display amount information -->
+<div *ngIf="amount > 0" class="mb-6 bg-gray-100 p-3 rounded-md">
+    <p class="font-semibold">Amount to deposit:</p>
+    <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
+  </div>
   
           <div class="mb-6">
             <label class="block text-gray-700 text-sm font-bold mb-2">
@@ -19,12 +26,19 @@
               [(ngModel)]="userEmail" 
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="your@email.com"
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              required
             >
+            <p *ngIf="userEmail && !isValidEmail(userEmail)" class="text-red-500 text-xs mt-1">
+              Please enter a valid email address
+            </p>
           </div>
   
           <div class="mt-8">
             <button type="button"
-              class="block w-full max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
+              [disabled]="!isValidEmail(userEmail)"
+              [ngClass]="!isValidEmail(userEmail) ? 'bg-indigo-300 cursor-not-allowed' : 'bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700'"
+              class="block w-full max-w-xs mx-auto text-white rounded-lg px-3 py-3 font-semibold"
               (click)="submitDepositRequest()">
               {{ 'BuySell.ManualDeposit.GetAddress' | translate }}
             </button>
@@ -36,13 +50,20 @@
             </button>
           </div>
         </div>
-  
+
+        <!-- Success view after submission -->
         <div *ngIf="!isLoading && isSubmitted" class="py-4">
           <h4 class="font-semibold text-xl mb-4">{{ 'BuySell.ManualDeposit.DepositInstructions' | translate }}</h4>
           
           <div class="bg-gray-100 p-4 rounded-md mb-6">
             <p class="mb-2 font-bold">{{ walletTicker }} {{ 'BuySell.ManualDeposit.DepositAddress' | translate }}:</p>
             <p class="font-mono bg-white p-2 border border-gray-300 rounded break-all">{{ walletAddress }}</p>
+          </div>
+          
+          <!-- Display amount information again on the success screen -->
+          <div *ngIf="amount > 0" class="mb-6 bg-gray-100 p-3 rounded-md">
+            <p class="font-semibold">Amount to deposit:</p>
+            <p class="text-xl font-bold">{{ amount }} {{ walletTicker }}</p>
           </div>
           
           <p class="text-sm text-gray-600 mb-6">

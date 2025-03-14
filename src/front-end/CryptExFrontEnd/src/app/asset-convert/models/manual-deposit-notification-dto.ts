@@ -1,5 +1,9 @@
 export interface ManualDepositNotificationDto {
-    email: string;
-    walletId: string;
-    amount: number;
-  }
+  depositId: string;
+  senderWalletAddress: string;
+  transactionHash: string;
+  transactionId?: string; // Add this field too
+  amountSent: number;
+  email: string;
+  walletId: string;
+}

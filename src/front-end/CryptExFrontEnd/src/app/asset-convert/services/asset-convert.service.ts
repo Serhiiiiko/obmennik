@@ -80,6 +80,7 @@ export class AssetConvertService {
   }
   
   public async NotifyManualDeposit(dto: ManualDepositNotificationDto): Promise<ApiResult> {
+    console.log("Sending to API:", dto);
     return this.http.Post("Payment/crypto/notify", dto);
   }
 }

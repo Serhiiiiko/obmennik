@@ -15,6 +15,9 @@ export class ManualDepositComponent implements OnInit {
   walletTicker: string;
   walletAddress: string = '';
   userEmail: string = '';
+  transactionHash: string = '';
+  amount: number = 0;
+  sourceCurrency: string = '';
   isLoading: boolean = true;
   isSubmitted: boolean = false;
   
@@ -29,10 +32,23 @@ export class ManualDepositComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.walletId = params['id'];
+      
+      // Get query parameters
+      this.route.queryParams.subscribe(queryParams => {
+        this.transactionHash = queryParams['transactionHash'] || '';
+        this.amount = queryParams['amount'] ? parseFloat(queryParams['amount']) : 0;
+        this.sourceCurrency = queryParams['sourceCurrency'] || '';
+        console.log("Retrieved parameters:", { 
+          walletId: this.walletId,
+          transactionHash: this.transactionHash,
+          amount: this.amount,
+          sourceCurrency: this.sourceCurrency
+        });
+      });
+      
       this.loadWalletInfo();
     });
   }
-
   async loadWalletInfo(): Promise<void> {
     try {
       const response = await this.walletService.GetWalletInfo(this.walletId);
@@ -79,33 +95,64 @@ export class ManualDepositComponent implements OnInit {
     }
 
     try {
-      const response = await this.assetConvertService.NotifyManualDeposit({
-        email: this.userEmail,
+      console.log("Submitting deposit with data:", {
         walletId: this.walletId,
-        amount: 0 // Using 0 as a placeholder since amount will be tracked elsewhere
+        amount: this.amount,
+        email: this.userEmail,
+        transactionHash: this.transactionHash
       });
+      
+      const response = await this.assetConvertService.NotifyManualDeposit({
+        depositId: "00000000-0000-0000-0000-000000000000", // Empty GUID for new deposits
+        senderWalletAddress: "",
+        transactionHash: this.transactionHash,
+        transactionId: this.transactionHash, // Set both to ensure one works
+        amountSent: this.amount,
+        email: this.userEmail,
+        walletId: this.walletId
+      });
+
+      console.log("API response:", response);
 
       if (response.success) {
         this.isSubmitted = true;
         this.snackbar.ShowSnackbar(new SnackBarCreate(
           "Request Submitted", 
-          "We've received your deposit notification. Please complete the transaction to the provided address.", 
+          "We've received your deposit notification.", 
           AlertType.Success
         ));
       } else {
+        console.error("API error:", response);
         this.snackbar.ShowSnackbar(new SnackBarCreate(
           "Error", 
           "Could not submit your request. Please try again later.", 
           AlertType.Error
         ));
       }
-    } catch {
+    } catch (error) {
+      console.error("Error submitting deposit request:", error);
       this.snackbar.ShowSnackbar(new SnackBarCreate(
         "Error", 
         "Could not submit your request. Please try again later.", 
         AlertType.Error
       ));
     }
+  }
+// Add this method to the ManualDepositComponent class
+isValidEmail(email: string): boolean {
+  if (!email) return false;
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailPattern.test(email);
+}
+  // Helper method to generate a transaction hash
+  private generateTransactionHash(): string {
+    // Simple implementation - in real app you might want something more sophisticated
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 32; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
   }
 
   goBack(): void {

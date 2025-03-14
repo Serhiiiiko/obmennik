@@ -94,14 +94,28 @@ export class PreviewTransactionComponent implements OnInit {
   }
 
   doConvert(): void {
-    // Instead of converting, redirect to manual deposit page
-    this.router.navigate(['/buy-sell/manual-deposit', this.lock.pair.right.id]);
+    // Pass both the source currency and target currency
+    this.router.navigate(['/buy-sell/manual-deposit', this.lock.pair.right.id], { 
+      queryParams: { 
+        amount: this.dto.amount,
+        transactionHash: this.generateTransactionHash(),
+        sourceCurrency: this.lock.pair.left.ticker // Add this line to pass the source currency
+      }
+    });
     
-    // Remove transaction lock since we're not using it
+    // Remove lock since we're not using it
     this.service.RemoveTransactionLock(this.lock.id);
     
-    // Optional: Show a success message
     this.snack.ShowSnackbar(new SnackBarCreate("Success", "Proceeding to manual deposit", AlertType.Success));
+  }
+  // Helper method to generate a transaction hash
+  private generateTransactionHash(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 32; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
   }
 
   doCancel(): void {
