@@ -15,6 +15,7 @@ export class ManualDepositComponent implements OnInit {
   walletTicker: string;
   walletAddress: string = '';
   userEmail: string = '';
+  senderWalletAddress: string = ''; // New field for sender's wallet address
   transactionHash: string = '';
   amount: number = 0;
   sourceCurrency: string = '';
@@ -49,6 +50,7 @@ export class ManualDepositComponent implements OnInit {
       this.loadWalletInfo();
     });
   }
+
   async loadWalletInfo(): Promise<void> {
     try {
       const response = await this.walletService.GetWalletInfo(this.walletId);
@@ -84,6 +86,17 @@ export class ManualDepositComponent implements OnInit {
     this.router.navigate(['/buy-sell']);
   }
 
+  isValidEmail(email: string): boolean {
+    if (!email) return false;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
+  }
+
+  isValidWalletAddress(): boolean {
+    // Basic validation - wallet address should be at least 10 characters
+    return this.senderWalletAddress && this.senderWalletAddress.length >= 10;
+  }
+
   async submitDepositRequest(): Promise<void> {
     if (!this.userEmail) {
       this.snackbar.ShowSnackbar(new SnackBarCreate(
@@ -94,17 +107,27 @@ export class ManualDepositComponent implements OnInit {
       return;
     }
 
+    if (!this.senderWalletAddress) {
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Missing Information", 
+        "Please provide your wallet address", 
+        AlertType.Warning
+      ));
+      return;
+    }
+
     try {
       console.log("Submitting deposit with data:", {
         walletId: this.walletId,
         amount: this.amount,
         email: this.userEmail,
+        senderWalletAddress: this.senderWalletAddress,
         transactionHash: this.transactionHash
       });
       
       const response = await this.assetConvertService.NotifyManualDeposit({
         depositId: "00000000-0000-0000-0000-000000000000", // Empty GUID for new deposits
-        senderWalletAddress: "",
+        senderWalletAddress: this.senderWalletAddress,
         transactionHash: this.transactionHash,
         transactionId: this.transactionHash, // Set both to ensure one works
         amountSent: this.amount,
@@ -137,22 +160,6 @@ export class ManualDepositComponent implements OnInit {
         AlertType.Error
       ));
     }
-  }
-// Add this method to the ManualDepositComponent class
-isValidEmail(email: string): boolean {
-  if (!email) return false;
-  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return emailPattern.test(email);
-}
-  // Helper method to generate a transaction hash
-  private generateTransactionHash(): string {
-    // Simple implementation - in real app you might want something more sophisticated
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < 32; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
   }
 
   goBack(): void {

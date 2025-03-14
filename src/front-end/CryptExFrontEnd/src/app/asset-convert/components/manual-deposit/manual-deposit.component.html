@@ -12,12 +12,12 @@
           <p class="mb-5">{{ 'BuySell.ManualDeposit.Description' | translate }}</p>
   
           <!-- Display amount information -->
-<div *ngIf="amount > 0" class="mb-6 bg-gray-100 p-3 rounded-md">
-    <p class="font-semibold">Amount to deposit:</p>
-    <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
-  </div>
+          <div *ngIf="amount > 0" class="mb-6 bg-gray-100 p-3 rounded-md">
+            <p class="font-semibold">Amount to deposit:</p>
+            <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
+          </div>
   
-          <div class="mb-6">
+          <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">
               {{ 'BuySell.ManualDeposit.YourEmail' | translate }}
             </label>
@@ -33,11 +33,28 @@
               Please enter a valid email address
             </p>
           </div>
+
+          <!-- New wallet address field -->
+          <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2">
+              Your {{ sourceCurrency }} Wallet Address
+            </label>
+            <input 
+              type="text" 
+              [(ngModel)]="senderWalletAddress" 
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Enter your wallet address"
+              required
+            >
+            <p *ngIf="senderWalletAddress && senderWalletAddress.length < 10" class="text-red-500 text-xs mt-1">
+              Please enter a valid wallet address
+            </p>
+          </div>
   
           <div class="mt-8">
             <button type="button"
-              [disabled]="!isValidEmail(userEmail)"
-              [ngClass]="!isValidEmail(userEmail) ? 'bg-indigo-300 cursor-not-allowed' : 'bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700'"
+              [disabled]="!isValidEmail(userEmail) || !isValidWalletAddress()"
+              [ngClass]="!isValidEmail(userEmail) || !isValidWalletAddress() ? 'bg-indigo-300 cursor-not-allowed' : 'bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700'"
               class="block w-full max-w-xs mx-auto text-white rounded-lg px-3 py-3 font-semibold"
               (click)="submitDepositRequest()">
               {{ 'BuySell.ManualDeposit.GetAddress' | translate }}

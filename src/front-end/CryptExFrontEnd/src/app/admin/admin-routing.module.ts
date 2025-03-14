@@ -1,4 +1,3 @@
-// src/front-end/CryptExFrontEnd/src/app/admin/admin-routing.module.ts
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminGuard } from '../guards/admin.guard';
@@ -7,6 +6,7 @@ import { AdminDashboardComponent } from './components/admin-dashboard/admin-dash
 import { DepositsComponent } from './components/deposits/deposits.component';
 import { HomeComponent } from './components/home/home.component';
 import { PendingBankAccountsComponent } from './components/pending-bank-accounts/pending-bank-accounts.component';
+import { PendingTransactionsComponent } from './components/pending-transactions/pending-transactions.component';
 import { SearchUserComponent } from './components/search-user/search-user.component';
 import { UserPageComponent } from './components/user-page/user-page.component';
 import { WalletAddressesComponent } from './components/wallet-addresses/wallet-addresses.component';
@@ -40,6 +40,10 @@ const routes: Routes = [
       {
         path: 'wallet-addresses',
         component: WalletAddressesComponent
+      },
+      {
+        path: 'pending-transactions',
+        component: PendingTransactionsComponent
       }
     ]
   }

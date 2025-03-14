@@ -1,4 +1,3 @@
-// src/front-end/CryptExFrontEnd/src/app/admin/admin.module.ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminRoutingModule } from './admin-routing.module';
@@ -16,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { MainModule } from '../main/main.module';
 import { WalletAddressesComponent } from './components/wallet-addresses/wallet-addresses.component';
+import { PendingTransactionsComponent } from './components/pending-transactions/pending-transactions.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +28,8 @@ import { WalletAddressesComponent } from './components/wallet-addresses/wallet-a
     HomeComponent,
     SearchUserResultComponent,
     UserPageComponent,
-    WalletAddressesComponent
+    WalletAddressesComponent,
+    PendingTransactionsComponent
   ],
   imports: [
     CommonModule,

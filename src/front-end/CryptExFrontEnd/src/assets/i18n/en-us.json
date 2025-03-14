@@ -2,7 +2,8 @@
   "Global": {
     "Loading": "Loading...",
     "LoadError": "Could not load this content correctly, please try again later.",
-    "Saving": "Saving..."
+    "Saving": "Saving...",
+    "Cancel": "Отмена"
   },
   
   
@@ -244,14 +245,28 @@
       "Submit": "Submit"
     }
   },
-  "Admin": {
-    "ShortTitles": {
-      "Home": "Home",
-      "SearchUser": "Search users",
-      "Deposits": "View recent deposits",
-      "BankAccounts": "View pending bank accounts",
-      "WalletAddresses": "Manage Wallet Addresses"
-    },
+    "Admin": {
+      "ShortTitles": {
+        "Home": "Home",
+        "SearchUser": "Search users",
+        "Deposits": "View recent deposits",
+        "BankAccounts": "View pending bank accounts",
+        "WalletAddresses": "Manage Wallet Addresses",
+        "PendingTransactions": "Pending Transactions"
+      },
+      "PendingTransactions": {
+        "Title": "Pending Currency Exchange Transactions",
+        "NoTransactions": "No pending transactions found.",
+        "User": "User",
+        "From": "From",
+        "To": "To",
+        "Amount": "Amount",
+        "Rate": "Exchange Rate",
+        "Date": "Date",
+        "Actions": "Actions",
+        "Approve": "Approve",
+        "Reject": "Reject"
+      },
     "WalletAddresses": {
       "Title": "Manage Crypto Wallet Addresses",
       "Description": "Set up wallet addresses for each cryptocurrency. Users will use these addresses when depositing crypto assets.",

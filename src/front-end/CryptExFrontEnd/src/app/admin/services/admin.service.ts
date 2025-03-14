@@ -1,4 +1,3 @@
-
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CustomHttpClientService } from 'src/app/api/custom-http-client/custom-http-client.service';
@@ -10,6 +9,7 @@ import { FullDepositViewModel } from '../models/full-deposit-view-model';
 import { AccountStatus, FullUserViewModel } from '../models/full-user-view-model';
 import { StatsViewModel } from '../models/stats-view-model';
 import { WalletViewModel } from 'src/app/wallet/models/wallet-view-model';
+import { AssetConverssionViewModel } from 'src/app/asset-convert/models/asset-converssion-view-model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,10 +26,10 @@ export class AdminService {
     });
   }
   
-  // Add this method to get crypto wallets
   public async GetCryptoWallets(): Promise<ApiResult<WalletViewModel[]>> {
     return this.http.Get("Wallets/list");
   }
+  
   public async GetFullUser(id: string): Promise<ApiResult<FullUserViewModel>> {
     return this.http.Get("Admin/user", { params: new HttpParams().set("userId", id) });
   }
@@ -60,5 +60,18 @@ export class AdminService {
 
   public async SetAccountStatus(id: string, accountStatus: AccountStatus): Promise<ApiResult> {
     return this.http.Post("Admin/setAccountStatus", null, { params: new HttpParams().set("userId", id).set("status", accountStatus.toString()) });
+  }
+
+  // New methods for pending transactions
+  public async GetPendingTransactions(): Promise<ApiResult<AssetConverssionViewModel[]>> {
+    return this.http.Get("Admin/pendingTransactions");
+  }
+
+  public async SetTransactionStatus(transactionId: string, status: PaymentStatus): Promise<ApiResult> {
+    return this.http.Post("Admin/setTransactionStatus", null, { 
+      params: new HttpParams()
+        .set("transactionId", transactionId)
+        .set("status", status.toString()) 
+    });
   }
 }
