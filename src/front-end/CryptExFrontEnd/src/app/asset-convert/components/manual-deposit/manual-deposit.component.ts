@@ -15,7 +15,6 @@ export class ManualDepositComponent implements OnInit {
   walletTicker: string;
   walletAddress: string = '';
   userEmail: string = '';
-  amount: number;
   isLoading: boolean = true;
   isSubmitted: boolean = false;
   
@@ -70,10 +69,10 @@ export class ManualDepositComponent implements OnInit {
   }
 
   async submitDepositRequest(): Promise<void> {
-    if (!this.userEmail || !this.amount) {
+    if (!this.userEmail) {
       this.snackbar.ShowSnackbar(new SnackBarCreate(
         "Missing Information", 
-        "Please provide both email and amount", 
+        "Please provide your email address", 
         AlertType.Warning
       ));
       return;
@@ -83,7 +82,7 @@ export class ManualDepositComponent implements OnInit {
       const response = await this.assetConvertService.NotifyManualDeposit({
         email: this.userEmail,
         walletId: this.walletId,
-        amount: this.amount
+        amount: 0 // Using 0 as a placeholder since amount will be tracked elsewhere
       });
 
       if (response.success) {

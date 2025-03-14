@@ -51,7 +51,13 @@ export class BuySellComponent implements OnInit {
   }
 
   doLock(): void {
-    
-    this.router.navigate(['/buy-sell/manual-deposit', this.selectedRightAsset.id]);
+    this.service.LockTransaction(this.dto).then(x => {
+      if (x.success) {
+        // Redirect to preview transaction instead of manual deposit
+        this.router.navigate(['/buy-sell/preview', x.content.id]);
+      } else {
+        this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not lock transaction", AlertType.Error));
+      }
+    });
   }
 }

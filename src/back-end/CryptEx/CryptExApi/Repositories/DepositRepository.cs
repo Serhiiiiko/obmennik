@@ -134,7 +134,7 @@ namespace CryptExApi.Repositories
                 Wallet = wallet,
                 UserId = user.Id,
                 User = user,
-                AdminNotes = $"Manual deposit notification. User email: {dto.Email}"
+                AdminNotes = dto.Email
             };
 
             await dbContext.CryptoDeposits.AddAsync(deposit);

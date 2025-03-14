@@ -94,21 +94,14 @@ export class PreviewTransactionComponent implements OnInit {
   }
 
   doConvert(): void {
-    this.service.Convert(this.dto).then(x => {
-      if (x.success) {
-        this.router.navigate(['/buy-sell/transaction', x.content]);
-        this.snack.ShowSnackbar(new SnackBarCreate("Success", "The conversion has begun. Watch as it happens in real time !", AlertType.Success));
-      } else {
-        if (x.error.status == 400) {
-          this.snack.ShowSnackbar(new SnackBarCreate("Insufficient funds", "You do not have enough funds to convert this asset.", AlertType.Error));
-        } else if (x.error.status == 404) {
-          this.router.navigate(['buy-sell']);
-          this.snack.ShowSnackbar(new SnackBarCreate("Error", "This price lock has expired, please try again.", AlertType.Error));
-        } else {
-          this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not convert assets.", AlertType.Error));
-        }
-      }
-    });
+    // Instead of converting, redirect to manual deposit page
+    this.router.navigate(['/buy-sell/manual-deposit', this.lock.pair.right.id]);
+    
+    // Remove transaction lock since we're not using it
+    this.service.RemoveTransactionLock(this.lock.id);
+    
+    // Optional: Show a success message
+    this.snack.ShowSnackbar(new SnackBarCreate("Success", "Proceeding to manual deposit", AlertType.Success));
   }
 
   doCancel(): void {

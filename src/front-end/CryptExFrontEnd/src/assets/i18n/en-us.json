@@ -152,6 +152,20 @@
       "Failed": "Asset conversion failed",
       "Continue": "Continue to my wallets"
     },
+    "ManualDeposit": {
+      "Title": "Manual Cryptocurrency Deposit",
+      "Description": "Please provide your email and the amount you intend to send to our cryptocurrency address.",
+      "YourEmail": "Your email",
+      "Amount": "Amount",
+      "GetAddress": "Get Deposit Address",
+      "DepositInstructions": "Deposit Instructions",
+      "DepositAddress": "Deposit Address",
+      "Instructions": "Please send your cryptocurrency to this address. Your deposit will be credited to your account once the transaction is confirmed on the blockchain (typically within 15-60 minutes).",
+      "Done": "Done"
+    },
+    "Global": {
+      "Cancel": "Отмена"
+    },
     "Preview": {
       "Title": "Preview your transaction",
       "Confirm": "Confirm",
