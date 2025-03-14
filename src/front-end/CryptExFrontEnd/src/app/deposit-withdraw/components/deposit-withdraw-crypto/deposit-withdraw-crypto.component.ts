@@ -7,6 +7,7 @@ import { WalletType, WalletViewModel } from 'src/app/wallet/models/wallet-view-m
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { CryptoDepositViewModel } from '../../models/crypto-deposit-view-model';
 import { DepositWithdrawService } from '../../services/deposit-withdraw.service';
+import { CryptoPaymentNotificationDto } from '../../models/crypto-payment-notification-dto';
 
 @Component({
   selector: 'app-deposit-withdraw-crypto',
@@ -14,10 +15,23 @@ import { DepositWithdrawService } from '../../services/deposit-withdraw.service'
   styleUrls: ['./deposit-withdraw-crypto.component.scss']
 })
 export class DepositWithdrawCryptoComponent implements OnInit {
+  // Current workflow step
+  currentStep = 1;
+  
+  // Cryptocurrency selection
   cryptos: WalletViewModel[];
   selectedCryptoId: string;
-  amount: number = -1;
+  selectedCrypto: WalletViewModel;
+  
+  // User wallet and transaction details
+  receivingWalletAddress: string;
+  amountToSend: number;
+  transactionHash: string;
+  
+  // Deposit information
   depositVm: CryptoDepositViewModel;
+  
+  // QR code settings
   readonly elementType = NgxQrcodeElementTypes.IMG;
   readonly correctionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
 
@@ -28,20 +42,45 @@ export class DepositWithdrawCryptoComponent implements OnInit {
     private snackBarService: SnackbarService) { }
 
   ngOnInit(): void {
+    this.loadCryptocurrencies();
+  }
+
+  // Load available cryptocurrencies
+  loadCryptocurrencies(): void {
     this.walletService.GetWalletList().then(x => {
       if (x.success) {
         this.cryptos = x.content.filter(x => x.type == WalletType.Crypto);
-        this.selectedCryptoId = this.cryptos[0]?.id;
+        if (this.cryptos.length > 0) {
+          this.selectedCryptoId = this.cryptos[0]?.id;
+          this.selectedCrypto = this.cryptos[0];
+        }
       } else {
         this.snackBarService.ShowSnackbar(new SnackBarCreate("Error", "Could not load cryptocurrency list.", AlertType.Error));
       }
-    })
+    });
   }
 
-  onDeposit(): void {
+  // Handle crypto selection change
+  cryptoChanged($event: any): void {
+    this.selectedCryptoId = $event.target.value;
+    this.selectedCrypto = this.cryptos.find(c => c.id === this.selectedCryptoId);
+  }
+
+  // Navigation methods
+  goToNextStep(): void {
+    this.currentStep++;
+  }
+
+  goToPreviousStep(): void {
+    this.currentStep--;
+  }
+
+  // Request deposit and get admin wallet address
+  requestDeposit(): void {
     this.depWitService.DepositCrypto(this.selectedCryptoId).then(x => {
       if (x.success) {
         this.depositVm = x.content;
+        this.currentStep = 3;
         this.snackBarService.ShowSnackbar(new SnackBarCreate("Success", "Deposit address successfully generated.", AlertType.Success));
       } else {
         if (x.error.status == 400)
@@ -49,14 +88,39 @@ export class DepositWithdrawCryptoComponent implements OnInit {
         else
           this.snackBarService.ShowSnackbar(new SnackBarCreate("Error", "Could not deposit money.", AlertType.Error));
       }
-    })
+    });
   }
 
-  amountChanged(amount: number): void {
-    this.amount = amount;
+  // Notify admin that funds have been sent
+  notifySentFunds(): void {
+    if (!this.depositVm || !this.transactionHash || !this.amountToSend) {
+      this.snackBarService.ShowSnackbar(new SnackBarCreate("Error", "Please provide all required information.", AlertType.Error));
+      return;
+    }
+
+    const notificationDto: CryptoPaymentNotificationDto = {
+      depositId: this.depositVm.id,
+      senderWalletAddress: this.receivingWalletAddress,
+      transactionHash: this.transactionHash,
+      amountSent: this.amountToSend
+    };
+
+    this.depWitService.NotifyCryptoPayment(notificationDto).then(x => {
+      if (x.success) {
+        this.currentStep = 4;
+        this.snackBarService.ShowSnackbar(new SnackBarCreate("Success", "Payment notification sent successfully. Admin will verify your transaction.", AlertType.Success));
+      } else {
+        this.snackBarService.ShowSnackbar(new SnackBarCreate("Error", "Failed to notify about your payment. Please try again or contact support.", AlertType.Error));
+      }
+    });
   }
 
-  cryptoChanged($event: any): void {
-    this.selectedCryptoId = $event.target.value;
+  // Start new transaction
+  startNewTransaction(): void {
+    this.currentStep = 1;
+    this.receivingWalletAddress = null;
+    this.amountToSend = null;
+    this.transactionHash = null;
+    this.depositVm = null;
   }
 }

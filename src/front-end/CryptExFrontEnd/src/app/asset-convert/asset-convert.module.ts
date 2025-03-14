@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TransactionStatusPageComponent } from './components/transaction-status-page/transaction-status-page.component';
 import { PreviewTransactionComponent } from './components/preview-transaction/preview-transaction.component';
 import { TransactionHistoryComponent } from './components/transaction-history/transaction-history.component';
-
+import { ManualDepositComponent } from './components/manual-deposit/manual-deposit.component';
 
 
 
@@ -20,7 +20,7 @@ import { TransactionHistoryComponent } from './components/transaction-history/tr
     TransactionStatusPageComponent,
     PreviewTransactionComponent,
     TransactionHistoryComponent,
-    
+    ManualDepositComponent
   ],
   imports: [
     CommonModule,

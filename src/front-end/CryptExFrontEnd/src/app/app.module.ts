@@ -9,14 +9,12 @@ import { MainModule } from './main/main.module';
 import { UserModule } from './user/user.module';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RequestInterceptor } from './interceptor/request.interceptor';
-import { DepositWithdrawModule } from './deposit-withdraw/deposit-withdraw.module';
 import { SnackbarComponent } from './components/snackbar/snackbar.component';
 import { CurrencyInterceptor } from './interceptor/currency.interceptor';
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AdminModule } from './admin/admin.module';
-import { WalletModule } from './wallet/wallet.module';
 import { PremiumModule } from './premium/premium.module';
 import { HomeExchangeComponent } from './main/components/home/home-exchange/home-exchange.component';
 
@@ -37,9 +35,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AuthModule,
     MainModule,
     UserModule,
-    DepositWithdrawModule,
     AdminModule,
-    WalletModule,
     PremiumModule,
     AppRoutingModule, //This must be the last module loaded, otherwise other routes will be ignored.
     TranslateModule.forRoot({

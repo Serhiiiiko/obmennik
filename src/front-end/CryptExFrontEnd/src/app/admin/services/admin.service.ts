@@ -1,3 +1,4 @@
+
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CustomHttpClientService } from 'src/app/api/custom-http-client/custom-http-client.service';
@@ -8,6 +9,7 @@ import { UserViewModel } from 'src/app/user/models/user-view-model';
 import { FullDepositViewModel } from '../models/full-deposit-view-model';
 import { AccountStatus, FullUserViewModel } from '../models/full-user-view-model';
 import { StatsViewModel } from '../models/stats-view-model';
+import { WalletViewModel } from 'src/app/wallet/models/wallet-view-model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +18,18 @@ export class AdminService {
 
   constructor(private http: CustomHttpClientService) { }
 
+  public async SetWalletAddress(walletId: string, address: string): Promise<ApiResult> {
+    return this.http.Post("Admin/setWalletAddress", null, { 
+      params: new HttpParams()
+        .set("walletId", walletId)
+        .set("address", address) 
+    });
+  }
+  
+  // Add this method to get crypto wallets
+  public async GetCryptoWallets(): Promise<ApiResult<WalletViewModel[]>> {
+    return this.http.Get("Wallets/list");
+  }
   public async GetFullUser(id: string): Promise<ApiResult<FullUserViewModel>> {
     return this.http.Get("Admin/user", { params: new HttpParams().set("userId", id) });
   }

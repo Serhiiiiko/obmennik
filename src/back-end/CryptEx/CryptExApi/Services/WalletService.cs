@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Coinbase;
+using CryptExApi.Exceptions;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.ViewModel;
 using CryptExApi.Models.ViewModel.Wallets;
@@ -29,6 +30,7 @@ namespace CryptExApi.Services
         Task<TotalsViewModel> GetTotals(AppUser user);
 
         Task<WalletViewModel> GetCryptoFull(Guid id, string currency);
+        Task<WalletViewModel> GetWalletById(Guid id);
     }
 
     public class WalletService : IWalletService
@@ -52,6 +54,17 @@ namespace CryptExApi.Services
                 .Select(x => WalletViewModel.FromWallet(x))
                 .ToList();
         }
+
+        public async Task<WalletViewModel> GetWalletById(Guid id)
+        {
+            var wallet = await walletsRepository.GetWalletById(id);
+
+            if (wallet == null)
+                throw new NotFoundException("Wallet not found");
+
+            return WalletViewModel.FromWallet(wallet);
+        }
+
 
         public async Task<List<WalletViewModel>> GetCryptoWallets(string currency)
         {

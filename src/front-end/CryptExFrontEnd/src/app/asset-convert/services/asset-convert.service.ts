@@ -9,6 +9,7 @@ import { EnvironmentService } from 'src/environments/service/environment.service
 import { HttpParams } from '@angular/common/http';
 import { AssetConversionLockDto } from '../models/asset-conversion-lock-dto';
 import { AssetConversionLockViewModel } from '../models/asset-conversion-lock-view-model';
+import { ManualDepositNotificationDto } from '../models/manual-deposit-notification-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -76,5 +77,9 @@ export class AssetConvertService {
 
   public async GetTransactions(id: string): Promise<ApiResult<AssetConverssionViewModel[]>> {
     return this.http.Get("AssetConvert/transactions", { params: new HttpParams().set("id", id) });
+  }
+  
+  public async NotifyManualDeposit(dto: ManualDepositNotificationDto): Promise<ApiResult> {
+    return this.http.Post("Payment/crypto/notify", dto);
   }
 }

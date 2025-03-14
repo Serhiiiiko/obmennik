@@ -1,3 +1,4 @@
+// src/front-end/CryptExFrontEnd/src/app/admin/admin.module.ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminRoutingModule } from './admin-routing.module';
@@ -14,8 +15,7 @@ import { UserPageComponent } from './components/user-page/user-page.component';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { MainModule } from '../main/main.module';
-
-
+import { WalletAddressesComponent } from './components/wallet-addresses/wallet-addresses.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,8 @@ import { MainModule } from '../main/main.module';
     DepositsComponent,
     HomeComponent,
     SearchUserResultComponent,
-    UserPageComponent
+    UserPageComponent,
+    WalletAddressesComponent
   ],
   imports: [
     CommonModule,

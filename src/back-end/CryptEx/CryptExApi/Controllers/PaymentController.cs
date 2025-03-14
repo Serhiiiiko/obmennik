@@ -95,8 +95,16 @@ namespace CryptExApi.Controllers
             try
             {
                 var user = await HttpContext.GetUser();
-                await depositService.NotifyCryptoPayment(user, dto);
 
+                // Если это уведомление о новом депозите (без ID существующего)
+                if (dto.DepositId == Guid.Empty)
+                {
+                    await depositService.CreateManualDepositNotification(user, dto);
+                    return Ok();
+                }
+
+                // Обработка существующего депозита
+                await depositService.NotifyCryptoPayment(user, dto);
                 return Ok();
             }
             catch (Exception ex)

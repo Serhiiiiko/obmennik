@@ -21,6 +21,7 @@ namespace CryptExApi.Repositories
 
         Task<CryptoDepositViewModel> DepositCrypto(AppUser user, Guid walletId);
         Task NotifyCryptoPayment(AppUser user, CryptoPaymentNotificationDto dto);
+        Task CreateManualDeposit(AppUser user, Wallet wallet, CryptoPaymentNotificationDto dto);
     }
 
     public class DepositRepository : IDepositRepository
@@ -118,6 +119,26 @@ namespace CryptExApi.Repositories
             result.WalletAddress = wallet.AdminWalletAddress;
 
             return result;
+        }
+
+        public async Task CreateManualDeposit(AppUser user, Wallet wallet, CryptoPaymentNotificationDto dto)
+        {
+            var deposit = new CryptoDeposit
+            {
+                Amount = dto.AmountSent,
+                Status = Models.PaymentStatus.AwaitingVerification,
+                CreationDate = DateTime.UtcNow,
+                TransactionHash = dto.TransactionHash,
+                SenderWalletAddress = dto.SenderWalletAddress,
+                WalletId = wallet.Id,
+                Wallet = wallet,
+                UserId = user.Id,
+                User = user,
+                AdminNotes = $"Manual deposit notification. User email: {dto.Email}"
+            };
+
+            await dbContext.CryptoDeposits.AddAsync(deposit);
+            await dbContext.SaveChangesAsync();
         }
     }
 }

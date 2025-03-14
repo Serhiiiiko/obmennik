@@ -1,8 +1,11 @@
 {
   "Global": {
     "Loading": "Loading...",
-    "LoadError": "Could not load this content correctly, please try again later."
+    "LoadError": "Could not load this content correctly, please try again later.",
+    "Saving": "Saving..."
   },
+  
+  
   "Header": {
     "NavBar": {
       "Home": "Home",
@@ -232,8 +235,17 @@
       "Home": "Home",
       "SearchUser": "Search users",
       "Deposits": "View recent deposits",
-      "BankAccounts": "View pending bank accounts"
+      "BankAccounts": "View pending bank accounts",
+      "WalletAddresses": "Manage Wallet Addresses"
     },
+    "WalletAddresses": {
+      "Title": "Manage Crypto Wallet Addresses",
+      "Description": "Set up wallet addresses for each cryptocurrency. Users will use these addresses when depositing crypto assets.",
+      "NoWallets": "No cryptocurrency wallets found.",
+      "EnterAddress": "Enter wallet address",
+      "Save": "Save Address"
+    },
+    
     "Home": {
       "Welcome": "Welcome",
       "FetchingStats": "Fetching statistics...",

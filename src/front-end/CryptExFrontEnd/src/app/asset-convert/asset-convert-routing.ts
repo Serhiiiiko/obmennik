@@ -6,6 +6,7 @@ import { TransactionStatusPageComponent } from './components/transaction-status-
 import { AuthenticationGuard } from '../guards/authentication.guard';
 import { PreviewTransactionComponent } from './components/preview-transaction/preview-transaction.component';
 import { TransactionHistoryComponent } from './components/transaction-history/transaction-history.component';
+import { ManualDepositComponent } from './components/manual-deposit/manual-deposit.component';
 
 
 const routes: Routes = [
@@ -31,6 +32,11 @@ const routes: Routes = [
   {
     path: 'buy-sell/history',
     component: TransactionHistoryComponent,
+    canActivate: [AuthenticationGuard]
+  },
+  {
+    path: 'buy-sell/manual-deposit/:id',
+    component: ManualDepositComponent,
     canActivate: [AuthenticationGuard]
   }
 ];

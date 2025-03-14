@@ -56,19 +56,24 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserWalletViewModel>))]
         public async Task<IActionResult> GetUserWallets()
         {
-            try {
+            try
+            {
                 var user = await HttpContext.GetUser();
 
                 var wallets = new List<UserWalletViewModel>();
                 wallets.AddRange(await walletsService.GetFiatWallets(user));
                 wallets.AddRange(await walletsService.GetCryptoWallets(user));
-                
+
                 return Ok(wallets);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.LogWarning(ex, "Could not get user wallets.");
                 return exceptionHandler.Handle(ex, Request);
             }
         }
+
+
 
         [HttpGet("totals")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TotalsViewModel))]
@@ -83,6 +88,24 @@ namespace CryptExApi.Controllers
                 return Ok(totals);
             } catch (Exception ex) {
                 logger.LogWarning(ex, "Could not get total");
+                return exceptionHandler.Handle(ex, Request);
+            }
+        }
+
+        // В файле src/back-end/CryptEx/CryptExApi/Controllers/WalletsController.cs
+        [HttpGet("wallet/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(WalletViewModel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetWalletById(Guid id)
+        {
+            try
+            {
+                var wallet = await walletsService.GetWalletById(id);
+                return Ok(wallet);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Could not get wallet by ID.");
                 return exceptionHandler.Handle(ex, Request);
             }
         }

@@ -113,6 +113,11 @@ namespace CryptExApi.Repositories
         /// <param name="noCache">(Optional) Ignore cached values</param>
         /// <returns></returns>
         Task<decimal> GetCryptoExchangeRate(string left, string right, DateTime? at = null, bool noCache = false);
+
+        /// <summary>
+        /// Get a wallet by its ID
+        /// </summary>
+        Task<Wallet> GetWalletById(Guid id);
     }
 
     public class WalletRepository : IWalletRepository
@@ -344,6 +349,11 @@ namespace CryptExApi.Repositories
         public Task<decimal> GetFiatExchangeRate(string left, string right)
         {
             return Task.FromResult(DefaultDataSeeder.FiatExchangeRates.SingleOrDefault(x => x.leftTicker == left && x.rightTicker == right).exchangeRate);
+        }
+
+        public async Task<Wallet> GetWalletById(Guid id)
+        {
+            return await dbContext.Wallets.FindAsync(id);
         }
 
         public async Task<decimal> GetCryptoExchangeRate(string left, string right, DateTime? at = null, bool noCache = false)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CryptExApi.Data;
+using CryptExApi.Exceptions;
 using CryptExApi.Extensions;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.DTO;
@@ -31,6 +32,7 @@ namespace CryptExApi.Services
         Task UpdateDeposits(Guid userId);
 
         Task NotifyCryptoPayment(AppUser user, CryptoPaymentNotificationDto dto);
+        Task CreateManualDepositNotification(AppUser user, CryptoPaymentNotificationDto dto);
     }
 
     public class DepositService : IDepositService
@@ -193,6 +195,16 @@ namespace CryptExApi.Services
         public async Task UpdateDeposits(Guid userId)
         {
             await hubContext.Clients.User(userId.ToString()).SendAsync(DepositHub.Name, await repository.GetDeposits(userId));
+        }
+
+        public async Task CreateManualDepositNotification(AppUser user, CryptoPaymentNotificationDto dto)
+        {
+            var wallet = await walletRepository.GetWalletById(dto.WalletId);
+
+            if (wallet == null)
+                throw new NotFoundException("Wallet not found");
+
+            await repository.CreateManualDeposit(user, wallet, dto);
         }
     }
 }

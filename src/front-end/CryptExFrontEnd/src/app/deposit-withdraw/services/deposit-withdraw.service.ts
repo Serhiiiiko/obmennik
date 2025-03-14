@@ -8,6 +8,7 @@ import { FiatDepositViewModel } from '../models/fiat-deposit-view-model';
 import * as signalR from "@microsoft/signalr";
 import { EnvironmentService } from 'src/environments/service/environment.service';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { CryptoPaymentNotificationDto } from '../models/crypto-payment-notification-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -93,5 +94,10 @@ export class DepositWithdrawService {
 
   public async WithdrawFiat(amount: number): Promise<ApiResult<CryptoDepositViewModel>> {
     return this.http.Post<CryptoDepositViewModel>("Payment/withdraw", null, { params: new HttpParams().set("amount", amount.toString()) });
+  }
+  
+  // New method to notify about cryptocurrency payment
+  public async NotifyCryptoPayment(notificationDto: CryptoPaymentNotificationDto): Promise<ApiResult> {
+    return this.http.Post("Payment/crypto/notify", notificationDto);
   }
 }
