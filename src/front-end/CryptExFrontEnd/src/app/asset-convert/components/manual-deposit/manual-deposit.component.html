@@ -13,13 +13,13 @@
   
           <!-- Display amount information -->
           <div *ngIf="amount > 0" class="mb-6 bg-gray-100 p-3 rounded-md">
-            <p class="font-semibold">Amount to deposit:</p>
+            <p class="font-semibold">{{ 'BuySell.ManualDeposit.AmountToDeposit' | translate }}:</p>
             <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
           </div>
           
           <!-- Added description to explain the process more clearly -->
           <p class="text-sm text-gray-600 mb-4">
-            Please provide your {{ targetCurrency }} wallet address where you'll receive the converted funds.
+            {{ 'BuySell.ManualDeposit.WalletInstructions' | translate: {targetCurrency: targetCurrency} }}
           </p>
 
           <div class="mb-4">
@@ -35,24 +35,24 @@
               required
             >
             <p *ngIf="userEmail && !isValidEmail(userEmail)" class="text-red-500 text-xs mt-1">
-              Please enter a valid email address
+              {{ 'BuySell.ManualDeposit.EmailError' | translate }}
             </p>
           </div>
 
           <!-- Updated wallet address field label for clarity -->
           <div class="mb-6">
             <label class="block text-gray-700 text-sm font-bold mb-2">
-              Your {{ targetCurrency }} Receiving Wallet Address
+              {{ 'BuySell.ManualDeposit.WalletAddressLabel' | translate: {targetCurrency: targetCurrency} }}
             </label>
             <input 
               type="text" 
               [(ngModel)]="senderWalletAddress" 
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Enter your wallet address"
+              placeholder="{{ 'BuySell.ManualDeposit.WalletAddressPlaceholder' | translate }}"
               required
             >
-            <p *ngIf="senderWalletAddress && senderWalletAddress.length < 10" class="text-red-500 text-xs mt-1">
-              Please enter a valid wallet address
+            <p *ngIf="senderWalletAddress && !isValidWalletAddress()" class="text-red-500 text-xs mt-1">
+              {{ 'BuySell.ManualDeposit.WalletAddressError' | translate }}
             </p>
           </div>
   
@@ -79,13 +79,13 @@
           
           <!-- Updated deposit instructions for clarity -->
           <div class="bg-gray-100 p-4 rounded-md mb-6">
-            <p class="mb-2 font-bold">Send {{ sourceCurrency }} to this deposit address:</p>
+            <p class="mb-2 font-bold">{{ 'BuySell.ManualDeposit.SendToAddress' | translate: {sourceCurrency: sourceCurrency} }}</p>
             <p class="font-mono bg-white p-2 border border-gray-300 rounded break-all">{{ walletAddress }}</p>
           </div>
           
           <!-- Display amount information again on the success screen -->
           <div *ngIf="amount > 0" class="mb-6 bg-gray-100 p-3 rounded-md">
-            <p class="font-semibold">Amount to send:</p>
+            <p class="font-semibold">{{ 'BuySell.ManualDeposit.AmountToSend' | translate }}:</p>
             <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
           </div>
           

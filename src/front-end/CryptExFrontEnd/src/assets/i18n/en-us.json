@@ -72,7 +72,14 @@
     },
     "OurCryptos": "Our crypto-currencies",
     "Pricing": "Pricing",
-    "PricingDesc": "If you're not satisfied, contact us within the first 14 days and we'll send you a full refund."
+    "PricingDesc": "If you're not satisfied, contact us within the first 14 days and we'll send you a full refund.",
+    "Exchange": {
+      "Title": "Exchange",
+      "Description": "Fast and reliable currency exchange 24/7. We offer competitive rates, instant transaction processing, and round-the-clock support. Try our service today!",
+      "Give": "You give",
+      "Receive": "You receive", 
+      "ConvertButton": "Convert"
+    }
   },
   "Premium": {
     "Title": "Premium",
@@ -155,14 +162,22 @@
     },
     "ManualDeposit": {
       "Title": "Manual Cryptocurrency Deposit",
-      "Description": "Please provide your email and the amount you intend to send to our cryptocurrency address.",
+      "Description": "Please provide your email and address for receiving the deposit.",
       "YourEmail": "Your email",
       "Amount": "Amount",
       "GetAddress": "Get Deposit Address",
       "DepositInstructions": "Deposit Instructions",
       "DepositAddress": "Deposit Address",
       "Instructions": "Please send your cryptocurrency to this address. Your deposit will be credited to your account once the transaction is confirmed on the blockchain (typically within 15-60 minutes).",
-      "Done": "Done"
+      "Done": "Done",
+      "WalletInstructions": "Please provide your {{ targetCurrency }} wallet address where you'll receive the converted funds.",
+      "WalletAddressLabel": "Your {{ targetCurrency }} Receiving Wallet Address",
+      "WalletAddressPlaceholder": "Enter your wallet address",
+      "WalletAddressError": "Please enter a valid wallet address",
+      "AmountToDeposit": "Amount to deposit",
+"AmountToSend": "Amount to send",
+"EmailError": "Please enter a valid email address",
+"SendToAddress": "Send {{sourceCurrency}} to this deposit address"
     },
     "Global": {
       "Cancel": "Отмена"
@@ -245,34 +260,38 @@
       "Submit": "Submit"
     }
   },
-    "Admin": {
-      "ShortTitles": {
-        "Home": "Home",
-        "SearchUser": "Search users",
-        "Deposits": "View recent deposits",
-        "BankAccounts": "View pending bank accounts",
-        "WalletAddresses": "Manage Wallet Addresses",
-        "PendingTransactions": "Pending Transactions"
-      },
-      "PendingTransactions": {
-        "Title": "Pending Currency Exchange Transactions",
-        "NoTransactions": "No pending transactions found.",
-        "User": "User",
-        "From": "From",
-        "To": "To",
-        "Amount": "Amount",
-        "Rate": "Exchange Rate",
-        "Date": "Date",
-        "Actions": "Actions",
-        "Approve": "Approve",
-        "Reject": "Reject"
-      },
+  "Admin": {
+    "ShortTitles": {
+      "Home": "Home",
+      "SearchUser": "Search users",
+      "Deposits": "View recent deposits",
+      "BankAccounts": "View pending bank accounts",
+      "WalletAddresses": "Manage Wallet Addresses",
+      "PendingTransactions": "Pending Transactions"
+    },
+    "PendingTransactions": {
+      "Title": "Pending Currency Exchange Transactions",
+      "NoTransactions": "No pending transactions found.",
+      "User": "User",
+      "From": "From",
+      "To": "To",
+      "Amount": "Amount",
+      "Rate": "Exchange Rate",
+      "Date": "Date",
+      "Actions": "Actions",
+      "Approve": "Approve",
+      "Reject": "Reject"
+    },
     "WalletAddresses": {
       "Title": "Manage Crypto Wallet Addresses",
       "Description": "Set up wallet addresses for each cryptocurrency. Users will use these addresses when depositing crypto assets.",
       "NoWallets": "No cryptocurrency wallets found.",
       "EnterAddress": "Enter wallet address",
-      "Save": "Save Address"
+      "Save": "Save Address",
+      "FiatCurrencies": "Fiat Currencies",
+      "NoFiatWallets": "No fiat currency wallets found.",
+      "SaveAddress": "Save Address",
+      "Error": "Error"
     },
     
     "Home": {
