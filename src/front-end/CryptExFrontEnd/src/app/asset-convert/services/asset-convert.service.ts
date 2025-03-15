@@ -11,7 +11,7 @@ import { AssetConversionLockDto } from '../models/asset-conversion-lock-dto';
 import { AssetConversionLockViewModel } from '../models/asset-conversion-lock-view-model';
 import { ManualDepositNotificationDto } from '../models/manual-deposit-notification-dto';
 import { AnonymousExchangeConfirmationDto, AnonymousExchangeRequestDto } from '../models/anonymous-exchange-request-dto';
-
+import { WalletViewModel } from '../../wallet/models/wallet-view-model';
 
 @Injectable({
   providedIn: 'root'
@@ -58,14 +58,93 @@ export class AssetConvertService {
   }
 
   public async GetTransactionLock(id: string): Promise<ApiResult<AssetConversionLockViewModel>> {
+    // Check if we have a stored guest transaction
+    if (this.guestTransactions.has(id)) {
+      return {
+        success: true,
+        content: this.guestTransactions.get(id)
+      } as ApiResult<AssetConversionLockViewModel>;
+    }
     return this.http.Get("AssetConvert/lock", { params: new HttpParams().set("id", id) });
   }
   
   public async LockTransaction(dto: AssetConversionLockDto): Promise<ApiResult<AssetConversionLockViewModel>> {
-    return this.http.Post("AssetConvert/lock", dto);
+    try {
+      if (this.auth.IsAuthenticated) {
+        // For authenticated users, use the normal API
+        return this.http.Post("AssetConvert/lock", dto);
+      } else {
+        // For unauthenticated users, get source and destination wallet info to create a mock lock
+        const sourceWalletResponse = await this.http.Get<WalletViewModel>(`Wallets/wallet/${dto.leftAssetId}`);
+        const destWalletResponse = await this.http.Get<WalletViewModel>(`Wallets/wallet/${dto.rightAssetId}`);
+        
+        if (!sourceWalletResponse.success || !destWalletResponse.success) {
+          throw new Error("Could not get wallet information");
+        }
+        
+        // Ensure the content properties contain valid WalletViewModel objects
+        if (!sourceWalletResponse.content || !destWalletResponse.content) {
+          throw new Error("Wallet information is incomplete");
+        }
+        
+        // Get exchange rate
+        const rateResponse = await this.http.Get<number>("PublicExchange/exchangeRate", {
+          params: new HttpParams()
+            .set("sourceWalletId", dto.leftAssetId)
+            .set("destinationWalletId", dto.rightAssetId)
+        });
+        
+        if (!rateResponse.success || rateResponse.content === undefined) {
+          throw new Error("Could not get exchange rate");
+        }
+        
+        // Create a mock lock for guest users
+        const mockLock: AssetConversionLockViewModel = {
+          id: this.generateUUID(),
+          expirationUtc: new Date(Date.now() + 60000).toISOString(), // 1 minute from now
+          pair: {
+            left: sourceWalletResponse.content as WalletViewModel,
+            right: destWalletResponse.content as WalletViewModel,
+            rate: rateResponse.content as number
+          }
+        };
+        
+        // Store it for later reference
+        this.guestTransactions.set(mockLock.id, mockLock);
+        
+        return {
+          success: true,
+          content: mockLock
+        } as ApiResult<AssetConversionLockViewModel>;
+      }
+    } catch (error) {
+      console.error("Error locking transaction:", error);
+      return {
+        success: false,
+        error: {
+          status: 500,
+          statusText: "Internal Server Error",
+          error: error.message
+        }
+      } as ApiResult<AssetConversionLockViewModel>;
+    }
+  }
+
+  private generateUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 
   public async RemoveTransactionLock(id: string): Promise<ApiResult> {
+    // Check if this is a guest transaction
+    if (this.guestTransactions.has(id)) {
+      this.guestTransactions.delete(id);
+      return { success: true } as ApiResult;
+    }
+    
     return this.http.Delete("AssetConvert/lock", { params: new HttpParams().set("id", id) });
   }
 
@@ -86,7 +165,7 @@ export class AssetConvertService {
     return this.http.Post("Payment/crypto/notify", dto);
   }
 
-  // New methods for anonymous exchanges
+  // Methods for anonymous exchanges - these endpoints don't require authentication
   public async CreateAnonymousExchange(dto: AnonymousExchangeRequestDto): Promise<ApiResult<any>> {
     return this.http.Post("PublicExchange/createExchange", dto);
   }

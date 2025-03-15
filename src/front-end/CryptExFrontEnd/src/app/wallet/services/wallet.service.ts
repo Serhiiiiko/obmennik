@@ -24,29 +24,53 @@ export class WalletService {
     return this.http.Get<TotalsViewModel>("Wallets/totals");
   }
   
-  public async GetWalletInfo(walletId: string): Promise<ApiResult<WalletViewModel>> {
-    return this.http.Get<WalletViewModel>(`Wallets/wallet/${walletId}`);
+  public async GetWalletInfo(id: string): Promise<ApiResult<WalletViewModel>> {
+    console.log("Getting wallet info for ID:", id);
+    if (!id) {
+      console.error("Invalid wallet ID provided");
+      return {
+        success: false,
+        error: new HttpErrorResponse({ error: "Invalid wallet ID", status: 400, statusText: 'Bad Request' }),
+        content: null
+      };
+    }
+    return this.http.Get(`Wallets/wallet/${id}`);
   }
-  // Add this method to your WalletService class:
-
+  
   public async GetWalletByTicker(ticker: string): Promise<ApiResult<WalletViewModel>> {
-    const walletsResponse = await this.GetWalletList();
+    console.log("Getting wallet by ticker:", ticker);
+    if (!ticker) {
+      console.error("Invalid ticker provided");
+      return {
+        success: false,
+        error: new HttpErrorResponse({ error: "Invalid ticker", status: 400, statusText: 'Bad Request' }),
+        content: null
+      };
+    }
     
+    // Get all wallets and find by ticker
+    const walletsResponse = await this.GetWalletList();
     if (walletsResponse.success) {
       const wallet = walletsResponse.content.find(w => w.ticker === ticker);
       if (wallet) {
         return {
           success: true,
           content: wallet,
-          error: null
+          error: null // Add the error propert
+        };
+      } else {
+        console.error(`Wallet with ticker ${ticker} not found`);
+        return {
+          success: false,
+          error: new HttpErrorResponse({ error: `Wallet with ticker ${ticker} not found`, status: 404, statusText: 'Not Found' }),
+          content: null
         };
       }
     }
-    
     return {
       success: false,
-      content: null,
-      error: new HttpErrorResponse({ error: `Wallet with ticker ${ticker} not found` })
+      error: walletsResponse.error,
+      content: null
     };
   }
 }

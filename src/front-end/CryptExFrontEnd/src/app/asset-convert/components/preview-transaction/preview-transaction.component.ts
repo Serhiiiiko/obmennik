@@ -9,6 +9,7 @@ import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { AssetConversionLockViewModel } from '../../models/asset-conversion-lock-view-model';
 import { AssetConverssionDto } from '../../models/asset-converssion-dto';
 import { AssetConvertService } from '../../services/asset-convert.service';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Component({
   selector: 'app-preview-transaction',
@@ -26,7 +27,14 @@ export class PreviewTransactionComponent implements OnInit {
   sub: Subscription;
   routerSub: Subscription;
   
-  constructor(private service: AssetConvertService, private walletService: WalletService, private snack: SnackbarService, private router: Router , private route: ActivatedRoute) { }
+  constructor(
+    private service: AssetConvertService, 
+    private walletService: WalletService, 
+    private snack: SnackbarService, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
     this.sub = this.route.params.subscribe(params => {
@@ -108,6 +116,7 @@ export class PreviewTransactionComponent implements OnInit {
     
     this.snack.ShowSnackbar(new SnackBarCreate("Success", "Proceeding to manual deposit", AlertType.Success));
   }
+  
   // Helper method to generate a transaction hash
   private generateTransactionHash(): string {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

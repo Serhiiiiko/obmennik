@@ -12,6 +12,7 @@ import { RequestInterceptor } from './interceptor/request.interceptor';
 import { SnackbarComponent } from './components/snackbar/snackbar.component';
 import { CurrencyInterceptor } from './interceptor/currency.interceptor';
 
+
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AdminModule } from './admin/admin.module';

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
 import { SnackbarService } from 'src/app/services/snackbar.service';
+import { WalletViewModel } from 'src/app/wallet/models/wallet-view-model';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { AssetConvertService } from '../../services/asset-convert.service';
 import { AnonymousExchangeRequestDto, AnonymousExchangeConfirmationDto } from '../../models/anonymous-exchange-request-dto';
@@ -17,7 +18,7 @@ export class ManualDepositComponent implements OnInit {
   adminWalletAddress: string = '';
   userEmail: string = '';
   destinationWalletAddress: string = '';
-  senderWalletAddress: string = ''; // Keep track of a separate senderWalletAddress
+  senderWalletAddress: string = '';
   transactionHash: string = '';
   amount: number = 0;
   sourceCurrency: string = '';
@@ -25,6 +26,11 @@ export class ManualDepositComponent implements OnInit {
   isLoading: boolean = true;
   isSubmitted: boolean = false;
   exchangeId: string = '';
+  showAmountInput: boolean = false;
+  
+  // Store the wallet objects
+  sourceWallet: WalletViewModel = null;
+  destinationWallet: WalletViewModel = null;
   
   constructor(
     private route: ActivatedRoute,
@@ -35,61 +41,108 @@ export class ManualDepositComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.destinationWalletId = params['id'];
+    // First try to get stored wallets from localStorage
+    try {
+      const sourceAssetJson = localStorage.getItem('sourceAsset');
+      const destinationAssetJson = localStorage.getItem('destinationAsset');
       
-      // Get query parameters
-      this.route.queryParams.subscribe(queryParams => {
-        this.transactionHash = queryParams['transactionHash'] || '';
-        this.amount = queryParams['amount'] ? parseFloat(queryParams['amount']) : 0;
-        this.sourceCurrency = queryParams['sourceCurrency'] || '';
+      if (sourceAssetJson && destinationAssetJson) {
+        this.sourceWallet = JSON.parse(sourceAssetJson);
+        this.destinationWallet = JSON.parse(destinationAssetJson);
         
-        console.log("Retrieved parameters:", { 
-          destinationWalletId: this.destinationWalletId,
-          transactionHash: this.transactionHash,
-          amount: this.amount,
-          sourceCurrency: this.sourceCurrency
+        this.sourceCurrency = this.sourceWallet.ticker;
+        this.targetCurrency = this.destinationWallet.ticker;
+        this.sourceWalletId = this.sourceWallet.id;
+        this.destinationWalletId = this.destinationWallet.id;
+        
+        // Check if admin wallet address is configured
+        if (this.sourceWallet.adminWalletAddress) {
+          this.adminWalletAddress = this.sourceWallet.adminWalletAddress;
+          this.showAmountInput = true;
+          this.isLoading = false;
+        } else {
+          this.loadWalletInfo();
+        }
+      } else {
+        // Fallback to URL parameters if local storage doesn't have the data
+        this.route.params.subscribe(params => {
+          this.destinationWalletId = params['id'];
+          
+          this.route.queryParams.subscribe(queryParams => {
+            this.sourceCurrency = queryParams['sourceCurrency'] || '';
+            this.transactionHash = queryParams['transactionHash'] || '';
+            this.amount = queryParams['amount'] ? parseFloat(queryParams['amount']) : 0;
+            
+            if (this.amount === 0) {
+              this.showAmountInput = true;
+            }
+            
+            this.loadWalletInfo();
+          });
         });
-        
-        this.loadWalletInfo();
-      });
-    });
+      }
+    } catch (error) {
+      console.error("Error retrieving stored wallet data:", error);
+      this.loadWalletInfo();
+    }
   }
 
   async loadWalletInfo(): Promise<void> {
     try {
-      // Get destination wallet info
-      const destinationResponse = await this.walletService.GetWalletInfo(this.destinationWalletId);
+      console.log("Loading wallet info for manual deposit...");
       
-      if (destinationResponse.success) {
-        this.targetCurrency = destinationResponse.content.ticker;
-        
-        // Get source wallet info
-        const sourceWalletResponse = await this.walletService.GetWalletByTicker(this.sourceCurrency);
-        
-        if (sourceWalletResponse.success) {
-          this.sourceWalletId = sourceWalletResponse.content.id;
-          
-          // Check if admin wallet address is configured
-          if (!sourceWalletResponse.content.adminWalletAddress) {
-            this.snackbar.ShowSnackbar(new SnackBarCreate(
-              "Address Not Configured", 
-              `No deposit address has been configured for ${this.sourceCurrency}. Please contact support.`, 
-              AlertType.Error
-            ));
-            this.router.navigate(['/buy-sell']);
-            return;
-          }
-          
-          this.adminWalletAddress = sourceWalletResponse.content.adminWalletAddress;
-          this.isLoading = false;
-        } else {
-          this.handleError("Could not get source wallet information");
-        }
-      } else {
-        this.handleError("Could not get destination wallet information");
+      // First get all wallets to be safe
+      const allWalletsResponse = await this.walletService.GetWalletList();
+      
+      if (!allWalletsResponse.success) {
+        console.error("Error getting wallet list:", allWalletsResponse.error);
+        this.handleError("Could not get wallet information");
+        return;
       }
+      
+      const allWallets = allWalletsResponse.content;
+      
+      // Find destination wallet by ID
+      this.destinationWallet = allWallets.find(w => w.id === this.destinationWalletId);
+      if (!this.destinationWallet) {
+        console.error("Destination wallet not found in wallet list");
+        this.handleError("Could not find destination wallet");
+        return;
+      }
+      
+      this.targetCurrency = this.destinationWallet.ticker;
+      console.log("Found destination wallet:", this.targetCurrency);
+      
+      // Find source wallet by ticker
+      if (this.sourceCurrency) {
+        this.sourceWallet = allWallets.find(w => w.ticker === this.sourceCurrency);
+        if (!this.sourceWallet) {
+          console.error("Source wallet not found for ticker:", this.sourceCurrency);
+          this.handleError("Could not find source wallet");
+          return;
+        }
+        
+        this.sourceWalletId = this.sourceWallet.id;
+        console.log("Found source wallet ID:", this.sourceWalletId);
+        
+        // Check if admin wallet address is configured
+        if (!this.sourceWallet.adminWalletAddress) {
+          this.snackbar.ShowSnackbar(new SnackBarCreate(
+            "Address Not Configured", 
+            `No deposit address has been configured for ${this.sourceCurrency}. Please contact support.`, 
+            AlertType.Error
+          ));
+          this.router.navigate(['/buy-sell']);
+          return;
+        }
+        
+        this.adminWalletAddress = this.sourceWallet.adminWalletAddress;
+      }
+      
+      this.isLoading = false;
+      
     } catch (error) {
+      console.error("Exception in loadWalletInfo:", error);
       this.handleError("An error occurred while loading wallet information");
     }
   }
@@ -133,9 +186,17 @@ export class ManualDepositComponent implements OnInit {
       return;
     }
 
+    if (this.amount <= 0) {
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Invalid Amount", 
+        "Please enter a valid amount greater than zero", 
+        AlertType.Warning
+      ));
+      return;
+    }
+
     try {
       // Use a temporary placeholder for senderWalletAddress that will be updated later
-      // This is to prevent database errors since the field is required
       this.senderWalletAddress = "pending-" + this.generateRandomId();
       
       console.log("Creating anonymous exchange with data:", {
@@ -147,7 +208,6 @@ export class ManualDepositComponent implements OnInit {
         senderWalletAddress: this.senderWalletAddress
       });
       
-      // Create an anonymous exchange request
       const exchangeRequest: AnonymousExchangeRequestDto = {
         sourceWalletId: this.sourceWalletId,
         destinationWalletId: this.destinationWalletId,
@@ -163,6 +223,11 @@ export class ManualDepositComponent implements OnInit {
         console.log("Exchange created:", response.content);
         this.exchangeId = response.content.id;
         this.isSubmitted = true;
+        
+        // Clear local storage now that we've successfully created the exchange
+        localStorage.removeItem('sourceAsset');
+        localStorage.removeItem('destinationAsset');
+        
         this.snackbar.ShowSnackbar(new SnackBarCreate(
           "Exchange Created", 
           "Please send the crypto to the provided address and confirm the transaction.", 
