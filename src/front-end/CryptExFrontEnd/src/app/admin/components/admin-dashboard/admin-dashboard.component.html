@@ -1,6 +1,7 @@
+
 <div class="w-full h-full">
-    <div class="flex flex-row mx-auto mt-5 ml-20">
-        <div class="flex flex-col lg:max-w-7xl ml-80">
+    <div class="flex flex-row mx-auto mt-5">
+        <div class="flex flex-col lg:max-w-7xl ml-4 md:ml-10 lg:ml-20 w-64 flex-shrink-0">
             <a routerLink="./"
                 class="mb-5 block bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
                 >{{ 'Admin.ShortTitles.Home' | translate }}</a>
@@ -20,8 +21,9 @@
                 class="mb-5 block bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
                 >{{ 'Admin.ShortTitles.PendingTransactions' | translate }}</a>
         </div>
-        <div class="ml-10 mr-auto w-full">
+        <div class="ml-4 mr-4 w-full overflow-x-auto">
             <router-outlet></router-outlet>
         </div>
     </div>
 </div>
+

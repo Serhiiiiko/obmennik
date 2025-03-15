@@ -17,17 +17,17 @@ const routes: Routes = [
   {
     path: 'buy-sell',
     component: BuySellComponent,
-    canActivate: [AuthenticationGuard]
+    
   },
   {
     path: 'buy-sell/transaction/:id',
     component: TransactionStatusPageComponent,
-    canActivate: [AuthenticationGuard]
+    
   },
   {
     path: 'buy-sell/preview/:id',
     component: PreviewTransactionComponent,
-    canActivate: [AuthenticationGuard]
+    
   },
   {
     path: 'buy-sell/history',
@@ -37,7 +37,7 @@ const routes: Routes = [
   {
     path: 'buy-sell/manual-deposit/:id',
     component: ManualDepositComponent,
-    canActivate: [AuthenticationGuard]
+    
   }
 ];
 

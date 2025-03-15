@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
 import { PaymentStatus } from 'src/app/deposit-withdraw/models/deposit-view-model';
 import { SnackbarService } from 'src/app/services/snackbar.service';
-import { AssetConverssionViewModel } from 'src/app/asset-convert/models/asset-converssion-view-model';
 import { AdminService } from '../../services/admin.service';
 
 @Component({
@@ -12,7 +11,7 @@ import { AdminService } from '../../services/admin.service';
   styleUrls: ['./pending-transactions.component.scss']
 })
 export class PendingTransactionsComponent implements OnInit {
-  pendingTransactions: AssetConverssionViewModel[] = [];
+  pendingTransactions: any[] = [];
   loading = true;
   paymentStatusRef = PaymentStatus;
   
@@ -29,10 +28,11 @@ export class PendingTransactionsComponent implements OnInit {
 
   loadPendingTransactions(): void {
     this.loading = true;
-    this.adminService.GetPendingTransactions().then(result => {
+    this.adminService.GetPendingAnonymousExchanges().then(result => {
       this.loading = false;
       if (result.success) {
         this.pendingTransactions = result.content;
+        console.log('Loaded transactions:', this.pendingTransactions);
       } else {
         this.snack.ShowSnackbar(new SnackBarCreate(
           "Error", 
@@ -44,7 +44,7 @@ export class PendingTransactionsComponent implements OnInit {
   }
 
   approveTransaction(id: string): void {
-    this.adminService.SetTransactionStatus(id, PaymentStatus.success).then(result => {
+    this.adminService.UpdateAnonymousExchangeStatus(id, PaymentStatus.success).then(result => {
       if (result.success) {
         this.snack.ShowSnackbar(new SnackBarCreate(
           "Success", 
@@ -63,7 +63,7 @@ export class PendingTransactionsComponent implements OnInit {
   }
   
   rejectTransaction(id: string): void {
-    this.adminService.SetTransactionStatus(id, PaymentStatus.failed).then(result => {
+    this.adminService.UpdateAnonymousExchangeStatus(id, PaymentStatus.failed).then(result => {
       if (result.success) {
         this.snack.ShowSnackbar(new SnackBarCreate(
           "Success", 
@@ -81,8 +81,14 @@ export class PendingTransactionsComponent implements OnInit {
     });
   }
 
-  redirectToUserPage(id: string): void {
-    this.router.navigate(["../user", id], { relativeTo: this.activatedRoute });
+  redirectToUserPage(email: string): void {
+    // Since these are anonymous exchanges, we might just want to show the email
+    // But keep this method in case you want to implement user lookup by email
+    this.snack.ShowSnackbar(new SnackBarCreate(
+      "User Email", 
+      email, 
+      AlertType.Info
+    ));
   }
 
   getFormattedDate(dateString: string): string {

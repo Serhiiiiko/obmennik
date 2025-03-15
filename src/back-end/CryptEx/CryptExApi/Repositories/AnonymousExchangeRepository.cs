@@ -44,6 +44,8 @@ namespace CryptExApi.Repositories
             {
                 UserEmail = dto.UserEmail,
                 DestinationWalletAddress = dto.DestinationWalletAddress,
+                // Set a placeholder value for SenderWalletAddress since it's required
+                SenderWalletAddress = "TBD-" + Guid.NewGuid().ToString(),
                 SourceAmount = dto.Amount,
                 DestinationAmount = destinationAmount,
                 ExchangeRate = exchangeRate,

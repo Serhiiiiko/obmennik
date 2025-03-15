@@ -25,7 +25,7 @@ export class PreviewTransactionComponent implements OnInit {
   timeout: NodeJS.Timeout;
   sub: Subscription;
   routerSub: Subscription;
-
+  
   constructor(private service: AssetConvertService, private walletService: WalletService, private snack: SnackbarService, private router: Router , private route: ActivatedRoute) { }
 
   ngOnInit(): void {

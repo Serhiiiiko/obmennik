@@ -1,87 +1,110 @@
 <div class="container mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-6">{{ 'Admin.PendingTransactions.Title' | translate }}</h1>
-    
-    <div *ngIf="loading" class="flex justify-center py-8">
-      <p>{{ 'Global.Loading' | translate }}</p>
-    </div>
+  <h1 class="text-2xl font-bold mb-6">{{ 'Admin.PendingTransactions.Title' | translate }}</h1>
   
-    <div *ngIf="!loading && pendingTransactions.length === 0" class="text-lg text-gray-600 py-4">
-      {{ 'Admin.PendingTransactions.NoTransactions' | translate }}
-    </div>
-  
-    <div *ngIf="!loading && pendingTransactions.length > 0" class="bg-white shadow-md rounded-lg overflow-hidden">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {{ 'Admin.PendingTransactions.User' | translate }}
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {{ 'Admin.PendingTransactions.From' | translate }}
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {{ 'Admin.PendingTransactions.To' | translate }}
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {{ 'Admin.PendingTransactions.Amount' | translate }}
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {{ 'Admin.PendingTransactions.Rate' | translate }}
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {{ 'Admin.PendingTransactions.Date' | translate }}
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {{ 'Admin.PendingTransactions.Actions' | translate }}
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr *ngFor="let transaction of pendingTransactions">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-indigo-600 hover:text-indigo-900 cursor-pointer" 
-                  (click)="redirectToUserPage(transaction.userId)">
-                {{ transaction.userName }}
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="flex items-center">
-                <img class="h-6 w-6 rounded-full mr-2" 
-                     src="/assets/images/{{ transaction.pair.left.type == 1 ? 'fiat' : 'crypto' }}/{{transaction.pair.left.ticker}}.svg" 
-                     alt="{{ transaction.pair.left.ticker }}">
-                <div class="text-sm font-medium text-gray-900">{{ transaction.pair.left.ticker }}</div>
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="flex items-center">
-                <img class="h-6 w-6 rounded-full mr-2" 
-                     src="/assets/images/{{ transaction.pair.right.type == 1 ? 'fiat' : 'crypto' }}/{{transaction.pair.right.ticker}}.svg" 
-                     alt="{{ transaction.pair.right.ticker }}">
-                <div class="text-sm font-medium text-gray-900">{{ transaction.pair.right.ticker }}</div>
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ transaction.amount.toLocaleString() }} {{ transaction.pair.left.ticker }}</div>
-              <div class="text-sm text-gray-500">≈ {{ (transaction.amount * transaction.pair.rate).toLocaleString() }} {{ transaction.pair.right.ticker }}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              1 {{ transaction.pair.left.ticker }} = {{ transaction.pair.rate }} {{ transaction.pair.right.ticker }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ getFormattedDate(transaction.createdAt) }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button (click)="approveTransaction(transaction.id)" 
-                      class="text-green-600 hover:text-green-900 bg-green-100 hover:bg-green-200 px-3 py-1 rounded-md mr-2">
-                {{ 'Admin.PendingTransactions.Approve' | translate }}
-              </button>
-              <button (click)="rejectTransaction(transaction.id)"
-                      class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-3 py-1 rounded-md">
-                {{ 'Admin.PendingTransactions.Reject' | translate }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div *ngIf="loading" class="flex justify-center py-8">
+    <p>{{ 'Global.Loading' | translate }}</p>
   </div>
+
+  <div *ngIf="!loading && pendingTransactions.length === 0" class="text-lg text-gray-600 py-4">
+    {{ 'Admin.PendingTransactions.NoTransactions' | translate }}
+  </div>
+
+  <div *ngIf="!loading && pendingTransactions.length > 0" class="bg-white shadow-md rounded-lg overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {{ 'Admin.PendingTransactions.User' | translate }}
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {{ 'Admin.PendingTransactions.From' | translate }}
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {{ 'Admin.PendingTransactions.To' | translate }}
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {{ 'Admin.PendingTransactions.Amount' | translate }}
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {{ 'Admin.PendingTransactions.Rate' | translate }}
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {{ 'Admin.PendingTransactions.Date' | translate }}
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {{ 'Admin.PendingTransactions.Status' | translate }}
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {{ 'Admin.PendingTransactions.Actions' | translate }}
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let transaction of pendingTransactions">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm font-medium text-indigo-600 hover:text-indigo-900 cursor-pointer" 
+                (click)="redirectToUserPage(transaction.userEmail)">
+              {{ transaction.userEmail }}
+            </div>
+            <div class="text-xs text-gray-500">
+              Destination address: {{ transaction.destinationWalletAddress }}
+            </div>
+            <div *ngIf="transaction.senderWalletAddress" class="text-xs text-gray-500">
+              Sender address: {{ transaction.senderWalletAddress }}
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <img class="h-6 w-6 rounded-full mr-2" 
+                   src="/assets/images/{{ transaction.sourceWallet.type == 1 ? 'fiat' : 'crypto' }}/{{transaction.sourceWallet.ticker}}.svg" 
+                   alt="{{ transaction.sourceWallet.ticker }}"
+                   onError="this.src='/assets/images/crypto/generic.svg'">
+              <div class="text-sm font-medium text-gray-900">{{ transaction.sourceWallet.ticker }}</div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <img class="h-6 w-6 rounded-full mr-2" 
+                   src="/assets/images/{{ transaction.destinationWallet.type == 1 ? 'fiat' : 'crypto' }}/{{transaction.destinationWallet.ticker}}.svg" 
+                   alt="{{ transaction.destinationWallet.ticker }}"
+                   onError="this.src='/assets/images/crypto/generic.svg'">
+              <div class="text-sm font-medium text-gray-900">{{ transaction.destinationWallet.ticker }}</div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-900">{{ transaction.sourceAmount.toLocaleString() }} {{ transaction.sourceWallet.ticker }}</div>
+            <div class="text-sm text-gray-500">≈ {{ transaction.destinationAmount.toLocaleString() }} {{ transaction.destinationWallet.ticker }}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            1 {{ transaction.sourceWallet.ticker }} = {{ transaction.exchangeRate }} {{ transaction.destinationWallet.ticker }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {{ getFormattedDate(transaction.creationDate) }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span [ngClass]="{
+              'bg-yellow-100 text-yellow-800': transaction.status === paymentStatusRef.notProcessed || transaction.status === paymentStatusRef.pending || transaction.status === paymentStatusRef.awaitingVerification,
+              'bg-green-100 text-green-800': transaction.status === paymentStatusRef.success,
+              'bg-red-100 text-red-800': transaction.status === paymentStatusRef.failed
+            }" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+              {{ paymentStatusRef[transaction.status] }}
+              <span *ngIf="transaction.transactionHash" class="ml-1">(Hash: {{ transaction.transactionHash.substring(0, 6) }}...)</span>
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <button *ngIf="transaction.status !== paymentStatusRef.success" 
+                    (click)="approveTransaction(transaction.id)" 
+                    class="text-green-600 hover:text-green-900 bg-green-100 hover:bg-green-200 px-3 py-1 rounded-md mr-2">
+              {{ 'Admin.PendingTransactions.Approve' | translate }}
+            </button>
+            <button *ngIf="transaction.status !== paymentStatusRef.failed"
+                    (click)="rejectTransaction(transaction.id)"
+                    class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-3 py-1 rounded-md">
+              {{ 'Admin.PendingTransactions.Reject' | translate }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

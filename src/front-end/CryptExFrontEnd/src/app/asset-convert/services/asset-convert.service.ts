@@ -10,13 +10,15 @@ import { HttpParams } from '@angular/common/http';
 import { AssetConversionLockDto } from '../models/asset-conversion-lock-dto';
 import { AssetConversionLockViewModel } from '../models/asset-conversion-lock-view-model';
 import { ManualDepositNotificationDto } from '../models/manual-deposit-notification-dto';
+import { AnonymousExchangeConfirmationDto, AnonymousExchangeRequestDto } from '../models/anonymous-exchange-request-dto';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AssetConvertService {
   public transaction: AssetConverssionViewModel;
-
+  private guestTransactions: Map<string, AssetConversionLockViewModel> = new Map();
   private hubConnection: signalR.HubConnection;
 
   constructor(private http: CustomHttpClientService, private auth: AuthService, private env: EnvironmentService) { }
@@ -82,5 +84,18 @@ export class AssetConvertService {
   public async NotifyManualDeposit(dto: ManualDepositNotificationDto): Promise<ApiResult> {
     console.log("Sending to API:", dto);
     return this.http.Post("Payment/crypto/notify", dto);
+  }
+
+  // New methods for anonymous exchanges
+  public async CreateAnonymousExchange(dto: AnonymousExchangeRequestDto): Promise<ApiResult<any>> {
+    return this.http.Post("PublicExchange/createExchange", dto);
+  }
+
+  public async ConfirmAnonymousTransaction(dto: AnonymousExchangeConfirmationDto): Promise<ApiResult> {
+    return this.http.Post("PublicExchange/confirmTransaction", dto);
+  }
+
+  public async GetExchangeInfo(id: string): Promise<ApiResult<any>> {
+    return this.http.Get(`PublicExchange/exchange/${id}`);
   }
 }

@@ -1,104 +1,128 @@
 <div class="flex flex-col w-3/4 mx-auto">
-    <div class="mr-auto ml-auto 2xl:w-1/3 my-20">
-      <div class="shadow bg-white rounded-md p-5">
-        <h3 class="font-bold text-2xl">{{ 'BuySell.ManualDeposit.Title' | translate }}</h3>
+  <div class="mr-auto ml-auto 2xl:w-1/3 my-20">
+    <div class="shadow bg-white rounded-md p-5">
+      <h3 class="font-bold text-2xl">{{ 'BuySell.ManualDeposit.Title' | translate }}</h3>
+      
+      <div *ngIf="isLoading" class="py-8 text-center">
+        <p>{{ 'Global.Loading' | translate }}</p>
+      </div>
+
+      <!-- Form before submission -->
+      <div *ngIf="!isLoading && !isSubmitted">
+        <p class="mb-5">{{ 'BuySell.ManualDeposit.Description' | translate }}</p>
+
+        <!-- Display amount information -->
+        <div *ngIf="amount > 0" class="mb-6 bg-gray-100 p-3 rounded-md">
+          <p class="font-semibold">{{ 'BuySell.ManualDeposit.AmountToDeposit' | translate }}:</p>
+          <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
+        </div>
         
-        <div *ngIf="isLoading" class="py-8 text-center">
-          <p>{{ 'Global.Loading' | translate }}</p>
-        </div>
-  
-        <!-- Form before submission -->
-        <div *ngIf="!isLoading && !isSubmitted">
-          <p class="mb-5">{{ 'BuySell.ManualDeposit.Description' | translate }}</p>
-  
-          <!-- Display amount information -->
-          <div *ngIf="amount > 0" class="mb-6 bg-gray-100 p-3 rounded-md">
-            <p class="font-semibold">{{ 'BuySell.ManualDeposit.AmountToDeposit' | translate }}:</p>
-            <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
-          </div>
-          
-          <!-- Added description to explain the process more clearly -->
-          <p class="text-sm text-gray-600 mb-4">
-            {{ 'BuySell.ManualDeposit.WalletInstructions' | translate: {targetCurrency: targetCurrency} }}
+        <!-- Added description to explain the process more clearly -->
+        <p class="text-sm text-gray-600 mb-4">
+          {{ 'BuySell.ManualDeposit.WalletInstructions' | translate: {targetCurrency: targetCurrency} }}
+        </p>
+
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2">
+            {{ 'BuySell.ManualDeposit.YourEmail' | translate }}
+          </label>
+          <input 
+            type="email" 
+            [(ngModel)]="userEmail" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="your@email.com"
+            required
+          >
+          <p *ngIf="userEmail && !isValidEmail(userEmail)" class="text-red-500 text-xs mt-1">
+            {{ 'BuySell.ManualDeposit.EmailError' | translate }}
           </p>
-
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2">
-              {{ 'BuySell.ManualDeposit.YourEmail' | translate }}
-            </label>
-            <input 
-              type="email" 
-              [(ngModel)]="userEmail" 
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="your@email.com"
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-              required
-            >
-            <p *ngIf="userEmail && !isValidEmail(userEmail)" class="text-red-500 text-xs mt-1">
-              {{ 'BuySell.ManualDeposit.EmailError' | translate }}
-            </p>
-          </div>
-
-          <!-- Updated wallet address field label for clarity -->
-          <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2">
-              {{ 'BuySell.ManualDeposit.WalletAddressLabel' | translate: {targetCurrency: targetCurrency} }}
-            </label>
-            <input 
-              type="text" 
-              [(ngModel)]="senderWalletAddress" 
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="{{ 'BuySell.ManualDeposit.WalletAddressPlaceholder' | translate }}"
-              required
-            >
-            <p *ngIf="senderWalletAddress && !isValidWalletAddress()" class="text-red-500 text-xs mt-1">
-              {{ 'BuySell.ManualDeposit.WalletAddressError' | translate }}
-            </p>
-          </div>
-  
-          <div class="mt-8">
-            <button type="button"
-              [disabled]="!isValidEmail(userEmail) || !isValidWalletAddress()"
-              [ngClass]="!isValidEmail(userEmail) || !isValidWalletAddress() ? 'bg-indigo-300 cursor-not-allowed' : 'bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700'"
-              class="block w-full max-w-xs mx-auto text-white rounded-lg px-3 py-3 font-semibold"
-              (click)="submitDepositRequest()">
-              {{ 'BuySell.ManualDeposit.GetAddress' | translate }}
-            </button>
-            
-            <button type="button"
-              class="block w-full max-w-xs mx-auto mt-3 bg-gray-200 hover:bg-gray-300 focus:bg-gray-300 text-gray-700 rounded-lg px-3 py-3 font-semibold"
-              (click)="goBack()">
-              {{ 'Global.Cancel' | translate }}
-            </button>
-          </div>
         </div>
 
-        <!-- Success view after submission -->
-        <div *ngIf="!isLoading && isSubmitted" class="py-4">
-          <h4 class="font-semibold text-xl mb-4">{{ 'BuySell.ManualDeposit.DepositInstructions' | translate }}</h4>
-          
-          <!-- Updated deposit instructions for clarity -->
-          <div class="bg-gray-100 p-4 rounded-md mb-6">
-            <p class="mb-2 font-bold">{{ 'BuySell.ManualDeposit.SendToAddress' | translate: {sourceCurrency: sourceCurrency} }}</p>
-            <p class="font-mono bg-white p-2 border border-gray-300 rounded break-all">{{ walletAddress }}</p>
-          </div>
-          
-          <!-- Display amount information again on the success screen -->
-          <div *ngIf="amount > 0" class="mb-6 bg-gray-100 p-3 rounded-md">
-            <p class="font-semibold">{{ 'BuySell.ManualDeposit.AmountToSend' | translate }}:</p>
-            <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
-          </div>
-          
-          <p class="text-sm text-gray-600 mb-6">
-            {{ 'BuySell.ManualDeposit.Instructions' | translate }}
+        <!-- Updated wallet address field label for clarity -->
+        <div class="mb-6">
+          <label class="block text-gray-700 text-sm font-bold mb-2">
+            {{ 'BuySell.ManualDeposit.WalletAddressLabel' | translate: {targetCurrency: targetCurrency} }}
+          </label>
+          <input 
+            type="text" 
+            [(ngModel)]="destinationWalletAddress" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="{{ 'BuySell.ManualDeposit.WalletAddressPlaceholder' | translate }}"
+            required
+          >
+          <p *ngIf="destinationWalletAddress && !isValidWalletAddress()" class="text-red-500 text-xs mt-1">
+            {{ 'BuySell.ManualDeposit.WalletAddressError' | translate }}
           </p>
+        </div>
+
+        <div class="mt-8">
+          <button type="button"
+            [disabled]="!isValidEmail(userEmail) || !isValidWalletAddress()"
+            [ngClass]="!isValidEmail(userEmail) || !isValidWalletAddress() ? 'bg-indigo-300 cursor-not-allowed' : 'bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700'"
+            class="block w-full max-w-xs mx-auto text-white rounded-lg px-3 py-3 font-semibold"
+            (click)="submitDepositRequest()">
+            {{ 'BuySell.ManualDeposit.GetAddress' | translate }}
+          </button>
           
           <button type="button"
-            class="block w-full max-w-xs mx-auto mt-5 bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
+            class="block w-full max-w-xs mx-auto mt-3 bg-gray-200 hover:bg-gray-300 focus:bg-gray-300 text-gray-700 rounded-lg px-3 py-3 font-semibold"
             (click)="goBack()">
-            {{ 'BuySell.ManualDeposit.Done' | translate }}
+            {{ 'Global.Cancel' | translate }}
           </button>
         </div>
       </div>
+
+      <!-- Success view after submission -->
+      <div *ngIf="!isLoading && isSubmitted" class="py-4">
+        <h4 class="font-semibold text-xl mb-4">{{ 'BuySell.ManualDeposit.DepositInstructions' | translate }}</h4>
+        
+        <!-- Updated deposit instructions for clarity -->
+        <div class="bg-gray-100 p-4 rounded-md mb-6">
+          <p class="mb-2 font-bold">{{ 'BuySell.ManualDeposit.SendToAddress' | translate: {sourceCurrency: sourceCurrency} }}</p>
+          <p class="font-mono bg-white p-2 border border-gray-300 rounded break-all">{{ adminWalletAddress }}</p>
+        </div>
+        
+        <!-- Display amount information again on the success screen -->
+        <div *ngIf="amount > 0" class="mb-6 bg-gray-100 p-3 rounded-md">
+          <p class="font-semibold">{{ 'BuySell.ManualDeposit.AmountToSend' | translate }}:</p>
+          <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
+        </div>
+        
+        <!-- Add a field for transaction hash -->
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2">
+            {{ 'BuySell.ManualDeposit.TransactionHash' | translate }}
+          </label>
+          <input 
+            type="text" 
+            [(ngModel)]="transactionHash" 
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="{{ 'BuySell.ManualDeposit.TransactionHashPlaceholder' | translate }}"
+            required
+          >
+          <p class="text-xs text-gray-500 mt-1">
+            {{ 'BuySell.ManualDeposit.TransactionHashHelp' | translate }}
+          </p>
+        </div>
+        
+        <p class="text-sm text-gray-600 mb-6">
+          {{ 'BuySell.ManualDeposit.Instructions' | translate }}
+        </p>
+        
+        <button type="button"
+          [disabled]="!transactionHash"
+          [ngClass]="!transactionHash ? 'bg-green-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-700 focus:bg-green-700'"
+          class="block w-full max-w-xs mx-auto mb-3 text-white rounded-lg px-3 py-3 font-semibold"
+          (click)="confirmTransaction()">
+          {{ 'BuySell.ManualDeposit.ConfirmSent' | translate }}
+        </button>
+        
+        <button type="button"
+          class="block w-full max-w-xs mx-auto bg-gray-200 hover:bg-gray-300 focus:bg-gray-300 text-gray-700 rounded-lg px-3 py-3 font-semibold"
+          (click)="goBack()">
+          {{ 'BuySell.ManualDeposit.Cancel' | translate }}
+        </button>
+      </div>
     </div>
   </div>
+</div>

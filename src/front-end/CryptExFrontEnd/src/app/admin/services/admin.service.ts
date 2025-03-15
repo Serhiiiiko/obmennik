@@ -30,7 +30,6 @@ export class AdminService {
     return this.http.Get("Wallets/list");
   }
 
-  // New method to get all wallets (both crypto and fiat)
   public async GetWallets(): Promise<ApiResult<WalletViewModel[]>> {
     return this.http.Get("Wallets/list");
   }
@@ -67,16 +66,27 @@ export class AdminService {
     return this.http.Post("Admin/setAccountStatus", null, { params: new HttpParams().set("userId", id).set("status", accountStatus.toString()) });
   }
 
-  // Methods for pending transactions
-  public async GetPendingTransactions(): Promise<ApiResult<AssetConverssionViewModel[]>> {
-    return this.http.Get("Admin/pendingTransactions");
+  // New method to get pending anonymous exchanges
+  public async GetPendingAnonymousExchanges(): Promise<ApiResult<any[]>> {
+    return this.http.Get("Admin/anonymousExchanges");
   }
 
-  public async SetTransactionStatus(transactionId: string, status: PaymentStatus): Promise<ApiResult> {
-    return this.http.Post("Admin/setTransactionStatus", null, { 
+  // New method to update anonymous exchange status
+  public async UpdateAnonymousExchangeStatus(exchangeId: string, status: PaymentStatus, adminNotes?: string): Promise<ApiResult> {
+    return this.http.Post("Admin/anonymousExchanges/update", adminNotes || null, { 
       params: new HttpParams()
-        .set("transactionId", transactionId)
+        .set("exchangeId", exchangeId)
         .set("status", status.toString()) 
     });
+  }
+
+  // For backward compatibility, make this call the new method
+  public async GetPendingTransactions(): Promise<ApiResult<any[]>> {
+    return this.GetPendingAnonymousExchanges();
+  }
+
+  // For backward compatibility, make this call the new method
+  public async SetTransactionStatus(transactionId: string, status: PaymentStatus): Promise<ApiResult> {
+    return this.UpdateAnonymousExchangeStatus(transactionId, status);
   }
 }

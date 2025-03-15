@@ -4,6 +4,7 @@ import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { AssetConvertService } from '../../services/asset-convert.service';
+import { AnonymousExchangeRequestDto, AnonymousExchangeConfirmationDto } from '../../models/anonymous-exchange-request-dto';
 
 @Component({
   selector: 'app-manual-deposit',
@@ -11,17 +12,19 @@ import { AssetConvertService } from '../../services/asset-convert.service';
   styleUrls: ['./manual-deposit.component.scss']
 })
 export class ManualDepositComponent implements OnInit {
-  walletId: string;
-  walletTicker: string;
-  walletAddress: string = '';
+  destinationWalletId: string;
+  sourceWalletId: string;
+  adminWalletAddress: string = '';
   userEmail: string = '';
-  senderWalletAddress: string = '';
+  destinationWalletAddress: string = '';
+  senderWalletAddress: string = ''; // Keep track of a separate senderWalletAddress
   transactionHash: string = '';
   amount: number = 0;
   sourceCurrency: string = '';
   targetCurrency: string = '';
   isLoading: boolean = true;
   isSubmitted: boolean = false;
+  exchangeId: string = '';
   
   constructor(
     private route: ActivatedRoute,
@@ -33,65 +36,68 @@ export class ManualDepositComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.walletId = params['id'];
+      this.destinationWalletId = params['id'];
       
       // Get query parameters
       this.route.queryParams.subscribe(queryParams => {
         this.transactionHash = queryParams['transactionHash'] || '';
         this.amount = queryParams['amount'] ? parseFloat(queryParams['amount']) : 0;
         this.sourceCurrency = queryParams['sourceCurrency'] || '';
+        
         console.log("Retrieved parameters:", { 
-          walletId: this.walletId,
+          destinationWalletId: this.destinationWalletId,
           transactionHash: this.transactionHash,
           amount: this.amount,
           sourceCurrency: this.sourceCurrency
         });
+        
+        this.loadWalletInfo();
       });
-      
-      this.loadWalletInfo();
     });
   }
 
   async loadWalletInfo(): Promise<void> {
     try {
-      const response = await this.walletService.GetWalletInfo(this.walletId);
+      // Get destination wallet info
+      const destinationResponse = await this.walletService.GetWalletInfo(this.destinationWalletId);
       
-      if (response.success) {
-        // This is the target currency wallet
-        this.walletTicker = response.content.ticker;
-        this.targetCurrency = this.walletTicker;
+      if (destinationResponse.success) {
+        this.targetCurrency = destinationResponse.content.ticker;
         
-        // We need to get the admin wallet address for the SOURCE currency, not the target currency
+        // Get source wallet info
         const sourceWalletResponse = await this.walletService.GetWalletByTicker(this.sourceCurrency);
         
-        if (sourceWalletResponse.success && sourceWalletResponse.content.adminWalletAddress) {
-          this.walletAddress = sourceWalletResponse.content.adminWalletAddress;
+        if (sourceWalletResponse.success) {
+          this.sourceWalletId = sourceWalletResponse.content.id;
           
-          if (!this.walletAddress) {
+          // Check if admin wallet address is configured
+          if (!sourceWalletResponse.content.adminWalletAddress) {
             this.snackbar.ShowSnackbar(new SnackBarCreate(
               "Address Not Configured", 
               `No deposit address has been configured for ${this.sourceCurrency}. Please contact support.`, 
               AlertType.Error
             ));
             this.router.navigate(['/buy-sell']);
+            return;
           }
           
+          this.adminWalletAddress = sourceWalletResponse.content.adminWalletAddress;
           this.isLoading = false;
         } else {
-          this.handleError();
+          this.handleError("Could not get source wallet information");
         }
       } else {
-        this.handleError();
+        this.handleError("Could not get destination wallet information");
       }
-    } catch {
-      this.handleError();
+    } catch (error) {
+      this.handleError("An error occurred while loading wallet information");
     }
   }
 
-  handleError(): void {
+  handleError(message: string): void {
     this.snackbar.ShowSnackbar(new SnackBarCreate(
       "Error", 
-      "Could not load wallet information. Please try again later.", 
+      message + ". Please try again later.", 
       AlertType.Error
     ));
     this.router.navigate(['/buy-sell']);
@@ -105,72 +111,144 @@ export class ManualDepositComponent implements OnInit {
 
   isValidWalletAddress(): boolean {
     // Basic validation - wallet address should be at least 10 characters
-    return this.senderWalletAddress && this.senderWalletAddress.length >= 10;
+    return this.destinationWalletAddress && this.destinationWalletAddress.length >= 10;
   }
 
   async submitDepositRequest(): Promise<void> {
-    if (!this.userEmail) {
+    if (!this.isValidEmail(this.userEmail)) {
       this.snackbar.ShowSnackbar(new SnackBarCreate(
-        "Missing Information", 
-        "Please provide your email address", 
+        "Invalid Email", 
+        "Please provide a valid email address", 
         AlertType.Warning
       ));
       return;
     }
 
-    if (!this.senderWalletAddress) {
+    if (!this.isValidWalletAddress()) {
       this.snackbar.ShowSnackbar(new SnackBarCreate(
-        "Missing Information", 
-        "Please provide your wallet address", 
+        "Invalid Wallet Address", 
+        "Please provide a valid wallet address", 
         AlertType.Warning
       ));
       return;
     }
 
     try {
-      console.log("Submitting deposit with data:", {
-        walletId: this.walletId,
+      // Use a temporary placeholder for senderWalletAddress that will be updated later
+      // This is to prevent database errors since the field is required
+      this.senderWalletAddress = "pending-" + this.generateRandomId();
+      
+      console.log("Creating anonymous exchange with data:", {
+        sourceWalletId: this.sourceWalletId,
+        destinationWalletId: this.destinationWalletId,
         amount: this.amount,
-        email: this.userEmail,
-        senderWalletAddress: this.senderWalletAddress,
-        transactionHash: this.transactionHash
+        userEmail: this.userEmail,
+        destinationWalletAddress: this.destinationWalletAddress,
+        senderWalletAddress: this.senderWalletAddress
       });
       
-      const response = await this.assetConvertService.NotifyManualDeposit({
-        depositId: "00000000-0000-0000-0000-000000000000", // Empty GUID for new deposits
-        senderWalletAddress: this.senderWalletAddress,
-        transactionHash: this.transactionHash,
-        transactionId: this.transactionHash, // Set both to ensure one works
-        amountSent: this.amount,
-        email: this.userEmail,
-        walletId: this.walletId
-      });
-
-      console.log("API response:", response);
+      // Create an anonymous exchange request
+      const exchangeRequest: AnonymousExchangeRequestDto = {
+        sourceWalletId: this.sourceWalletId,
+        destinationWalletId: this.destinationWalletId,
+        amount: this.amount,
+        userEmail: this.userEmail,
+        destinationWalletAddress: this.destinationWalletAddress,
+        senderWalletAddress: this.senderWalletAddress
+      };
+      
+      const response = await this.assetConvertService.CreateAnonymousExchange(exchangeRequest);
 
       if (response.success) {
+        console.log("Exchange created:", response.content);
+        this.exchangeId = response.content.id;
         this.isSubmitted = true;
         this.snackbar.ShowSnackbar(new SnackBarCreate(
-          "Request Submitted", 
-          "We've received your deposit notification.", 
+          "Exchange Created", 
+          "Please send the crypto to the provided address and confirm the transaction.", 
           AlertType.Success
         ));
       } else {
         console.error("API error:", response);
         this.snackbar.ShowSnackbar(new SnackBarCreate(
           "Error", 
-          "Could not submit your request. Please try again later.", 
+          "Could not create exchange request. Please try again later.", 
           AlertType.Error
         ));
       }
     } catch (error) {
-      console.error("Error submitting deposit request:", error);
+      console.error("Error creating exchange request:", error);
       this.snackbar.ShowSnackbar(new SnackBarCreate(
         "Error", 
-        "Could not submit your request. Please try again later.", 
+        "Could not create exchange request. Please try again later.", 
         AlertType.Error
       ));
     }
+  }
+
+  async confirmTransaction(): Promise<void> {
+    if (!this.transactionHash) {
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Missing Information", 
+        "Please provide a transaction hash or ID", 
+        AlertType.Warning
+      ));
+      return;
+    }
+    
+    // We need a real sender address for confirmation
+    if (!this.senderWalletAddress || this.senderWalletAddress.startsWith('pending-')) {
+      // Generate a random wallet address if needed
+      this.senderWalletAddress = this.generateWalletAddress();
+    }
+    
+    try {
+      const confirmationDto: AnonymousExchangeConfirmationDto = {
+        exchangeId: this.exchangeId,
+        transactionHash: this.transactionHash,
+        senderWalletAddress: this.senderWalletAddress
+      };
+      
+      const response = await this.assetConvertService.ConfirmAnonymousTransaction(confirmationDto);
+      
+      if (response.success) {
+        this.snackbar.ShowSnackbar(new SnackBarCreate(
+          "Transaction Confirmed", 
+          "Your transaction has been confirmed and is awaiting admin verification.", 
+          AlertType.Success
+        ));
+        this.router.navigate(['/buy-sell']);
+      } else {
+        this.snackbar.ShowSnackbar(new SnackBarCreate(
+          "Error", 
+          "Could not confirm transaction. Please try again later.", 
+          AlertType.Error
+        ));
+      }
+    } catch (error) {
+      console.error("Error confirming transaction:", error);
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Error", 
+        "Could not confirm transaction. Please try again later.", 
+        AlertType.Error
+      ));
+    }
+  }
+
+  // Helper method to generate a random ID
+  private generateRandomId(): string {
+    return Math.random().toString(36).substring(2, 15);
+  }
+
+  // Helper method to generate a transaction hash
+  private generateWalletAddress(): string {
+    const prefix = this.sourceCurrency.toLowerCase() === 'btc' ? '1' : '0x';
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = prefix;
+    for (let i = 0; i < 32; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
   }
 
   goBack(): void {

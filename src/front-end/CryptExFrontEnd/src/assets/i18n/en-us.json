@@ -3,7 +3,7 @@
     "Loading": "Loading...",
     "LoadError": "Could not load this content correctly, please try again later.",
     "Saving": "Saving...",
-    "Cancel": "Отмена"
+    "Cancel": "Cancel"
   },
   
   
@@ -149,9 +149,19 @@
   },
   "BuySell": {
     "Title": "Convert assets",
-    "Desc": "Select an asset to convert into another",
-    "Placeholder": "Enter an amount to convert",
-    "Convert": "CONVERT",
+  "Desc": "Select an asset to convert into another",
+  "Placeholder": "Enter an amount to convert",
+  "Convert": "CONVERT",
+  "Give": "You give",
+  "Receive": "You receive",
+  "GivePlaceholder": "Amount you give",
+  "ReceivePlaceholder": "Amount you receive",
+  "BonusPromoTitle": "Get $50 for a review",
+  "BonusPromoDesc": "Complete an exchange on our site and leave a review &mdash; promotion runs every month!",
+  "ExchangesTitle": "Number of exchanges",
+  "ExchangesToday": "Today",
+  "ExchangesMonth": "This month",
+  "ExchangesWeek": "This week",
     "Transaction": {
       "Title": "Converting",
       "Title2": "into",
@@ -280,7 +290,8 @@
       "Date": "Date",
       "Actions": "Actions",
       "Approve": "Approve",
-      "Reject": "Reject"
+      "Reject": "Reject",
+      "Status": "Status"
     },
     "WalletAddresses": {
       "Title": "Manage Crypto Wallet Addresses",
