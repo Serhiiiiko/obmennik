@@ -90,6 +90,7 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("crypto/notify")]
+        [AllowAnonymous]
         public async Task<IActionResult> NotifyCryptoPayment([FromBody] CryptoPaymentNotificationDto dto)
         {
             try

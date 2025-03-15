@@ -10,5 +10,6 @@ namespace CryptExApi.Models.DTO
         public decimal AmountSent { get; set; }
         public string Email { get; set; }
         public Guid WalletId { get; set; }
+        public string AdminNotes { get; set; }
     }
 }

@@ -23,19 +23,22 @@ namespace CryptExApi.Controllers
         private readonly IAdminService adminService;
         private readonly IUserService userService;
         private readonly IAssetConvertService assetConvertService;
+        private readonly IAnonymousExchangeService anonymousExchangeService;
 
         public AdminController(
             ILogger<AdminController> logger,
             IExceptionHandlerService exHandler,
             IAdminService adminService,
             IUserService userService,
-            IAssetConvertService assetConvertService)
+            IAssetConvertService assetConvertService,
+            IAnonymousExchangeService anonymousExchangeService)
         {
             this.logger = logger;
             this.exHandler = exHandler;
             this.adminService = adminService;
             this.userService = userService;
             this.assetConvertService = assetConvertService;
+            this.anonymousExchangeService = anonymousExchangeService;
         }
 
         [HttpGet("user")]
@@ -181,12 +184,53 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> SetBankAccountStatus([FromQuery] Guid bankAccountId, [FromQuery] BankAccountStatus status)
         {
-            try {
+            try
+            {
                 await adminService.SetBankAccountStatus(bankAccountId, status);
 
                 return Ok();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.LogWarning(ex, "Couldn't set bank account status");
+                return exHandler.Handle(ex, Request);
+            }
+        }
+        [HttpGet("anonymousExchanges")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AnonymousExchange>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> GetPendingAnonymousExchanges()
+        {
+            try
+            {
+                var exchanges = await anonymousExchangeService.GetPendingExchanges();
+                return Ok(exchanges);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Couldn't get pending anonymous exchanges.");
+                return exHandler.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("anonymousExchanges/update")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> UpdateAnonymousExchangeStatus(
+            [FromQuery] Guid exchangeId,
+            [FromQuery] PaymentStatus status,
+            [FromBody] string adminNotes = null)
+        {
+            try
+            {
+                await anonymousExchangeService.UpdateExchangeStatus(exchangeId, status, adminNotes);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Couldn't update anonymous exchange status.");
                 return exHandler.Handle(ex, Request);
             }
         }

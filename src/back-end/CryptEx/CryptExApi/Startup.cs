@@ -169,7 +169,8 @@ namespace CryptExApi
             services.AddTransient<IStripeRepository, StripeRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IWalletRepository, WalletRepository>();
-
+            services.AddTransient<IAnonymousExchangeRepository, AnonymousExchangeRepository>();
+            services.AddTransient<IAnonymousExchangeService, AnonymousExchangeService>();
             services.AddTransient<IAdminService, AdminService>();
             services.AddTransient<IAssetConvertService, AssetConvertService>();
             services.AddTransient<IAuthService, AuthService>();

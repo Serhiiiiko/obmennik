@@ -8,26 +8,18 @@ namespace CryptExApi.Data
     public class CryptExDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
         public DbSet<FiatDeposit> FiatDeposits { get; set; }
-
         public DbSet<CryptoDeposit> CryptoDeposits { get; set; }
-
         public DbSet<AssetConversion> AssetConversions { get; set; }
-
         public DbSet<AssetConversionLock> AssetConversionLocks { get; set; }
-
         public DbSet<FiatWithdrawal> FiatWithdrawals { get; set; }
-
         public DbSet<Wallet> Wallets { get; set; }
-
         public DbSet<UserAddress> UserAddresses { get; set; }
-
         public DbSet<BankAccount> BankAccounts { get; set; }
-
         public DbSet<Country> Countries { get; set; }
+        public DbSet<AnonymousExchange> AnonymousExchanges { get; set; }
 
         public CryptExDbContext(DbContextOptions<CryptExDbContext> options) : base(options)
         {
-            
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -78,6 +70,31 @@ namespace CryptExApi.Data
                 .HasOne(x => x.PriceLock)
                 .WithOne(x => x.Conversion)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<AnonymousExchange>()
+                .Property(x => x.SourceAmount)
+                .HasPrecision(14, 2);
+
+            builder.Entity<AnonymousExchange>()
+                .Property(x => x.DestinationAmount)
+                .HasPrecision(14, 2);
+
+            builder.Entity<AnonymousExchange>()
+                .Property(x => x.ExchangeRate)
+                .HasPrecision(20, 8);
+
+            // Add these configurations to fix the multiple cascade paths issue
+            builder.Entity<AnonymousExchange>()
+                .HasOne(x => x.SourceWallet)
+                .WithMany()
+                .HasForeignKey(x => x.SourceWalletId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<AnonymousExchange>()
+                .HasOne(x => x.DestinationWallet)
+                .WithMany()
+                .HasForeignKey(x => x.DestinationWalletId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
