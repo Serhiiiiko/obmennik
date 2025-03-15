@@ -18,6 +18,7 @@ export class BuySellComponent implements OnInit {
   assets: WalletViewModel[];
   dto: AssetConversionLockDto = {} as AssetConversionLockDto;
   selectedRightAsset: WalletViewModel;
+  selectedLeftAsset: WalletViewModel;
 
   constructor(
     private walletService: WalletService,
@@ -34,7 +35,12 @@ export class BuySellComponent implements OnInit {
         this.assets = x.content;
 
         // Set default assets - use SelectedCurrency from UserService for both authorized and unauthorized users
-        this.dto.leftAssetId = this.assets.find(x => x.ticker == this.user.SelectedCurrency)?.id;
+        const leftAsset = this.assets.find(x => x.ticker == this.user.SelectedCurrency);
+        if (leftAsset) {
+          this.dto.leftAssetId = leftAsset.id;
+          this.selectedLeftAsset = leftAsset;
+        }
+        
         const btcAsset = this.assets.find(x => x.ticker == "BTC");
         if (btcAsset) {
           this.dto.rightAssetId = btcAsset.id;
@@ -48,6 +54,7 @@ export class BuySellComponent implements OnInit {
 
   leftAssetChanged($event: any): void {
     this.dto.leftAssetId = $event.target.value;
+    this.selectedLeftAsset = this.assets.find(asset => asset.id === $event.target.value);
   }
 
   rightAssetChanged($event: any): void {
@@ -56,6 +63,14 @@ export class BuySellComponent implements OnInit {
   }
 
   doLock(): void {
+    // Store both assets in localStorage for guest users
+    if (!this.authService.IsAuthenticated) {
+      if (this.selectedLeftAsset && this.selectedRightAsset) {
+        localStorage.setItem('sourceAsset', JSON.stringify(this.selectedLeftAsset));
+        localStorage.setItem('destinationAsset', JSON.stringify(this.selectedRightAsset));
+      }
+    }
+
     // Allow both authenticated and guest users to continue
     this.service.LockTransaction(this.dto).then(x => {
       if (x.success) {
@@ -71,10 +86,5 @@ export class BuySellComponent implements OnInit {
         }
       }
     });
-  }
-
-  // Helper method to check authentication status (for UI differentiation)
-  isAuthenticated(): boolean {
-    return this.authService.IsAuthenticated;
   }
 }

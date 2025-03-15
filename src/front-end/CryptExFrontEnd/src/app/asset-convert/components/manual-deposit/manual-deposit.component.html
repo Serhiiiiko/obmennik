@@ -88,22 +88,7 @@
           <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
         </div>
         
-        <!-- Add a field for transaction hash -->
-        <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2">
-            {{ 'BuySell.ManualDeposit.TransactionHash' | translate }}
-          </label>
-          <input 
-            type="text" 
-            [(ngModel)]="transactionHash" 
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="{{ 'BuySell.ManualDeposit.TransactionHashPlaceholder' | translate }}"
-            required
-          >
-          <p class="text-xs text-gray-500 mt-1">
-            {{ 'BuySell.ManualDeposit.TransactionHashHelp' | translate }}
-          </p>
-        </div>
+      
         
         <p class="text-sm text-gray-600 mb-6">
           {{ 'BuySell.ManualDeposit.Instructions' | translate }}

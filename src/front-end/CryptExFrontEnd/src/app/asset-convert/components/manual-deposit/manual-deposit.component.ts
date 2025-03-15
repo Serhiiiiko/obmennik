@@ -26,7 +26,6 @@ export class ManualDepositComponent implements OnInit {
   isLoading: boolean = true;
   isSubmitted: boolean = false;
   exchangeId: string = '';
-  showAmountInput: boolean = false;
   
   // Store the wallet objects
   sourceWallet: WalletViewModel = null;
@@ -47,6 +46,7 @@ export class ManualDepositComponent implements OnInit {
       const destinationAssetJson = localStorage.getItem('destinationAsset');
       
       if (sourceAssetJson && destinationAssetJson) {
+        console.log("Found stored wallet data in localStorage");
         this.sourceWallet = JSON.parse(sourceAssetJson);
         this.destinationWallet = JSON.parse(destinationAssetJson);
         
@@ -55,10 +55,16 @@ export class ManualDepositComponent implements OnInit {
         this.sourceWalletId = this.sourceWallet.id;
         this.destinationWalletId = this.destinationWallet.id;
         
+        // Get amount from query params if available
+        this.route.queryParams.subscribe(params => {
+          if (params['amount']) {
+            this.amount = parseFloat(params['amount']);
+          }
+        });
+        
         // Check if admin wallet address is configured
         if (this.sourceWallet.adminWalletAddress) {
           this.adminWalletAddress = this.sourceWallet.adminWalletAddress;
-          this.showAmountInput = true;
           this.isLoading = false;
         } else {
           this.loadWalletInfo();
@@ -70,12 +76,7 @@ export class ManualDepositComponent implements OnInit {
           
           this.route.queryParams.subscribe(queryParams => {
             this.sourceCurrency = queryParams['sourceCurrency'] || '';
-            this.transactionHash = queryParams['transactionHash'] || '';
             this.amount = queryParams['amount'] ? parseFloat(queryParams['amount']) : 0;
-            
-            if (this.amount === 0) {
-              this.showAmountInput = true;
-            }
             
             this.loadWalletInfo();
           });

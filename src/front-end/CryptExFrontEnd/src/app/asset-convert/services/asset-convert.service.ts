@@ -74,17 +74,32 @@ export class AssetConvertService {
         // For authenticated users, use the normal API
         return this.http.Post("AssetConvert/lock", dto);
       } else {
-        // For unauthenticated users, get source and destination wallet info to create a mock lock
-        const sourceWalletResponse = await this.http.Get<WalletViewModel>(`Wallets/wallet/${dto.leftAssetId}`);
-        const destWalletResponse = await this.http.Get<WalletViewModel>(`Wallets/wallet/${dto.rightAssetId}`);
+        // For unauthenticated users, get source and destination wallet info from localStorage
+        let leftWallet: WalletViewModel;
+        let rightWallet: WalletViewModel;
         
-        if (!sourceWalletResponse.success || !destWalletResponse.success) {
-          throw new Error("Could not get wallet information");
-        }
+        // Try to get wallets from localStorage first
+        const sourceAssetJson = localStorage.getItem('sourceAsset');
+        const destAssetJson = localStorage.getItem('destinationAsset');
         
-        // Ensure the content properties contain valid WalletViewModel objects
-        if (!sourceWalletResponse.content || !destWalletResponse.content) {
-          throw new Error("Wallet information is incomplete");
+        if (sourceAssetJson && destAssetJson) {
+          leftWallet = JSON.parse(sourceAssetJson);
+          rightWallet = JSON.parse(destAssetJson);
+        } else {
+          // If not in localStorage, fetch from API
+          const sourceWalletResponse = await this.http.Get<WalletViewModel>(`Wallets/wallet/${dto.leftAssetId}`);
+          const destWalletResponse = await this.http.Get<WalletViewModel>(`Wallets/wallet/${dto.rightAssetId}`);
+          
+          if (!sourceWalletResponse.success || !destWalletResponse.success) {
+            throw new Error("Could not get wallet information");
+          }
+          
+          leftWallet = sourceWalletResponse.content;
+          rightWallet = destWalletResponse.content;
+          
+          // Store for future use
+          localStorage.setItem('sourceAsset', JSON.stringify(leftWallet));
+          localStorage.setItem('destinationAsset', JSON.stringify(rightWallet));
         }
         
         // Get exchange rate
@@ -94,7 +109,7 @@ export class AssetConvertService {
             .set("destinationWalletId", dto.rightAssetId)
         });
         
-        if (!rateResponse.success || rateResponse.content === undefined) {
+        if (!rateResponse.success || typeof rateResponse.content !== 'number') {
           throw new Error("Could not get exchange rate");
         }
         
@@ -103,9 +118,9 @@ export class AssetConvertService {
           id: this.generateUUID(),
           expirationUtc: new Date(Date.now() + 60000).toISOString(), // 1 minute from now
           pair: {
-            left: sourceWalletResponse.content as WalletViewModel,
-            right: destWalletResponse.content as WalletViewModel,
-            rate: rateResponse.content as number
+            left: leftWallet,
+            right: rightWallet,
+            rate: rateResponse.content
           }
         };
         
