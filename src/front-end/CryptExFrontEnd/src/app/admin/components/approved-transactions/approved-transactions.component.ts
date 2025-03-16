@@ -28,15 +28,16 @@ export class ApprovedTransactionsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.loadApprovedTransactions();
-    
-    // Subscribe to approved transactions from the service
+    // Subscribe first to get any transactions stored in memory/localStorage
     this.subscription = this.transactionUpdateService.approvedTransactions$.subscribe(transactions => {
       if (transactions.length > 0) {
         this.approvedTransactions = transactions;
         this.loading = false;
       }
     });
+    
+    // Then try to get any additional approved transactions from the API
+    this.loadApprovedTransactions();
   }
 
   ngOnDestroy(): void {
@@ -49,16 +50,19 @@ export class ApprovedTransactionsComponent implements OnInit, OnDestroy {
     this.loading = true;
    
     // Try to load any already approved transactions from the API
-    // (though likely none will be returned from GetPendingAnonymousExchanges)
     this.adminService.GetPendingAnonymousExchanges().then(result => {
       this.loading = false;
       if (result.success) {
+        // Look for transactions with success status
         const approvedFromApi = result.content.filter(
           transaction => transaction.status === PaymentStatus.success
         );
         
         if (approvedFromApi.length > 0) {
-          this.approvedTransactions = approvedFromApi;
+          // Add to our local service any approved transactions we found from API
+          approvedFromApi.forEach(transaction => {
+            this.transactionUpdateService.addApprovedTransaction(transaction);
+          });
         }
       } else {
         this.snackbar.ShowSnackbar(new SnackBarCreate(

@@ -28,15 +28,16 @@ export class RejectedTransactionsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.loadRejectedTransactions();
-    
-    // Subscribe to rejected transactions from the service
+    // Subscribe first to get any transactions stored in memory/localStorage
     this.subscription = this.transactionUpdateService.rejectedTransactions$.subscribe(transactions => {
       if (transactions.length > 0) {
         this.rejectedTransactions = transactions;
         this.loading = false;
       }
     });
+    
+    // Then try to get any additional rejected transactions from the API
+    this.loadRejectedTransactions();
   }
 
   ngOnDestroy(): void {
@@ -49,16 +50,19 @@ export class RejectedTransactionsComponent implements OnInit, OnDestroy {
     this.loading = true;
    
     // Try to load any already rejected transactions from the API
-    // (though likely none will be returned from GetPendingAnonymousExchanges)
     this.adminService.GetPendingAnonymousExchanges().then(result => {
       this.loading = false;
       if (result.success) {
+        // Look for transactions with failed status
         const rejectedFromApi = result.content.filter(
           transaction => transaction.status === PaymentStatus.failed
         );
         
         if (rejectedFromApi.length > 0) {
-          this.rejectedTransactions = rejectedFromApi;
+          // Add to our local service any rejected transactions we found from API
+          rejectedFromApi.forEach(transaction => {
+            this.transactionUpdateService.addRejectedTransaction(transaction);
+          });
         }
       } else {
         this.snackbar.ShowSnackbar(new SnackBarCreate(

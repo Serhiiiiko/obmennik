@@ -10,14 +10,26 @@ export class TransactionUpdateService {
   private approvedTransactionsSubject = new BehaviorSubject<any[]>([]);
   private rejectedTransactionsSubject = new BehaviorSubject<any[]>([]);
   
+  // Storage keys for localStorage
+  private readonly APPROVED_STORAGE_KEY = 'cryptex-approved-transactions';
+  private readonly REJECTED_STORAGE_KEY = 'cryptex-rejected-transactions';
+  
   approvedTransactions$ = this.approvedTransactionsSubject.asObservable();
   rejectedTransactions$ = this.rejectedTransactionsSubject.asObservable();
+  
+  constructor() {
+    // Load stored transactions when service initializes
+    this.loadFromStorage();
+  }
   
   addApprovedTransaction(transaction: any) {
     const currentTransactions = this.approvedTransactionsSubject.getValue();
     // Avoid duplicates
     if (!currentTransactions.some(t => t.id === transaction.id)) {
-      this.approvedTransactionsSubject.next([...currentTransactions, transaction]);
+      const updatedTransactions = [...currentTransactions, transaction];
+      this.approvedTransactionsSubject.next(updatedTransactions);
+      // Save to localStorage
+      this.saveToStorage(this.APPROVED_STORAGE_KEY, updatedTransactions);
     }
   }
   
@@ -25,7 +37,41 @@ export class TransactionUpdateService {
     const currentTransactions = this.rejectedTransactionsSubject.getValue();
     // Avoid duplicates
     if (!currentTransactions.some(t => t.id === transaction.id)) {
-      this.rejectedTransactionsSubject.next([...currentTransactions, transaction]);
+      const updatedTransactions = [...currentTransactions, transaction];
+      this.rejectedTransactionsSubject.next(updatedTransactions);
+      // Save to localStorage
+      this.saveToStorage(this.REJECTED_STORAGE_KEY, updatedTransactions);
+    }
+  }
+  
+  private loadFromStorage() {
+    try {
+      // Load approved transactions
+      const storedApproved = localStorage.getItem(this.APPROVED_STORAGE_KEY);
+      if (storedApproved) {
+        const parsedData = JSON.parse(storedApproved);
+        this.approvedTransactionsSubject.next(parsedData);
+      }
+      
+      // Load rejected transactions
+      const storedRejected = localStorage.getItem(this.REJECTED_STORAGE_KEY);
+      if (storedRejected) {
+        const parsedData = JSON.parse(storedRejected);
+        this.rejectedTransactionsSubject.next(parsedData);
+      }
+    } catch (error) {
+      console.error('Error loading transactions from storage:', error);
+      // If there's an error, reset storage
+      localStorage.removeItem(this.APPROVED_STORAGE_KEY);
+      localStorage.removeItem(this.REJECTED_STORAGE_KEY);
+    }
+  }
+  
+  private saveToStorage(key: string, data: any[]) {
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+      console.error('Error saving transactions to storage:', error);
     }
   }
 }

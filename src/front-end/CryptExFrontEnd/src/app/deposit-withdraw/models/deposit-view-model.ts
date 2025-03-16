@@ -28,5 +28,6 @@ export enum PaymentStatus {
     /**
      * The transaction is pending. (Most commonly this would indicate that the transaction was made using a payment method that takes time to process, like a bank wire)
      */
-    pending = 2
+    pending = 2,
+    awaitingVerification
 }

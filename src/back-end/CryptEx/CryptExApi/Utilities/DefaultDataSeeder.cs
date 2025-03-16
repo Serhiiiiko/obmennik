@@ -105,7 +105,7 @@ namespace CryptExApi.Utilities
     // Adding new cryptocurrencies
     ("ATOM", "Cosmos"),
     ("ZEC", "Zcash"),
-    ("TON", "Telegram Open Network"),
+    ("TON", "Toncoin"),
     ("UST-TRC20", "Terra USD TRC 20"),
     // Keeping existing currencies
     ("LTC", "Litecoin"),
