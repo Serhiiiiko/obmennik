@@ -92,34 +92,19 @@ namespace CryptExApi.Utilities
         public static readonly List<(string ticker, string fullName)> Cryptos = new()
         {
             ("BTC", "Bitcoin"),
-    ("ETH", "Ethereum"),
-    ("DAI", "Dai"),
-    ("USDC", "USD Coin"),
+            ("ETH", "Ethereum"),
     ("ADA", "Cardano"),
-    // Uncommented previously commented coins
     ("XRP", "Ripple"),
     ("BNB", "Binance Coin"),
     ("USDT", "Tether"),
-    // Adding specific USDT implementation
     ("USDT-BEP20", "Tether BEP 20"),
-    // Adding new cryptocurrencies
     ("ATOM", "Cosmos"),
     ("ZEC", "Zcash"),
     ("TON", "Toncoin"),
     ("UST-TRC20", "Terra USD TRC 20"),
-    // Keeping existing currencies
-    ("LTC", "Litecoin"),
-    ("ENJ", "Enjin"),
-    ("COMP", "Compound"),
-    ("AAVE", "Aave"),
-    ("MATIC", "Polygon"),
-    ("UNI", "Uniswap"),
-    ("DOGE", "Dogecoin"),
-    ("MKR", "Maker"),
-    ("XTZ", "Tezos"),
-    ("GRT", "The Graph"),
-    ("LINK", "Chainlink")
+    ("LTC", "Litecoin")
         };
+        
 
         public static readonly Dictionary<string, decimal> CryptoUsdExchangeRates = new()
 {
@@ -141,19 +126,8 @@ namespace CryptExApi.Utilities
     {"USDT-BEP20", 1.00m},
     {"UST-TRC20", 1.00m},
     
-    // Other existing coins
-    {"DAI", 1.00m},
-    {"USDC", 1.00m},
-    {"ENJ", 0.45m},
-    {"COMP", 65.00m},
-    {"AAVE", 95.50m},
-    {"MATIC", 0.78m},
-    {"UNI", 8.25m},
-    {"DOGE", 0.12m},
-    {"MKR", 2150.00m},
-    {"XTZ", 1.05m},
-    {"GRT", 0.15m},
-    {"LINK", 15.75m}
+    
+  
 };
 
         private static readonly List<string> Countries = new()

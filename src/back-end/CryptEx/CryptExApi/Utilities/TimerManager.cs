@@ -32,7 +32,7 @@ namespace CryptExApi.Utilities
                 action?.Invoke();
             }
 
-            if ((DateTime.Now - startedAt).Seconds >= 60) {
+            if ((DateTime.Now - startedAt).Seconds >= 6000) {
                 timer.Dispose();
             }
         }

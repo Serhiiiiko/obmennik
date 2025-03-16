@@ -7,11 +7,16 @@ import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 import { HomeExchangeComponent } from './components/home/home-exchange/home-exchange.component';
 import { TestimonialCarouselComponent } from './components/home/testimonial-carousel/testimonial-carousel.component';
+import { BuySellComponent } from '../asset-convert/components/buy-sell/buy-sell.component';
 
 const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent
+  },
+  {
+    path: 'buySell',
+    component: BuySellComponent
   },
   {
     path: 'contact',

@@ -48,7 +48,7 @@ namespace CryptExApi.Repositories
                 RightId = right.Id,
                 User = user,
                 UserId = user.Id,
-                ExpirationUtc = DateTime.UtcNow.AddSeconds(60),
+                ExpirationUtc = DateTime.UtcNow.AddSeconds(6000),
                 ExchangeRate = exchangeRate
             });
 

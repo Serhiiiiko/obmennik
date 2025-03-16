@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 
 namespace CryptExApi.Services
 {
@@ -26,6 +27,12 @@ namespace CryptExApi.Services
         {
             _logger.LogInformation("Crypto Price Update Service is starting.");
 
+            // Define tokens that don't need updates from Coinbase
+            var staticRateTokens = new HashSet<string> {
+        "USDT-BEP20",
+        "UST-TRC20"
+    };
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Updating cryptocurrency prices...");
@@ -42,6 +49,12 @@ namespace CryptExApi.Services
                         {
                             try
                             {
+                                // Skip tokens with static rates
+                                if (staticRateTokens.Contains(wallet.Ticker))
+                                {
+                                    continue;
+                                }
+
                                 // Force update price by passing noCache=true
                                 await walletRepository.GetCryptoExchangeRate(
                                     wallet.Ticker,
@@ -71,5 +84,6 @@ namespace CryptExApi.Services
 
             _logger.LogInformation("Crypto Price Update Service is stopping.");
         }
+
     }
 }

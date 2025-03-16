@@ -56,20 +56,21 @@
       "Contact": "Contact",
       "DepositWithdraw": "Deposit / Withdraw"
     },
-    "Copyright": "2025 Nord-change - All rights reserved."
+    "Copyright": "2017-2025 Nord-change - All rights reserved."
   },
   "Home": {
+    "ExchangeRate": "Exchange rate",
     "HeaderSmallLine": "Who are we ?",
     "HeaderMessage": "Discover the world of cryptocurrencies in a few minutes",
     "HeaderDesc": "Nord-change is an exchange platform between Fiat and Crypto-currencies",
-    "JoinBtn": "Create an account",
+    "JoinBtn": "Exchange currency",
     "Faq": {
-      "Title": "Frequently asked questions",
-      "Q1": "How can I deposit crypto-currencies on my account ?",
-      "A1": "To deposit crypto-currencies, go to 'Deposit / Withdraw', then click on 'Crypto' then select the crypto-currency you want.",
-      "Q2": "How can I deposit Euros on my account ?",
-      "A2": "To deposit Fiat assets, go to 'Deposit / Withdraw', then click on 'Fiat', and enter the amount of your selected currency you want to deposit."
-    },
+  "Title": "Frequently asked questions",
+  "Q1": "How can I exchange between cryptocurrencies?",
+  "A1": "To exchange cryptocurrencies, go to 'Buy / Sell', select the cryptocurrency you want to give in the 'You give' field, then select the cryptocurrency you want to receive in the 'You receive' field, and enter the amount you wish to exchange.",
+  "Q2": "How can I exchange between fiat and cryptocurrencies?",
+  "A2": "To exchange between fiat and cryptocurrencies, go to 'Buy / Sell', select the currency you want to exchange in the 'You give' field, then select the currency you want to receive in the 'You receive' field, enter the amount, and click 'Convert'."
+},
     "OurCryptos": "Our crypto-currencies",
     "Pricing": "Pricing",
     "PricingDesc": "If you're not satisfied, contact us within the first 14 days and we'll send you a full refund.",
@@ -180,6 +181,7 @@
       "DepositAddress": "Deposit Address",
       "Instructions": "Please send your cryptocurrency to this address. Your deposit will be credited to your account once the transaction is confirmed on the blockchain (typically within 15-60 minutes).",
       "Done": "Done",
+      "Cancel": "Отмена",
       "WalletInstructions": "Please provide your {{ targetCurrency }} wallet address where you'll receive the converted funds.",
       "WalletAddressLabel": "Your {{ targetCurrency }} Receiving Wallet Address",
       "WalletAddressPlaceholder": "Enter your wallet address",

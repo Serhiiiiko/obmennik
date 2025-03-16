@@ -153,6 +153,7 @@ namespace CryptExApi.Repositories
         {
             return (await GetWallets())
                 .Where(x => x.Type == WalletType.Crypto)
+                .Where(x => x.IsAddressConfigured) // Filter out wallets without admin addresses
                 .ToList();
         }
 
@@ -183,8 +184,9 @@ namespace CryptExApi.Repositories
 
             foreach (var task in tasks)
                 result.Add(await task);
-            
-            foreach (var deposit in fiatDeposits) {
+
+            foreach (var deposit in fiatDeposits)
+            {
                 if (deposit.Status != PaymentStatus.Success)
                     continue;
 
@@ -192,7 +194,8 @@ namespace CryptExApi.Repositories
                 wallet.Amount += deposit.Amount;
             }
 
-            foreach (var conversion in assetConversions) {
+            foreach (var conversion in assetConversions)
+            {
                 var decreaseWallet = result.SingleOrDefault(x => x.Id == conversion.PriceLock.LeftId);
                 var increaseWallet = result.SingleOrDefault(x => x.Id == conversion.PriceLock.RightId);
 
@@ -205,7 +208,8 @@ namespace CryptExApi.Repositories
                     increaseWallet.Amount += conversion.Amount * conversion.PriceLock.ExchangeRate;
             }
 
-            foreach (var withdraw in fiatWithdrawals) {
+            foreach (var withdraw in fiatWithdrawals)
+            {
                 if (withdraw.Status == PaymentStatus.Failed)
                     continue;
 
@@ -240,15 +244,18 @@ namespace CryptExApi.Repositories
             foreach (var task in tasks)
                 result.Add(await task);
 
-            foreach (var deposit in cryptoDeposits) {
+            foreach (var deposit in cryptoDeposits)
+            {
                 if (deposit.Status != PaymentStatus.Success)
                     continue;
 
-                var wallet = result.Single(x => x.Id == deposit.WalletId);
-                wallet.Amount += deposit.Amount;
+                var wallet = result.SingleOrDefault(x => x.Id == deposit.WalletId);
+                if (wallet != null)
+                    wallet.Amount += deposit.Amount;
             }
 
-            foreach (var conversion in assetConversions) {
+            foreach (var conversion in assetConversions)
+            {
                 var decreaseWallet = result.SingleOrDefault(x => x.Id == conversion.PriceLock.LeftId);
                 var increaseWallet = result.SingleOrDefault(x => x.Id == conversion.PriceLock.RightId);
 
@@ -314,7 +321,8 @@ namespace CryptExApi.Repositories
             if (type == WalletType.Crypto || type == WalletType.Both)
                 wallets.AddRange(await GetCryptoWallets(user, at));
 
-            foreach (var wallet in wallets) {
+            foreach (var wallet in wallets)
+            {
                 total += wallet.Amount * wallet.SelectedCurrencyPair.Rate;
             }
 
@@ -355,8 +363,6 @@ namespace CryptExApi.Repositories
         {
             return await dbContext.Wallets.FindAsync(id);
         }
-
-        // Modify the GetCryptoExchangeRate method in src/back-end/CryptEx/CryptExApi/Repositories/WalletRepository.cs
 
         public async Task<decimal> GetCryptoExchangeRate(string left, string right, DateTime? at = null, bool noCache = false)
         {

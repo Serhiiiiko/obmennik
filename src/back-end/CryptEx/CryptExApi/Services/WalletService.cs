@@ -71,7 +71,7 @@ namespace CryptExApi.Services
             currency ??= GetDefaultCurrency(); //Defaults to USD
 
             var wallets = await walletsRepository.GetCryptoWallets();
-
+            wallets = wallets.Where(w => w.IsAddressConfigured).ToList();
             var result = new List<WalletViewModel>();
             foreach (var wallet in wallets) {
                 result.Add(await walletsRepository.GetCryptoFull(wallet.Id, currency));
