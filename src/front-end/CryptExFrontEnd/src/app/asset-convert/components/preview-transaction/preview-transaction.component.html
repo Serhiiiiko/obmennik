@@ -1,58 +1,103 @@
-<h3 *ngIf="lock == null" class="mx-auto text-3xl">
-    {{ 'Global.Loading' | translate }}
-</h3>
-
-<div *ngIf="lock != null" class="flex flex-col w-3/4 mx-auto">
-    <div class="mr-auto ml-auto 2xl:w-1/3 my-20">
-        <div class="shadow bg-white rounded-md p-5">
-            <h3 class="font-bold text-2xl">{{ 'BuySell.Title' | translate }}</h3>
-            <p class="mb-5">{{ 'BuySell.Preview.Title' | translate }}</p>
-
-            <div class="flex flex-row">
-                <div class="w-48 mt-3 appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                    <p>{{ lock.pair.left.ticker }}</p>
-                </div>
-
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mt-3 mx-auto text-gray-700" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-
-                <div class="w-48 mt-3 appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                    <p>{{ lock.pair.right.ticker }}</p>
-                </div>
-            </div>
-
-            <div class="flex flex-row mt-1 font-semibold" *ngIf="left != null && right != null">
-                <p class="left-0">{{ left.amount.toLocaleString() }}</p>
-                <p class="ml-auto">{{ right.amount.toLocaleString() }}</p>
-            </div>
-
-            <div class="mt-5">
-                <p class="text-lg">{{ 'BuySell.Preview.Rate' | translate }} : <span class="font-semibold">{{ lock.pair.rate }}</span></p>
-                <p class="text-lg mt-1" *ngIf="dto.amount != null">{{ 'BuySell.Preview.Price' | translate }}: {{ lock.pair.right.ticker }} <span class="font-semibold">{{ getResultPrice() }}</span></p>
-            </div>
-
-            <div class="mt-5">
-                <input type="number" (change)="amountChanged($event.target.value)" (keydown)="amountChanged($event.target.value)" class="w-full px-2 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="{{ 'BuySell.Placeholder' | translate }}">
-
-                <button type="button"
-                    [disabled]="dto.amount == null"
-                    [ngClass]="[dto.amount == null ? 'bg-indigo-300' : 'bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700']"
-                    class="block w-full max-w-xs mx-auto mt-5  text-white rounded-lg px-3 py-3 font-semibold"
-                    (click)="doConvert()">
-                    {{ 'BuySell.Preview.Confirm' | translate }}
-                </button>
-                <button type="button"
-                    class="block w-full max-w-xs mx-auto mt-5 bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
-                    (click)="doCancel()">
-                    {{ 'BuySell.Preview.Cancel' | translate }}
-                </button>
-            </div>
-            <div class="mt-3">
-                <h5 class="text-lg">{{ 'BuySell.Preview.TimeLeft1' | translate }} {{ timeLeft }} {{ 'BuySell.Preview.TimeLeft2' | translate }}</h5>
-            </div>
+<!-- preview-transaction.component.html -->
+<div *ngIf="lock == null" class="mx-auto text-center p-8">
+    <svg class="animate-spin h-10 w-10 mx-auto mb-4 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    <h3 class="text-xl font-medium">{{ 'Global.Loading' | translate }}</h3>
+  </div>
+  
+  <div *ngIf="lock != null" class="flex flex-col w-11/12 md:w-3/4 lg:w-2/3 mx-auto">
+    <div class="mr-auto ml-auto md:w-3/4 lg:w-2/3 xl:w-1/2 my-10">
+      <div class="shadow bg-white rounded-lg p-6">
+        <!-- Header with icon -->
+        <div class="flex items-center mb-4">
+          <svg class="h-6 w-6 text-indigo-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <h3 class="font-bold text-2xl text-gray-800">{{ 'BuySell.Title' | translate }}</h3>
         </div>
-    </div>
+        <p class="mb-6 text-gray-600">{{ 'BuySell.Preview.Title' | translate }}</p>
+  
+        <!-- Currency conversion display -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-5">
+          <div class="grid grid-cols-3 items-center">
+            <div class="col-span-1">
+              <span class="text-sm text-gray-500 block">From</span>
+              <span class="text-lg font-semibold">{{ lock.pair.left.ticker }}</span>
+            </div>
+            
+            <div class="col-span-1 flex justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </div>
+            
+            <div class="col-span-1 text-right">
+              <span class="text-sm text-gray-500 block">To</span>
+              <span class="text-lg font-semibold">{{ lock.pair.right.ticker }}</span>
+            </div>
+          </div>
+          
+          <div class="flex justify-between mt-4 border-t border-gray-200 pt-4">
+            <div>
+              <span class="text-sm text-gray-500 block">Exchange rate:</span>
+              <span class="font-medium">{{ lock.pair.rate }}</span>
+            </div>
+            
+            <div *ngIf="dto.amount" class="text-right">
+              <span class="text-sm text-gray-500 block">You will receive:</span>
+              <span class="font-medium">{{ lock.pair.right.ticker }} {{ getResultPrice() }}</span>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Amount input field -->
+        <div class="mb-6">
+          <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Enter amount:</label>
+          <div class="relative rounded-md shadow-sm">
+            <input 
+              type="number" 
+              id="amount"
+              min="0"
+              step="any"
+              (input)="amountChanged($event.target.value)"
+              class="block w-full pr-12 py-3 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Enter an amount to convert"
+            >
+            
+          </div>
+        </div>
+  
+        
+
+    <!-- ВАЖНО: Убрали атрибут [ngClass] с массивом и упростили условие -->
+    <button type="button"
+          [disabled]="!dto.amount || dto.amount <= 0"
+          [style]="{'background-color': !dto.amount || dto.amount <= 0 ? '#a5b4fc' : '#6366f1'}"
+          class="flex justify-center items-center w-full mt-4 py-3 px-4 border border-transparent rounded-md shadow-sm text-white font-medium focus:outline-none"
+          (click)="doConvert()">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    {{ 'BuySell.Preview.Confirm' | translate }}
+  </button>
+        
+  <button type="button"
+  class="flex justify-center items-center w-full mt-3 py-3 px-4 border border-gray-300 rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+  (click)="doCancel()">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+</svg>
+{{ 'BuySell.Preview.Cancel' | translate }}
+</button>
+
+      </div>
+
 </div>
+  
+       
+    
+      </div>
+    
+ 

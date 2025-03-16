@@ -113,13 +113,26 @@ export class PreviewTransactionComponent implements OnInit {
       clearTimeout(this.timeout);
   }
 
-  amountChanged(amount: number): void {
+  // update the amountChanged method in preview-transaction.component.ts
+amountChanged(value: any): void {
+  // Convert the input to a number
+  const amount = parseFloat(value);
+  
+  // Validate that it's a positive number
+  if (!isNaN(amount) && amount > 0) {
     this.dto.amount = amount;
+    console.log('Amount updated:', this.dto.amount);
+  } else {
+    // If invalid, set to null or 0
+    this.dto.amount = null;
   }
+}
 
-  getResultPrice(): number {
-    return Math.round(((this.dto.amount * this.lock.pair.rate) + Number.EPSILON) * 100000) / 100000
-  }
+// Make sure getResultPrice handles null or undefined amounts
+getResultPrice(): number {
+  if (!this.dto.amount) return 0;
+  return Math.round(((this.dto.amount * this.lock.pair.rate) + Number.EPSILON) * 100000) / 100000;
+}
 
   doConvert(): void {
     console.log("doConvert called, authenticated:", this.authService.IsAuthenticated);

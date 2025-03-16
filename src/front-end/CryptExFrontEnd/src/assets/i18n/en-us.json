@@ -181,7 +181,7 @@
       "DepositAddress": "Deposit Address",
       "Instructions": "Please send your cryptocurrency to this address. Your deposit will be credited to your account once the transaction is confirmed on the blockchain (typically within 15-60 minutes).",
       "Done": "Done",
-      "Cancel": "Отмена",
+      "Cancel": "Cancel",
       "WalletInstructions": "Please provide your {{ targetCurrency }} wallet address where you'll receive the converted funds.",
       "WalletAddressLabel": "Your {{ targetCurrency }} Receiving Wallet Address",
       "WalletAddressPlaceholder": "Enter your wallet address",
