@@ -88,24 +88,20 @@
           <p class="text-xl font-bold">{{ amount }} {{ sourceCurrency }}</p>
         </div>
         
-      
-        
         <p class="text-sm text-gray-600 mb-6">
           {{ 'BuySell.ManualDeposit.Instructions' | translate }}
         </p>
         
         <button type="button"
-          [disabled]="!transactionHash"
-          [ngClass]="!transactionHash ? 'bg-green-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-700 focus:bg-green-700'"
-          class="block w-full max-w-xs mx-auto mb-3 text-white rounded-lg px-3 py-3 font-semibold"
+          class="block w-full max-w-xs mx-auto mb-3 bg-green-500 hover:bg-green-700 focus:bg-green-700 text-white rounded-lg px-3 py-3 font-semibold"
           (click)="confirmTransaction()">
-          {{ 'BuySell.ManualDeposit.ConfirmSent' | translate }}
+          {{ 'BuySell.ManualDeposit.Done' | translate }}
         </button>
         
         <button type="button"
           class="block w-full max-w-xs mx-auto bg-gray-200 hover:bg-gray-300 focus:bg-gray-300 text-gray-700 rounded-lg px-3 py-3 font-semibold"
           (click)="goBack()">
-          {{ 'BuySell.ManualDeposit.Cancel' | translate }}
+          {{ 'BuySell.ManualDeposit.' | translate }}
         </button>
       </div>
     </div>

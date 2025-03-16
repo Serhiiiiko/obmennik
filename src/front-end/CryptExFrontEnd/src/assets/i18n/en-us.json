@@ -277,7 +277,9 @@
       "Deposits": "View recent deposits",
       "BankAccounts": "View pending bank accounts",
       "WalletAddresses": "Manage Wallet Addresses",
-      "PendingTransactions": "Pending Transactions"
+      "PendingTransactions": "Pending Transactions",
+      "RejectedTransactions": "Rejected Transactions",
+      "ApprovedTransactions": "Approved Transactions"
     },
     "PendingTransactions": {
       "Title": "Pending Currency Exchange Transactions",
@@ -292,6 +294,14 @@
       "Approve": "Approve",
       "Reject": "Reject",
       "Status": "Status"
+    },
+    "RejectedTransactions": {
+      "Title": "Rejected Currency Exchange Transactions",
+      "NoTransactions": "No rejected transactions found."
+    },
+    "ApprovedTransactions": {
+      "Title": "Approved Currency Exchange Transactions",
+      "NoTransactions": "No approved transactions found."
     },
     "WalletAddresses": {
       "Title": "Manage Crypto Wallet Addresses",

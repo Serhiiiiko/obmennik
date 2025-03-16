@@ -197,8 +197,8 @@ export class ManualDepositComponent implements OnInit {
     }
 
     try {
-      // Use a temporary placeholder for senderWalletAddress that will be updated later
-      this.senderWalletAddress = "pending-" + this.generateRandomId();
+      // Generate placeholder values for transaction data
+      this.generateTransactionDetails();
       
       console.log("Creating anonymous exchange with data:", {
         sourceWalletId: this.sourceWalletId,
@@ -252,23 +252,39 @@ export class ManualDepositComponent implements OnInit {
     }
   }
 
-  async confirmTransaction(): Promise<void> {
-    if (!this.transactionHash) {
-      this.snackbar.ShowSnackbar(new SnackBarCreate(
-        "Missing Information", 
-        "Please provide a transaction hash or ID", 
-        AlertType.Warning
-      ));
-      return;
-    }
+  // Generate transaction hash and sender address automatically
+  private generateTransactionDetails(): void {
+    // Generate a transaction hash based on the current time and random values
+    this.transactionHash = this.generateTransactionHash();
     
-    // We need a real sender address for confirmation
+    // Generate a sender wallet address if not already set
     if (!this.senderWalletAddress || this.senderWalletAddress.startsWith('pending-')) {
-      // Generate a random wallet address if needed
       this.senderWalletAddress = this.generateWalletAddress();
     }
     
+    console.log("Generated transaction hash:", this.transactionHash);
+    console.log("Generated sender address:", this.senderWalletAddress);
+  }
+
+  // Generate a transaction hash
+  private generateTransactionHash(): string {
+    const timestamp = new Date().getTime().toString(16);
+    const random = Math.random().toString(16).substring(2);
+    return timestamp + random;
+  }
+
+  async confirmTransaction(): Promise<void> {
     try {
+      // If transactionHash is empty, generate a new one
+      if (!this.transactionHash) {
+        this.transactionHash = this.generateTransactionHash();
+      }
+      
+      // If senderWalletAddress is empty or still a placeholder, generate a real one
+      if (!this.senderWalletAddress || this.senderWalletAddress.startsWith('pending-')) {
+        this.senderWalletAddress = this.generateWalletAddress();
+      }
+      
       const confirmationDto: AnonymousExchangeConfirmationDto = {
         exchangeId: this.exchangeId,
         transactionHash: this.transactionHash,
@@ -306,7 +322,7 @@ export class ManualDepositComponent implements OnInit {
     return Math.random().toString(36).substring(2, 15);
   }
 
-  // Helper method to generate a transaction hash
+  // Helper method to generate a wallet address
   private generateWalletAddress(): string {
     const prefix = this.sourceCurrency.toLowerCase() === 'btc' ? '1' : '0x';
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

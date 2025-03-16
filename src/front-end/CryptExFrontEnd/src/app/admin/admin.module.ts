@@ -16,6 +16,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { MainModule } from '../main/main.module';
 import { WalletAddressesComponent } from './components/wallet-addresses/wallet-addresses.component';
 import { PendingTransactionsComponent } from './components/pending-transactions/pending-transactions.component';
+import { ApprovedTransactionsComponent } from './components/approved-transactions/approved-transactions.component';
+import { RejectedTransactionsComponent } from './components/rejected-transactions/rejected-transactions.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { PendingTransactionsComponent } from './components/pending-transactions/
     SearchUserResultComponent,
     UserPageComponent,
     WalletAddressesComponent,
-    PendingTransactionsComponent
+    PendingTransactionsComponent,
+    ApprovedTransactionsComponent,
+    RejectedTransactionsComponent
   ],
   imports: [
     CommonModule,

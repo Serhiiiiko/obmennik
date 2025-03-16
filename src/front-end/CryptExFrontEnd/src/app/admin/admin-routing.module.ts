@@ -3,10 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 import { AdminGuard } from '../guards/admin.guard';
 import { AuthenticationGuard } from '../guards/authentication.guard';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { ApprovedTransactionsComponent } from './components/approved-transactions/approved-transactions.component';
 import { DepositsComponent } from './components/deposits/deposits.component';
 import { HomeComponent } from './components/home/home.component';
 import { PendingBankAccountsComponent } from './components/pending-bank-accounts/pending-bank-accounts.component';
 import { PendingTransactionsComponent } from './components/pending-transactions/pending-transactions.component';
+import { RejectedTransactionsComponent } from './components/rejected-transactions/rejected-transactions.component';
 import { SearchUserComponent } from './components/search-user/search-user.component';
 import { UserPageComponent } from './components/user-page/user-page.component';
 import { WalletAddressesComponent } from './components/wallet-addresses/wallet-addresses.component';
@@ -44,6 +46,14 @@ const routes: Routes = [
       {
         path: 'pending-transactions',
         component: PendingTransactionsComponent
+      },
+      {
+        path: 'approved-transactions',
+        component: ApprovedTransactionsComponent
+      },
+      {
+        path: 'rejected-transactions',
+        component: RejectedTransactionsComponent
       }
     ]
   }

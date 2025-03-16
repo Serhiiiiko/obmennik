@@ -66,26 +66,37 @@ export class AdminService {
     return this.http.Post("Admin/setAccountStatus", null, { params: new HttpParams().set("userId", id).set("status", accountStatus.toString()) });
   }
 
-  // New method to get pending anonymous exchanges
+  // Method to get pending anonymous exchanges
   public async GetPendingAnonymousExchanges(): Promise<ApiResult<any[]>> {
     return this.http.Get("Admin/anonymousExchanges");
   }
 
-  // New method to update anonymous exchange status
+  // Fixed method to update anonymous exchange status
   public async UpdateAnonymousExchangeStatus(exchangeId: string, status: PaymentStatus, adminNotes?: string): Promise<ApiResult> {
-    return this.http.Post("Admin/anonymousExchanges/update", adminNotes || null, { 
-      params: new HttpParams()
-        .set("exchangeId", exchangeId)
-        .set("status", status.toString()) 
-    });
+    // Create string representation of notes if provided
+    const notes = adminNotes || '';
+    
+    // Use correct parameter names and formatting to match backend expectations
+    return this.http.Post(
+      "Admin/anonymousExchanges/update", 
+      JSON.stringify(notes), // Ensure body is properly JSON formatted
+      { 
+        params: new HttpParams()
+          .set("exchangeId", exchangeId)
+          .set("status", status.toString()),
+        headers: {
+          'Content-Type': 'application/json' // Ensure correct content type
+        }
+      }
+    );
   }
 
-  // For backward compatibility, make this call the new method
+  // For backward compatibility
   public async GetPendingTransactions(): Promise<ApiResult<any[]>> {
     return this.GetPendingAnonymousExchanges();
   }
 
-  // For backward compatibility, make this call the new method
+  // For backward compatibility
   public async SetTransactionStatus(transactionId: string, status: PaymentStatus): Promise<ApiResult> {
     return this.UpdateAnonymousExchangeStatus(transactionId, status);
   }

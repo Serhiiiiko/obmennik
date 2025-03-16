@@ -1,9 +1,11 @@
+// src/app/admin/components/pending-transactions/pending-transactions.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
 import { PaymentStatus } from 'src/app/deposit-withdraw/models/deposit-view-model';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { AdminService } from '../../services/admin.service';
+import { TransactionUpdateService } from '../../services/transaction-update.service';
 
 @Component({
   selector: 'app-pending-transactions',
@@ -19,7 +21,8 @@ export class PendingTransactionsComponent implements OnInit {
     private adminService: AdminService, 
     private snack: SnackbarService, 
     private router: Router, 
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private transactionUpdateService: TransactionUpdateService
   ) { }
 
   ngOnInit(): void {
@@ -51,6 +54,14 @@ export class PendingTransactionsComponent implements OnInit {
           "Transaction was successfully approved.", 
           AlertType.Success
         ));
+        
+        // Find the transaction that was approved and add it to the service
+        const transaction = this.pendingTransactions.find(t => t.id === id);
+        if (transaction) {
+          const updatedTransaction = { ...transaction, status: PaymentStatus.success };
+          this.transactionUpdateService.addApprovedTransaction(updatedTransaction);
+        }
+        
         this.loadPendingTransactions();
       } else {
         this.snack.ShowSnackbar(new SnackBarCreate(
@@ -70,6 +81,14 @@ export class PendingTransactionsComponent implements OnInit {
           "Transaction was successfully rejected.", 
           AlertType.Success
         ));
+        
+        // Find the transaction that was rejected and add it to the service
+        const transaction = this.pendingTransactions.find(t => t.id === id);
+        if (transaction) {
+          const updatedTransaction = { ...transaction, status: PaymentStatus.failed };
+          this.transactionUpdateService.addRejectedTransaction(updatedTransaction);
+        }
+        
         this.loadPendingTransactions();
       } else {
         this.snack.ShowSnackbar(new SnackBarCreate(
@@ -82,8 +101,6 @@ export class PendingTransactionsComponent implements OnInit {
   }
 
   redirectToUserPage(email: string): void {
-    // Since these are anonymous exchanges, we might just want to show the email
-    // But keep this method in case you want to implement user lookup by email
     this.snack.ShowSnackbar(new SnackBarCreate(
       "User Email", 
       email, 

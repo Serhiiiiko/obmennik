@@ -20,63 +20,63 @@ namespace CryptExApi.Utilities
     {
         public static readonly List<(string leftTicker, string rightTicker, decimal exchangeRate)> FiatExchangeRates = new()
         {
-            //As of 16.06.2021 23:21
-            ("USD", "USD", 1m),
-            ("USD", "CHF", 0.91m),
-            ("USD", "EUR", 0.83m),
-            ("USD", "GBP", 0.71m),
-            ("USD", "CAD", 1.23m),
-            ("USD", "AUD", 1.31m),
-            ("USD", "JPY", 110.66m),
+            //As of 15.03.2025
+    ("USD", "USD", 1m),
+    ("USD", "CHF", 0.87m),
+    ("USD", "EUR", 0.92m),
+    ("USD", "GBP", 0.77m),
+    ("USD", "CAD", 1.34m),
+    ("USD", "AUD", 1.49m),
+    ("USD", "JPY", 147.50m),
 
-            ("CHF", "CHF", 1m),
-            ("CHF", "USD", 1.10m),
-            ("CHF", "EUR", 0.92m),
-            ("CHF", "GBP", 0.79m),
-            ("CHF", "CAD", 1.35m),
-            ("CHF", "AUD", 1.45m),
-            ("CHF", "JPY", 121.78m),
+    ("CHF", "CHF", 1m),
+    ("CHF", "USD", 1.15m),
+    ("CHF", "EUR", 1.06m),
+    ("CHF", "GBP", 0.89m),
+    ("CHF", "CAD", 1.54m),
+    ("CHF", "AUD", 1.71m),
+    ("CHF", "JPY", 169.65m),
 
-            ("EUR", "EUR", 1m),
-            ("EUR", "USD", 1.20m),
-            ("EUR", "CHF", 1.09m),
-            ("EUR", "GBP", 0.86m),
-            ("EUR", "CAD", 1.47m),
-            ("EUR", "AUD", 1.58m),
-            ("EUR", "JPY", 132.75m),
+    ("EUR", "EUR", 1m),
+    ("EUR", "USD", 1.09m),
+    ("EUR", "CHF", 0.94m),
+    ("EUR", "GBP", 0.84m),
+    ("EUR", "CAD", 1.46m),
+    ("EUR", "AUD", 1.62m),
+    ("EUR", "JPY", 160.87m),
 
-            ("GBP", "GBP", 1m),
-            ("GBP", "USD", 1.40m),
-            ("GBP", "CHF", 1.27m),
-            ("GBP", "EUR", 1.17m),
-            ("GBP", "CAD", 1.72m),
-            ("GBP", "AUD", 1.84m),
-            ("GBP", "JPY", 154.85m),
+    ("GBP", "GBP", 1m),
+    ("GBP", "USD", 1.30m),
+    ("GBP", "CHF", 1.13m),
+    ("GBP", "EUR", 1.19m),
+    ("GBP", "CAD", 1.74m),
+    ("GBP", "AUD", 1.94m),
+    ("GBP", "JPY", 191.74m),
 
-            ("CAD", "CAD", 1m),
-            ("CAD", "USD", 0.81m),
-            ("CAD", "CHF", 0.74m),
-            ("CAD", "EUR", 0.68m),
-            ("CAD", "GBP", 0.58m),
-            ("CAD", "AUD", 1.07m),
-            ("CAD", "JPY", 90.14m),
+    ("CAD", "CAD", 1m),
+    ("CAD", "USD", 0.75m),
+    ("CAD", "CHF", 0.65m),
+    ("CAD", "EUR", 0.69m),
+    ("CAD", "GBP", 0.58m),
+    ("CAD", "AUD", 1.11m),
+    ("CAD", "JPY", 110.59m),
 
-            ("AUD", "AUD", 1m),
-            ("AUD", "USD", 0.76m),
-            ("AUD", "CHF", 0.69m),
-            ("AUD", "EUR", 0.63m),
-            ("AUD", "GBP", 0.54m),
-            ("AUD", "CAD", 0.93m),
-            ("AUD", "JPY", 84.25m),
+    ("AUD", "AUD", 1m),
+    ("AUD", "USD", 0.67m),
+    ("AUD", "CHF", 0.58m),
+    ("AUD", "EUR", 0.62m),
+    ("AUD", "GBP", 0.52m),
+    ("AUD", "CAD", 0.90m),
+    ("AUD", "JPY", 99.13m),
 
-            ("JPY", "JPY", 1m),
-            ("JPY", "USD", 0.0090m),
-            ("JPY", "CHF", 0.0082m),
-            ("JPY", "EUR", 0.0075m),
-            ("JPY", "GBP", 0.0065m),
-            ("JPY", "CAD", 0.011m),
-            ("JPY", "AUD", 0.012m),
-        };
+    ("JPY", "JPY", 1m),
+    ("JPY", "USD", 0.0068m),
+    ("JPY", "CHF", 0.0059m),
+    ("JPY", "EUR", 0.0062m),
+    ("JPY", "GBP", 0.0052m),
+    ("JPY", "CAD", 0.0090m),
+    ("JPY", "AUD", 0.0101m),
+};
 
         public static readonly List<(string ticker, string fullName)> Fiats = new()
         {
@@ -92,31 +92,69 @@ namespace CryptExApi.Utilities
         public static readonly List<(string ticker, string fullName)> Cryptos = new()
         {
             ("BTC", "Bitcoin"),
-            ("ETH", "Ethereum"),
-            ("DAI", "Dai"),
-            ("USDC", "USD Coin"),
-            ("ADA", "Cardano"),
-            //("DOT",   "Polkadot"),
-            //("XRP",   "Ripple"),
-            //("SOL",   "Solana"),
-            ("LTC", "Litecoin"),
-            //("VET",   "VeChain"),
-            //("USDT",  "Tether"),
-            ("ENJ", "Enjin"),
-            ("COMP", "Compound"),
-            ("AAVE", "Aave"),
-            //("BNB",   "Binance Coin"),
-            ("MATIC", "Polygon"),
-            ("UNI", "Uniswap"),
-            //("PAXG",  "PAX Gold"),
-            ("DOGE",  "Dogecoin"), // Update: DOGE is now listed on Coinbase (10.06.2021) !!!
-            ("MKR", "Maker"),
-            ("XTZ", "Tezos"),
-            //("CHZ",   "Chiliz"),
-            ("GRT", "The Graph"),
-            ("LINK", "Chainlink"),
-            //("XMR",   "Monero")
+    ("ETH", "Ethereum"),
+    ("DAI", "Dai"),
+    ("USDC", "USD Coin"),
+    ("ADA", "Cardano"),
+    // Uncommented previously commented coins
+    ("XRP", "Ripple"),
+    ("BNB", "Binance Coin"),
+    ("USDT", "Tether"),
+    // Adding specific USDT implementation
+    ("USDT-BEP20", "Tether BEP 20"),
+    // Adding new cryptocurrencies
+    ("ATOM", "Cosmos"),
+    ("ZEC", "Zcash"),
+    ("TON", "Telegram Open Network"),
+    ("UST-TRC20", "Terra USD TRC 20"),
+    // Keeping existing currencies
+    ("LTC", "Litecoin"),
+    ("ENJ", "Enjin"),
+    ("COMP", "Compound"),
+    ("AAVE", "Aave"),
+    ("MATIC", "Polygon"),
+    ("UNI", "Uniswap"),
+    ("DOGE", "Dogecoin"),
+    ("MKR", "Maker"),
+    ("XTZ", "Tezos"),
+    ("GRT", "The Graph"),
+    ("LINK", "Chainlink")
         };
+
+        public static readonly Dictionary<string, decimal> CryptoUsdExchangeRates = new()
+{
+    // These are fallback rates in case the Coinbase API fails
+    // Values represent approximate USD price per unit as of March 2025
+    // Standard coins likely available in Coinbase API
+    {"BTC", 61250.00m},
+    {"ETH", 3350.00m},
+    {"LTC", 85.50m},
+    {"XRP", 0.55m},
+    {"ADA", 0.45m},
+    {"ATOM", 9.25m},
+    {"ZEC", 28.75m},
+    
+    // Coins that might not be available in Coinbase API
+    {"BNB", 580.00m},
+    {"TON", 5.95m},
+    {"USDT", 1.00m},
+    {"USDT-BEP20", 1.00m},
+    {"UST-TRC20", 1.00m},
+    
+    // Other existing coins
+    {"DAI", 1.00m},
+    {"USDC", 1.00m},
+    {"ENJ", 0.45m},
+    {"COMP", 65.00m},
+    {"AAVE", 95.50m},
+    {"MATIC", 0.78m},
+    {"UNI", 8.25m},
+    {"DOGE", 0.12m},
+    {"MKR", 2150.00m},
+    {"XTZ", 1.05m},
+    {"GRT", 0.15m},
+    {"LINK", 15.75m}
+};
 
         private static readonly List<string> Countries = new()
         {

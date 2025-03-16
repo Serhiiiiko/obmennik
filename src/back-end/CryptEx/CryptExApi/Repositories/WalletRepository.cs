@@ -356,6 +356,8 @@ namespace CryptExApi.Repositories
             return await dbContext.Wallets.FindAsync(id);
         }
 
+        // Modify the GetCryptoExchangeRate method in src/back-end/CryptEx/CryptExApi/Repositories/WalletRepository.cs
+
         public async Task<decimal> GetCryptoExchangeRate(string left, string right, DateTime? at = null, bool noCache = false)
         {
             var cacheKey = $"ExchangeRate.{left}-{right}@{at.GetValueOrDefault(DateTime.UtcNow).ToString("yyyy-MM-dd.HH", CultureInfo.InvariantCulture)}";
@@ -370,25 +372,61 @@ namespace CryptExApi.Repositories
             var pair = string.Empty;
             bool inverseRate = false;
 
-            if (DefaultDataSeeder.Fiats.Any(x => x.ticker == left)) { //Coinbase endpoint currency pair format is {CRYPTO}-{FIAT}
+            if (DefaultDataSeeder.Fiats.Any(x => x.ticker == left))
+            { //Coinbase endpoint currency pair format is {CRYPTO}-{FIAT}
                 pair = right + "-" + left;
                 inverseRate = true;
-            } else {
+            }
+            else
+            {
                 pair = left + "-" + right;
             }
 
-            var resp = await coinbaseClient.Data.GetSpotPriceAsync(pair, at);
-            
-            if (resp.HasError())
-                throw new CryptoApiException(resp.Errors);
+            try
+            {
+                var resp = await coinbaseClient.Data.GetSpotPriceAsync(pair, at);
 
-            if (inverseRate)
-                rate = Math.Round(1m / resp.Data.Amount, 8);
-            else
-                rate = resp.Data.Amount;
+                if (resp.HasError())
+                    throw new CryptoApiException(resp.Errors);
+
+                if (inverseRate)
+                    rate = Math.Round(1m / resp.Data.Amount, 8);
+                else
+                    rate = resp.Data.Amount;
+            }
+            catch (Exception ex)
+            {
+                // Fallback to hardcoded rates if Coinbase API fails or doesn't support the pair
+                logger.LogWarning(ex, $"Failed to get rate from Coinbase API for {pair}, using fallback rates");
+
+                // If converting to USD directly
+                if (right == "USD" && DefaultDataSeeder.CryptoUsdExchangeRates.ContainsKey(left))
+                {
+                    rate = DefaultDataSeeder.CryptoUsdExchangeRates[left];
+                }
+                // If converting from USD directly
+                else if (left == "USD" && DefaultDataSeeder.CryptoUsdExchangeRates.ContainsKey(right))
+                {
+                    rate = 1m / DefaultDataSeeder.CryptoUsdExchangeRates[right];
+                }
+                // If converting between two cryptos
+                else if (DefaultDataSeeder.CryptoUsdExchangeRates.ContainsKey(left) &&
+                         DefaultDataSeeder.CryptoUsdExchangeRates.ContainsKey(right))
+                {
+                    // Use USD as the bridge currency
+                    decimal leftToUsd = DefaultDataSeeder.CryptoUsdExchangeRates[left];
+                    decimal rightToUsd = DefaultDataSeeder.CryptoUsdExchangeRates[right];
+                    rate = leftToUsd / rightToUsd;
+                }
+                else
+                {
+                    // If we still can't determine a rate, throw the original exception
+                    throw;
+                }
+            }
 
             memoryCache.Set(cacheKey, rate, TimeSpan.FromSeconds(30));
-            
+
             return rate;
         }
     }
