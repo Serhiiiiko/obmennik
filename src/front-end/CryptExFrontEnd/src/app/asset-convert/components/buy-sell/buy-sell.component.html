@@ -27,13 +27,12 @@
             {{ 'BuySell.SelectAssetFrom' | translate }}
           </label>
           <select 
-            (change)="leftAssetChanged($event)"
-            class="input-field"
-          >
-            <option *ngFor="let asset of assets" [value]="asset.id" [selected]="asset.ticker == user.SelectedCurrency">
-              {{ asset.fullName }} ({{ asset.ticker }})
-            </option>
-          </select>
+          (change)="leftAssetChanged($event)"
+          class="input-field"
+        >
+          <option *ngFor="let asset of assets" [value]="asset.id" [selected]="asset.id == dto.leftAssetId">{{ asset.fullName }} ({{ asset.ticker }})</option>
+        </select>
+        
         </div>
   
         <div class="flex justify-center my-4">
@@ -54,13 +53,11 @@
             {{ 'BuySell.SelectAssetTo' | translate }}
           </label>
           <select 
-            (change)="rightAssetChanged($event)"
-            class="input-field"
-          >
-            <option *ngFor="let asset of assets" [value]="asset.id" [selected]="asset.ticker == 'BTC'">
-              {{ asset.fullName }} ({{ asset.ticker }})
-            </option>
-          </select>
+  (change)="rightAssetChanged($event)"
+  class="input-field"
+>
+  <option *ngFor="let asset of assets" [value]="asset.id" [selected]="asset.id == dto.rightAssetId">{{ asset.fullName }} ({{ asset.ticker }})</option>
+</select>
         </div>
   
         <div class="mt-8">

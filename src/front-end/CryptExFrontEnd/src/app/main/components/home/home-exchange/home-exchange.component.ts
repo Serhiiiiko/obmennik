@@ -1,6 +1,6 @@
 // Update home-exchange.component.ts
 import { Component, OnInit } from '@angular/core';
-import { WalletViewModel } from 'src/app/wallet/models/wallet-view-model';
+import { WalletType, WalletViewModel } from 'src/app/wallet/models/wallet-view-model';
 import { AssetConversionLockDto } from '../../../../asset-convert/models/asset-conversion-lock-dto';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { AssetConvertService } from '../../../../asset-convert/services/asset-convert.service';
@@ -31,21 +31,26 @@ export class HomeExchangeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Загружаем список доступных активов
+    // Load available assets
     this.walletService.GetWalletList().then(x => {
       if (x.success) {
-        this.assets = x.content;
-        // Задаём начальные значения (например, слева - фиат, справа - BTC)
-        const leftAsset = this.assets.find(a => a.ticker == this.user.SelectedCurrency);
-        if (leftAsset) {
-          this.dto.leftAssetId = leftAsset.id;
-          this.selectedLeftWallet = leftAsset;
-        }
+        // Filter to show only crypto currencies
+        this.assets = x.content.filter(asset => asset.type === WalletType.Crypto);
         
-        const rightAsset = this.assets.find(a => a.ticker == 'BTC');
-        if (rightAsset) {
-          this.dto.rightAssetId = rightAsset.id;
-          this.selectedRightWallet = rightAsset;
+        // Set defaults to first two cryptos
+        if (this.assets.length > 0) {
+          // Default left asset to first crypto
+          this.dto.leftAssetId = this.assets[0].id;
+          this.selectedLeftWallet = this.assets[0];
+          
+          // Default right asset to second crypto or first if only one exists
+          if (this.assets.length > 1) {
+            this.dto.rightAssetId = this.assets[1].id;
+            this.selectedRightWallet = this.assets[1];
+          } else {
+            this.dto.rightAssetId = this.assets[0].id;
+            this.selectedRightWallet = this.assets[0];
+          }
         }
       } else {
         this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not load assets.", AlertType.Error));

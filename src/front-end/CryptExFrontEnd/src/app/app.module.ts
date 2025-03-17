@@ -12,12 +12,10 @@ import { RequestInterceptor } from './interceptor/request.interceptor';
 import { SnackbarComponent } from './components/snackbar/snackbar.component';
 import { CurrencyInterceptor } from './interceptor/currency.interceptor';
 
-
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AdminModule } from './admin/admin.module';
 import { PremiumModule } from './premium/premium.module';
-import { HomeExchangeComponent } from './main/components/home/home-exchange/home-exchange.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -28,13 +26,14 @@ export function HttpLoaderFactory(http: HttpClient) {
   declarations: [
     AppComponent,
     SnackbarComponent
+    // Remove ChatWidgetComponent from here
   ],
   imports: [
     HttpClientModule,
     BrowserModule,
     CryptoModule,
     AuthModule,
-    MainModule,
+    MainModule, // MainModule exports ChatWidgetComponent for us to use
     UserModule,
     AdminModule,
     PremiumModule,

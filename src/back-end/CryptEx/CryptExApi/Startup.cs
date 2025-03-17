@@ -1,4 +1,5 @@
 using Coinbase;
+using CryptEx.Services;
 using CryptExApi.Data;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.SignalR;
@@ -180,7 +181,7 @@ namespace CryptExApi
             services.AddTransient<IStripeService, StripeService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IWalletService, WalletService>();
-
+            services.AddScoped<IChatService, ChatService>();
             if (Environment.IsDevelopment())
                 services.AddTransient<IDataSeeder, DevelopmentDataSeeder>();
             else if (Environment.IsProduction())

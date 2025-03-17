@@ -8,7 +8,7 @@ import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { AssetConversionLockDto } from '../../models/asset-conversion-lock-dto';
 import { AssetConvertService } from '../../services/asset-convert.service';
 import { AuthService } from 'src/app/auth/services/auth.service';
-
+import { WalletType } from 'src/app/wallet/models/wallet-view-model'
 @Component({
   selector: 'app-buy-sell',
   templateUrl: './buy-sell.component.html',
@@ -29,29 +29,33 @@ export class BuySellComponent implements OnInit {
     public authService: AuthService
   ) { }
 
-  ngOnInit(): void {
-    this.walletService.GetWalletList().then(x => {
-      if (x.success) {
-        this.assets = x.content;
-
-        // Set default assets - use SelectedCurrency from UserService for both authorized and unauthorized users
-        const leftAsset = this.assets.find(x => x.ticker == this.user.SelectedCurrency);
-        if (leftAsset) {
-          this.dto.leftAssetId = leftAsset.id;
-          this.selectedLeftAsset = leftAsset;
-        }
+ // In ngOnInit method:
+ ngOnInit(): void {
+  this.walletService.GetWalletList().then(x => {
+    if (x.success) {
+      // Filter to show only crypto currencies
+      this.assets = x.content.filter(asset => asset.type === WalletType.Crypto);
+      
+      // Set defaults based on available cryptocurrencies
+      if (this.assets.length > 0) {
+        // Default left asset to first crypto
+        this.dto.leftAssetId = this.assets[0].id;
+        this.selectedLeftAsset = this.assets[0]; // Use selectedLeftAsset, not selectedLeftWallet
         
-        const btcAsset = this.assets.find(x => x.ticker == "BTC");
-        if (btcAsset) {
-          this.dto.rightAssetId = btcAsset.id;
-          this.selectedRightAsset = btcAsset;
+        // Default right asset to second crypto or first if only one exists
+        if (this.assets.length > 1) {
+          this.dto.rightAssetId = this.assets[1].id;
+          this.selectedRightAsset = this.assets[1]; // Use selectedRightAsset, not selectedRightWallet
+        } else {
+          this.dto.rightAssetId = this.assets[0].id;
+          this.selectedRightAsset = this.assets[0]; // Use selectedRightAsset, not selectedRightWallet
         }
-      } else {
-        this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not load assets.", AlertType.Error));
       }
-    });
-  }
-
+    } else {
+      this.snack.ShowSnackbar(new SnackBarCreate("Error", "Could not load assets.", AlertType.Error));
+    }
+  });
+}
   leftAssetChanged($event: any): void {
     this.dto.leftAssetId = $event.target.value;
     this.selectedLeftAsset = this.assets.find(asset => asset.id === $event.target.value);

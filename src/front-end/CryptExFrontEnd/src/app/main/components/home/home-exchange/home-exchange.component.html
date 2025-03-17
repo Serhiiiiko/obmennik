@@ -30,19 +30,13 @@
           <!-- Левая колонка: «Отдаёте» -->
           <div>
             <h2 class="text-lg font-bold mb-2">{{ 'Home.Exchange.Give' | translate }}</h2>
-            <select
-              (change)="leftAssetChanged($event)"
-              class="w-full p-2 border border-gray-300 rounded-md
-                     focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
-            >
-              <option
-                *ngFor="let asset of assets"
-                [value]="asset.id"
-                [selected]="asset.id == dto.leftAssetId"
-              >
-                {{ asset.fullName }} ({{ asset.ticker }})
-              </option>
-            </select>
+            <select 
+            (change)="leftAssetChanged($event)"
+            class="input-field"
+          >
+            <option *ngFor="let asset of assets" [value]="asset.id" [selected]="asset.id == dto.leftAssetId">{{ asset.fullName }} ({{ asset.ticker }})</option>
+          </select>
+          
   
     
           </div>
@@ -50,19 +44,13 @@
           <!-- Правая колонка: «Получаете» -->
           <div>
             <h2 class="text-lg font-bold mb-2">{{ 'Home.Exchange.Receive' | translate }}</h2>
-            <select
-              (change)="rightAssetChanged($event)"
-              class="w-full p-2 border border-gray-300 rounded-md
-                     focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
-            >
-              <option
-                *ngFor="let asset of assets"
-                [value]="asset.id"
-                [selected]="asset.id == dto.rightAssetId"
-              >
-                {{ asset.fullName }} ({{ asset.ticker }})
-              </option>
-            </select>
+            <select 
+            (change)="rightAssetChanged($event)"
+            class="input-field"
+          >
+            <option *ngFor="let asset of assets" [value]="asset.id" [selected]="asset.id == dto.rightAssetId">{{ asset.fullName }} ({{ asset.ticker }})</option>
+          </select>
+           
   
             
           </div>
