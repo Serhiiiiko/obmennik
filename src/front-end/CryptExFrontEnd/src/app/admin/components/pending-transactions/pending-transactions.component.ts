@@ -35,7 +35,7 @@ export class PendingTransactionsComponent implements OnInit {
       this.loading = false;
       if (result.success) {
         this.pendingTransactions = result.content;
-        console.log('Loaded transactions:', this.pendingTransactions);
+        console.log('Loaded pending transactions:', this.pendingTransactions);
       } else {
         this.snack.ShowSnackbar(new SnackBarCreate(
           "Error", 
@@ -47,23 +47,42 @@ export class PendingTransactionsComponent implements OnInit {
   }
 
   approveTransaction(id: string): void {
+    console.log('Approving transaction:', id);
+    // First find and store a copy of the transaction before sending the API request
+    const transaction = this.pendingTransactions.find(t => t.id === id);
+    if (!transaction) {
+      console.error('Transaction not found:', id);
+      this.snack.ShowSnackbar(new SnackBarCreate(
+        "Error", 
+        "Transaction not found.", 
+        AlertType.Error
+      ));
+      return;
+    }
+    
+    // Create a deep copy of the transaction with the updated status
+    const updatedTransaction = {
+      ...transaction,
+      status: PaymentStatus.success
+    };
+    
+    // Now send the API request
     this.adminService.UpdateAnonymousExchangeStatus(id, PaymentStatus.success).then(result => {
       if (result.success) {
+        console.log('Transaction approved successfully:', id);
         this.snack.ShowSnackbar(new SnackBarCreate(
           "Success", 
           "Transaction was successfully approved.", 
           AlertType.Success
         ));
         
-        // Find the transaction that was approved and add it to the service
-        const transaction = this.pendingTransactions.find(t => t.id === id);
-        if (transaction) {
-          const updatedTransaction = { ...transaction, status: PaymentStatus.success };
-          this.transactionUpdateService.addApprovedTransaction(updatedTransaction);
-        }
+        // Add to approved transactions storage
+        this.transactionUpdateService.addApprovedTransaction(updatedTransaction);
         
+        // Reload the pending transactions list
         this.loadPendingTransactions();
       } else {
+        console.error('Error approving transaction:', result.error);
         this.snack.ShowSnackbar(new SnackBarCreate(
           "Error", 
           "Could not approve transaction.", 
@@ -74,23 +93,41 @@ export class PendingTransactionsComponent implements OnInit {
   }
   
   rejectTransaction(id: string): void {
+    console.log('Rejecting transaction:', id);
+    // First find and store a copy of the transaction before sending the API request
+    const transaction = this.pendingTransactions.find(t => t.id === id);
+    if (!transaction) {
+      console.error('Transaction not found:', id);
+      this.snack.ShowSnackbar(new SnackBarCreate(
+        "Error", 
+        "Transaction not found.", 
+        AlertType.Error
+      ));
+      return;
+    }
+    
+    // Create a deep copy of the transaction with the updated status
+    const updatedTransaction = {
+      ...transaction,
+      status: PaymentStatus.failed
+    };
+    
     this.adminService.UpdateAnonymousExchangeStatus(id, PaymentStatus.failed).then(result => {
       if (result.success) {
+        console.log('Transaction rejected successfully:', id);
         this.snack.ShowSnackbar(new SnackBarCreate(
           "Success", 
           "Transaction was successfully rejected.", 
           AlertType.Success
         ));
         
-        // Find the transaction that was rejected and add it to the service
-        const transaction = this.pendingTransactions.find(t => t.id === id);
-        if (transaction) {
-          const updatedTransaction = { ...transaction, status: PaymentStatus.failed };
-          this.transactionUpdateService.addRejectedTransaction(updatedTransaction);
-        }
+        // Add to rejected transactions storage
+        this.transactionUpdateService.addRejectedTransaction(updatedTransaction);
         
+        // Reload the pending transactions list
         this.loadPendingTransactions();
       } else {
+        console.error('Error rejecting transaction:', result.error);
         this.snack.ShowSnackbar(new SnackBarCreate(
           "Error", 
           "Could not reject transaction.", 

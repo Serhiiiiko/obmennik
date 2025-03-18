@@ -26,6 +26,7 @@ export class TransactionUpdateService {
     const currentTransactions = this.approvedTransactionsSubject.getValue();
     // Avoid duplicates
     if (!currentTransactions.some(t => t.id === transaction.id)) {
+      console.log('Adding approved transaction to service:', transaction);
       const updatedTransactions = [...currentTransactions, transaction];
       this.approvedTransactionsSubject.next(updatedTransactions);
       // Save to localStorage
@@ -37,6 +38,7 @@ export class TransactionUpdateService {
     const currentTransactions = this.rejectedTransactionsSubject.getValue();
     // Avoid duplicates
     if (!currentTransactions.some(t => t.id === transaction.id)) {
+      console.log('Adding rejected transaction to service:', transaction);
       const updatedTransactions = [...currentTransactions, transaction];
       this.rejectedTransactionsSubject.next(updatedTransactions);
       // Save to localStorage
@@ -50,6 +52,7 @@ export class TransactionUpdateService {
       const storedApproved = localStorage.getItem(this.APPROVED_STORAGE_KEY);
       if (storedApproved) {
         const parsedData = JSON.parse(storedApproved);
+        console.log('Loaded approved transactions from storage:', parsedData);
         this.approvedTransactionsSubject.next(parsedData);
       }
       
@@ -57,6 +60,7 @@ export class TransactionUpdateService {
       const storedRejected = localStorage.getItem(this.REJECTED_STORAGE_KEY);
       if (storedRejected) {
         const parsedData = JSON.parse(storedRejected);
+        console.log('Loaded rejected transactions from storage:', parsedData);
         this.rejectedTransactionsSubject.next(parsedData);
       }
     } catch (error) {
@@ -69,6 +73,7 @@ export class TransactionUpdateService {
   
   private saveToStorage(key: string, data: any[]) {
     try {
+      console.log(`Saving ${data.length} transactions to ${key}`);
       localStorage.setItem(key, JSON.stringify(data));
     } catch (error) {
       console.error('Error saving transactions to storage:', error);

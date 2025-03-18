@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace CryptExApi.Controllers
@@ -279,6 +280,26 @@ namespace CryptExApi.Controllers
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
+
+        [HttpGet("allAnonymousExchanges")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AnonymousExchange>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetAllAnonymousExchanges([FromQuery] PaymentStatus? status = null)
+        {
+            try
+            {
+                var exchanges = await anonymousExchangeService.GetAllExchanges(status);
+                return Ok(exchanges);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Couldn't get anonymous exchanges.");
+                return exHandler.Handle(ex, Request);
+            }
+        }
+
         // Добавьте этот метод в AdminController.cs или обновите существующий
         [HttpPost("setWalletAddress")]
         [ProducesResponseType(StatusCodes.Status200OK)]

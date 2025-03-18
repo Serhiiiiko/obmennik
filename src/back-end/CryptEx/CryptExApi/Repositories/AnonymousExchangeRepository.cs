@@ -16,6 +16,7 @@ namespace CryptExApi.Repositories
         Task<AnonymousExchange> CreateExchangeRequest(AnonymousExchangeRequestDto dto, decimal exchangeRate, decimal destinationAmount);
         Task<AnonymousExchange> GetExchangeById(Guid id);
         Task<List<AnonymousExchange>> GetPendingExchanges();
+        Task<List<AnonymousExchange>> GetAllExchanges(PaymentStatus? status = null);
         Task UpdateExchangeStatus(Guid id, PaymentStatus status, string adminNotes = null);
         Task ConfirmExchangeTransaction(Guid id, string transactionHash, string senderAddress);
     }
@@ -75,7 +76,22 @@ namespace CryptExApi.Repositories
 
             return exchange;
         }
+        public async Task<List<AnonymousExchange>> GetAllExchanges(PaymentStatus? status = null)
+        {
+            var query = dbContext.AnonymousExchanges
+                .Include(x => x.SourceWallet)
+                .Include(x => x.DestinationWallet)
+                .AsQueryable();
 
+            if (status.HasValue)
+            {
+                query = query.Where(x => x.Status == status.Value);
+            }
+
+            return await query
+                .OrderByDescending(x => x.CreationDate)
+                .ToListAsync();
+        }
         public async Task<List<AnonymousExchange>> GetPendingExchanges()
         {
             return await dbContext.AnonymousExchanges

@@ -19,7 +19,7 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
   paymentStatusRef = PaymentStatus;
   debugInfo: string = '';
   
-  // For auto-refresh functionality
+  private subscription: Subscription;
   private refreshSubscription: Subscription;
   private signalRSubscription: Subscription;
   
@@ -30,21 +30,27 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     public authService: AuthService
   ) { }
 
-  ngOnInit(): void {
-    console.log('UserTransactionsComponent initialized');
-    this.loadTransactions();
-    
-    // Set up auto-refresh every 30 seconds
-    this.refreshSubscription = interval(30000).subscribe(() => {
-      this.refreshTransactions();
+
+
+  ngOnInit() {
+    // Подписываемся на обновления транзакций
+    this.subscription = this.assetConvertService.transactionUpdated$.subscribe(updatedTransaction => {
+      if (updatedTransaction) {
+        console.log('Received transaction update:', updatedTransaction);
+        this.updateTransactionInList(updatedTransaction);
+      }
     });
     
-    // Subscribe to SignalR updates from AssetConvertService
-    this.subscribeToTransactionUpdates();
+    // Загружаем транзакции
+    this.loadTransactions();
   }
   
   ngOnDestroy(): void {
     // Clean up subscriptions to prevent memory leaks
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+    
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
     }

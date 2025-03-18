@@ -28,10 +28,14 @@ export class ApprovedTransactionsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    console.log('ApprovedTransactionsComponent initialized');
+    
     // Subscribe first to get any transactions stored in memory/localStorage
     this.subscription = this.transactionUpdateService.approvedTransactions$.subscribe(transactions => {
+      console.log('Received approved transactions from service:', transactions);
+      // Always update the transactions list, even if empty
+      this.approvedTransactions = transactions;
       if (transactions.length > 0) {
-        this.approvedTransactions = transactions;
         this.loading = false;
       }
     });
@@ -57,6 +61,8 @@ export class ApprovedTransactionsComponent implements OnInit, OnDestroy {
         const approvedFromApi = result.content.filter(
           transaction => transaction.status === PaymentStatus.success
         );
+        
+        console.log('Found approved transactions from API:', approvedFromApi);
         
         if (approvedFromApi.length > 0) {
           // Add to our local service any approved transactions we found from API

@@ -95,6 +95,21 @@ export class AdminService {
   public async GetPendingTransactions(): Promise<ApiResult<any[]>> {
     return this.GetPendingAnonymousExchanges();
   }
+  public async GetApprovedTransactions(): Promise<ApiResult<any[]>> {
+    return this.http.Get("Admin/allAnonymousExchanges", { 
+      params: new HttpParams().set("status", PaymentStatus.success.toString()) 
+    });
+  }
+  
+  public async GetRejectedTransactions(): Promise<ApiResult<any[]>> {
+    return this.http.Get("Admin/allAnonymousExchanges", { 
+      params: new HttpParams().set("status", PaymentStatus.failed.toString()) 
+    });
+  }
+  
+  public async GetAllTransactions(): Promise<ApiResult<any[]>> {
+    return this.http.Get("Admin/allAnonymousExchanges");
+  }
   // Add this to admin.service.ts
 public async GetUserTransactions(): Promise<ApiResult<any[]>> {
   // This should match the endpoint your backend has for user transactions

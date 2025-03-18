@@ -28,10 +28,14 @@ export class RejectedTransactionsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    console.log('RejectedTransactionsComponent initialized');
+    
     // Subscribe first to get any transactions stored in memory/localStorage
     this.subscription = this.transactionUpdateService.rejectedTransactions$.subscribe(transactions => {
+      console.log('Received rejected transactions from service:', transactions);
+      // Always update the transactions list, even if empty
+      this.rejectedTransactions = transactions;
       if (transactions.length > 0) {
-        this.rejectedTransactions = transactions;
         this.loading = false;
       }
     });
@@ -57,6 +61,8 @@ export class RejectedTransactionsComponent implements OnInit, OnDestroy {
         const rejectedFromApi = result.content.filter(
           transaction => transaction.status === PaymentStatus.failed
         );
+        
+        console.log('Found rejected transactions from API:', rejectedFromApi);
         
         if (rejectedFromApi.length > 0) {
           // Add to our local service any rejected transactions we found from API
