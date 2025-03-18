@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -93,10 +94,10 @@ namespace CryptExApi
                         "https://www.cryptex-trade.tech",
                         "https://api.cryptex-trade.tech"
                     );
-                  //y.WithOrigins("cryptex-trade.tech", "www.cryptex-trade.tech");
+                    //y.WithOrigins("cryptex-trade.tech", "www.cryptex-trade.tech");
                 });
             });
-            
+
             services.AddDbContext<CryptExDbContext>(x =>
             {
                 x.UseSqlServer(Configuration.GetConnectionString("Database"), options =>
@@ -148,10 +149,13 @@ namespace CryptExApi
 
             services.AddLogging(x =>
             {
-                if (Environment.IsDevelopment()) {
+                if (Environment.IsDevelopment())
+                {
                     x.AddConsole();
                     x.SetMinimumLevel(LogLevel.Debug);
-                } else if (Environment.IsProduction()) {
+                }
+                else if (Environment.IsProduction())
+                {
                     x.AddApplicationInsights(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
                 }
             });
@@ -181,6 +185,8 @@ namespace CryptExApi
             services.AddTransient<IStripeService, StripeService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IWalletService, WalletService>();
+            services.AddTransient<IAnonymousExchangeService, AnonymousExchangeService>();
+            services.AddScoped<IAnonymousExchangeService, AnonymousExchangeService>();
             services.AddScoped<IChatService, ChatService>();
             if (Environment.IsDevelopment())
                 services.AddTransient<IDataSeeder, DevelopmentDataSeeder>();
@@ -191,7 +197,8 @@ namespace CryptExApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            using (var scope = app.ApplicationServices.CreateScope()) {
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
                 Task.Run(async () =>
                 {
                     var dbContext = scope.ServiceProvider.GetRequiredService<CryptExDbContext>();
@@ -202,7 +209,8 @@ namespace CryptExApi
                 }).Wait();
             }
 
-            if (env.IsDevelopment()) {
+            if (env.IsDevelopment())
+            {
                 app.UseDeveloperExceptionPage();
             }
 
@@ -228,6 +236,8 @@ namespace CryptExApi
                 endpoints.MapControllers();
                 endpoints.MapHub<DepositHub>("/feed/deposits");
                 endpoints.MapHub<AssetConversionHub>("/feed/assetconversion");
+                endpoints.MapHub<AnonymousExchangeHub>("/feed/anonymousexchange")
+                .AllowAnonymous();
             });
         }
     }

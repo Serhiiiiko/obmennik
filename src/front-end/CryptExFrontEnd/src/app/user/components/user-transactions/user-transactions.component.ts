@@ -1,23 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssetConvertService } from 'src/app/asset-convert/services/asset-convert.service';
 import { AdminService } from 'src/app/admin/services/admin.service';
 import { PaymentStatus } from 'src/app/deposit-withdraw/models/deposit-view-model';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { Subscription, interval } from 'rxjs';
 
 @Component({
   selector: 'app-user-transactions',
   templateUrl: './user-transactions.component.html',
   styleUrls: ['./user-transactions.component.scss']
 })
-export class UserTransactionsComponent implements OnInit {
+export class UserTransactionsComponent implements OnInit, OnDestroy {
   transactions: any[] = [];
   expandedTransactionId: string | null = null;
   loading = true;
   paymentStatusRef = PaymentStatus;
-  debugInfo: string = ''; // For debugging
- 
+  debugInfo: string = '';
+  
+  // For auto-refresh functionality
+  private refreshSubscription: Subscription;
+  private signalRSubscription: Subscription;
+  
   constructor(
     private assetConvertService: AssetConvertService,
     private adminService: AdminService,
@@ -28,6 +33,67 @@ export class UserTransactionsComponent implements OnInit {
   ngOnInit(): void {
     console.log('UserTransactionsComponent initialized');
     this.loadTransactions();
+    
+    // Set up auto-refresh every 30 seconds
+    this.refreshSubscription = interval(30000).subscribe(() => {
+      this.refreshTransactions();
+    });
+    
+    // Subscribe to SignalR updates from AssetConvertService
+    this.subscribeToTransactionUpdates();
+  }
+  
+  ngOnDestroy(): void {
+    // Clean up subscriptions to prevent memory leaks
+    if (this.refreshSubscription) {
+      this.refreshSubscription.unsubscribe();
+    }
+    
+    if (this.signalRSubscription) {
+      this.signalRSubscription.unsubscribe();
+    }
+  }
+  
+  subscribeToTransactionUpdates(): void {
+    // Check if there's a transactionUpdated$ observable in the service
+    if (this.assetConvertService.transactionUpdated$) {
+      this.signalRSubscription = this.assetConvertService.transactionUpdated$.subscribe(updatedTransaction => {
+        console.log('Received transaction update via SignalR:', updatedTransaction);
+        
+        if (updatedTransaction) {
+          // Find and update the transaction in our list
+          this.updateTransactionInList(updatedTransaction);
+        }
+      });
+    }
+  }
+  
+  updateTransactionInList(updatedTransaction: any): void {
+    const index = this.transactions.findIndex(t => t.id === updatedTransaction.id);
+    
+    if (index !== -1) {
+      // Update existing transaction
+      this.transactions[index] = {...this.transactions[index], ...updatedTransaction};
+      
+      // Show notification to user
+      const statusText = this.getTransactionStatusText(updatedTransaction.status);
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Transaction Updated",
+        `Transaction status changed to: ${statusText}`,
+        updatedTransaction.status === PaymentStatus.success ? AlertType.Success :
+        updatedTransaction.status === PaymentStatus.failed ? AlertType.Error :
+        AlertType.Info
+      ));
+    } else {
+      // This is a new transaction, add it to the list
+      this.transactions.push(updatedTransaction);
+    }
+  }
+
+  refreshTransactions(): void {
+    console.log('Refreshing transactions automatically');
+    // We don't set loading=true here to avoid UI flickering during refresh
+    this.tryMultipleApproaches(false);
   }
 
   loadTransactions(): void {
@@ -36,13 +102,13 @@ export class UserTransactionsComponent implements OnInit {
     console.log('Loading transactions, auth status:', this.authService.IsAuthenticated);
    
     // Try different approaches to get transactions
-    this.tryMultipleApproaches();
+    this.tryMultipleApproaches(true);
   }
 
-  tryMultipleApproaches(): void {
+  tryMultipleApproaches(showLoading: boolean = true): void {
     // Try the first approach - getting all transactions
     this.assetConvertService.GetTransactions(null).then(result => {
-      this.handleTransactionResult(result, 'Method 1: GetTransactions(null)');
+      this.handleTransactionResult(result, 'Method 1: GetTransactions(null)', showLoading);
     }).catch(error => {
       console.error('Error in Method 1:', error);
       this.debugInfo += '\nMethod 1 failed: ' + JSON.stringify(error);
@@ -50,14 +116,14 @@ export class UserTransactionsComponent implements OnInit {
       // If that fails, try a different approach - might be a function in AdminService
       if (this.adminService.GetUserTransactions) {
         this.adminService.GetUserTransactions().then(result => {
-          this.handleTransactionResult(result, 'Method 2: AdminService.GetUserTransactions()');
+          this.handleTransactionResult(result, 'Method 2: AdminService.GetUserTransactions()', showLoading);
         }).catch(adminError => {
           console.error('Error in Method 2:', adminError);
           this.debugInfo += '\nMethod 2 failed: ' + JSON.stringify(adminError);
-          this.showLoadingError();
+          if (showLoading) this.showLoadingError();
         });
       } else {
-        this.showLoadingError();
+        if (showLoading) this.showLoadingError();
       }
     }).finally(() => {
       // Regardless of success/failure, try to get pending anonymous exchanges 
@@ -66,24 +132,65 @@ export class UserTransactionsComponent implements OnInit {
     });
   }
 
-  handleTransactionResult(result: any, methodName: string): void {
-    this.loading = false;
+  handleTransactionResult(result: any, methodName: string, showLoading: boolean): void {
+    if (showLoading) this.loading = false;
     console.log(`${methodName} result:`, result);
     this.debugInfo += `\n${methodName} result: ${JSON.stringify(result)}`;
     
     if (result && result.success) {
       if (Array.isArray(result.content)) {
-        this.transactions = result.content;
+        // Merge with existing transactions, updating status for existing ones
+        this.mergeTransactions(result.content);
         console.log('Transactions loaded successfully, count:', this.transactions.length);
         this.debugInfo += `\nLoaded ${this.transactions.length} transactions`;
       } else {
         console.warn('Expected array but got:', typeof result.content);
         this.debugInfo += `\nUnexpected response format: ${typeof result.content}`;
         // Try to convert to array if possible
-        this.transactions = [result.content];
+        this.mergeTransactions([result.content]);
       }
-    } else {
+    } else if (showLoading) {
       this.showLoadingError();
+    }
+  }
+  
+  mergeTransactions(newTransactions: any[]): void {
+    if (!newTransactions || newTransactions.length === 0) return;
+    
+    // Create a map of existing transactions by ID for quick lookup
+    const existingTransactionsMap = new Map(
+      this.transactions.map(transaction => [transaction.id, transaction])
+    );
+    
+    // Update existing transactions and collect new ones
+    for (const newTransaction of newTransactions) {
+      if (newTransaction && newTransaction.id) {
+        if (existingTransactionsMap.has(newTransaction.id)) {
+          // Update existing transaction
+          const index = this.transactions.findIndex(t => t.id === newTransaction.id);
+          if (index !== -1) {
+            // If status changed, show notification
+            const oldStatus = this.transactions[index].status;
+            const newStatus = newTransaction.status;
+            
+            if (oldStatus !== newStatus) {
+              const statusText = this.getTransactionStatusText(newStatus);
+              this.snackbar.ShowSnackbar(new SnackBarCreate(
+                "Transaction Updated",
+                `Transaction status changed to: ${statusText}`,
+                newStatus === PaymentStatus.success ? AlertType.Success :
+                newStatus === PaymentStatus.failed ? AlertType.Error :
+                AlertType.Info
+              ));
+            }
+            
+            this.transactions[index] = { ...this.transactions[index], ...newTransaction };
+          }
+        } else {
+          // Add new transaction
+          this.transactions.push(newTransaction);
+        }
+      }
     }
   }
 
@@ -95,9 +202,8 @@ export class UserTransactionsComponent implements OnInit {
         this.debugInfo += '\nAnonymous exchanges result: ' + JSON.stringify(result);
         
         if (result && result.success && Array.isArray(result.content)) {
-          const anonTransactions = result.content;
-          // Add these to the transactions array
-          this.transactions = [...this.transactions, ...anonTransactions];
+          // Merge with existing transactions
+          this.mergeTransactions(result.content);
           console.log('Added anonymous exchanges, total transactions:', this.transactions.length);
         }
       }).catch(error => {
@@ -117,8 +223,8 @@ export class UserTransactionsComponent implements OnInit {
         console.log('Local storage transactions:', localTransactions);
         this.debugInfo += '\nLocal storage transactions: ' + storedTransactions;
         
-        // Add these to the transactions array
-        this.transactions = [...this.transactions, ...localTransactions];
+        // Merge with existing transactions
+        this.mergeTransactions(localTransactions);
       }
     } catch (error) {
       console.error('Error loading from localStorage:', error);
@@ -200,5 +306,16 @@ export class UserTransactionsComponent implements OnInit {
         AlertType.Error
       ));
     });
+  }
+  
+  // Method to manually refresh transactions
+  manualRefresh(): void {
+    this.loading = true;
+    this.loadTransactions();
+    this.snackbar.ShowSnackbar(new SnackBarCreate(
+      "Refreshing",
+      "Refreshing transaction list...",
+      AlertType.Info
+    ));
   }
 }

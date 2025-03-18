@@ -1,6 +1,17 @@
 <div class="container mx-auto px-4 py-6">
     <h1 class="text-2xl font-bold mb-6">{{ 'Transactions.Title' | translate }}</h1>
     
+    <!-- Add a refresh button -->
+    <div class="mb-4 flex justify-end">
+      <button (click)="manualRefresh()" 
+              class="flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+        </svg>
+        {{ 'Transactions.Refresh' | translate }}
+      </button>
+    </div>
+    
     <div *ngIf="loading" class="flex justify-center py-8">
       <svg class="animate-spin h-10 w-10 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -118,7 +129,39 @@
             </div>
           </div>
           
-          <div *ngIf="transaction.status !== paymentStatusRef.success" class="mb-4">
+          <!-- For failed transactions -->
+          <div *ngIf="transaction.status === paymentStatusRef.failed" class="mb-4">
+            <div class="flex items-center mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <h3 class="text-lg font-medium text-red-700">{{ 'Transactions.FailedTransaction' | translate }}</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p class="text-sm text-gray-500">{{ 'Transactions.From' | translate }}</p>
+                <p class="font-medium">{{ transaction.amount }} {{ transaction.pair.left.ticker }}</p>
+              </div>
+              
+              <div>
+                <p class="text-sm text-gray-500">{{ 'Transactions.To' | translate }}</p>
+                <p class="font-medium">{{ (transaction.amount * transaction.pair.rate).toFixed(4) }} {{ transaction.pair.right.ticker }}</p>
+              </div>
+              
+              <div>
+                <p class="text-sm text-gray-500">{{ 'Transactions.Date' | translate }}</p>
+                <p class="font-medium">{{ getFormattedDate(transaction.creationDate || transaction.date) }}</p>
+              </div>
+              
+              <div *ngIf="transaction.adminNotes" class="col-span-1 md:col-span-2">
+                <p class="text-sm text-gray-500">{{ 'Transactions.FailureReason' | translate }}</p>
+                <p class="font-medium text-red-600">{{ transaction.adminNotes }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="transaction.status !== paymentStatusRef.success && transaction.status !== paymentStatusRef.failed" class="mb-4">
             <!-- Pending transaction details -->
             <div class="flex items-center mb-3">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -149,8 +192,24 @@
                 <p class="font-medium">{{ getFormattedDate(transaction.creationDate || transaction.date) }}</p>
               </div>
               
+              <!-- Transaction hash if available -->
+              <div *ngIf="transaction.transactionHash" class="col-span-1 md:col-span-2">
+                <p class="text-sm text-gray-500">{{ 'Transactions.TransactionHash' | translate }}</p>
+                <div class="flex items-center">
+                  <p class="font-mono text-sm mr-2 bg-white p-2 rounded border border-gray-200 overflow-x-auto">
+                    {{ transaction.transactionHash }}
+                  </p>
+                  <button (click)="copyToClipboard(transaction.transactionHash)" 
+                          class="p-1 text-indigo-600 hover:text-indigo-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              
               <!-- For pending verification, show wallet address for deposit -->
-              <div *ngIf="transaction.status === paymentStatusRef.awaitingVerification && transaction.pair.left.adminWalletAddress" class="col-span-1 md:col-span-2 bg-yellow-50 p-3 rounded-md">
+              <div *ngIf="transaction.status === paymentStatusRef.awaitingVerification && transaction.pair && transaction.pair.left && transaction.pair.left.adminWalletAddress" class="col-span-1 md:col-span-2 bg-yellow-50 p-3 rounded-md">
                 <p class="text-sm font-medium text-yellow-700 mb-2">{{ 'Transactions.SendToAddress' | translate }}</p>
                 <div class="flex items-center">
                   <p class="font-mono text-sm mr-2 bg-white p-2 rounded border border-gray-200 overflow-x-auto">
@@ -180,5 +239,10 @@
           </div>
         </div>
       </div>
+    </div>
+    
+    <!-- Auto-refresh indicator -->
+    <div class="mt-4 text-center text-sm text-gray-500">
+      <p>{{ 'Transactions.AutoRefresh' | translate }}</p>
     </div>
   </div>

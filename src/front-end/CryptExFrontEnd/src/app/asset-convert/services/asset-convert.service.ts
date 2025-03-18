@@ -14,6 +14,8 @@ import { AnonymousExchangeConfirmationDto, AnonymousExchangeRequestDto } from '.
 import { WalletViewModel } from '../../wallet/models/wallet-view-model';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { PaymentStatus } from 'src/app/deposit-withdraw/models/deposit-view-model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +25,10 @@ export class AssetConvertService {
   private guestTransactions: Map<string, AssetConversionLockViewModel> = new Map();
   private hubConnection: signalR.HubConnection;
   private anonymousExchangeHubConnection: signalR.HubConnection;
+  
+  // Add a subject to broadcast transaction updates
+  private transactionUpdatedSubject = new BehaviorSubject<any>(null);
+  public transactionUpdated$ = this.transactionUpdatedSubject.asObservable();
   
   // Fallback rates for cryptocurrencies in USD
   private fallbackRates = {
@@ -65,12 +71,29 @@ export class AssetConvertService {
       this.handleExchangeStatusUpdate(data);
     });
 
-    this.anonymousExchangeHubConnection.start()
-      .catch(err => console.error('Error starting Anonymous Exchange SignalR connection:', err));
+    // Start the connection with retry logic
+    this.startAnonymousExchangeConnection();
+  }
+  
+  private async startAnonymousExchangeConnection(retryAttempt = 0): Promise<void> {
+    try {
+      await this.anonymousExchangeHubConnection.start();
+      console.log('SignalR connected for anonymous exchanges');
+    } catch (err) {
+      console.error('Error starting Anonymous Exchange SignalR connection:', err);
+      // Retry with exponential backoff up to 5 times
+      if (retryAttempt < 5) {
+        const delayMs = Math.min(1000 * Math.pow(2, retryAttempt), 30000);
+        console.log(`Retrying in ${delayMs}ms...`);
+        setTimeout(() => this.startAnonymousExchangeConnection(retryAttempt + 1), delayMs);
+      }
+    }
   }
 
   // Обработка обновления статуса обмена
   private handleExchangeStatusUpdate(data: any): void {
+    console.log('Received exchange status update:', data);
+    
     const statusMap = {
       '-1': 'Not Processed',
       '0': 'Failed',
@@ -79,13 +102,51 @@ export class AssetConvertService {
       '3': 'Awaiting Verification'
     };
 
-    this.snackbar.ShowSnackbar(new SnackBarCreate(
-      "Exchange Status Update", 
-      `Your exchange ${data.exchangeId} status is now: ${statusMap[data.status]}`, 
-      data.status === 1 ? AlertType.Success : 
-      data.status === 0 ? AlertType.Error : 
-      AlertType.Info
-    ));
+    // Update transactions in local storage if this transaction exists there
+    this.updateLocalStorageTransaction(data);
+    
+    // Broadcast the updated transaction to subscribers (like UserTransactionsComponent)
+    this.transactionUpdatedSubject.next(data);
+
+    // Only show notification if we have exchange ID and status
+    if (data && data.id && data.status !== undefined) {
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Exchange Status Update", 
+        `Your exchange ${data.id.substring(0, 8)}... status is now: ${statusMap[data.status] || data.status}`, 
+        data.status === 1 ? AlertType.Success : 
+        data.status === 0 ? AlertType.Error : 
+        AlertType.Info
+      ));
+    }
+  }
+  
+  // Update transaction in localStorage if it exists
+  private updateLocalStorageTransaction(updatedTransaction: any): void {
+    if (!updatedTransaction || !updatedTransaction.id) return;
+    
+    try {
+      const storedTransactionsJson = localStorage.getItem('anonymousTransactions');
+      if (storedTransactionsJson) {
+        const storedTransactions = JSON.parse(storedTransactionsJson);
+        const index = storedTransactions.findIndex(t => t.id === updatedTransaction.id);
+        
+        if (index !== -1) {
+          // Update the transaction data
+          storedTransactions[index] = {
+            ...storedTransactions[index],
+            status: updatedTransaction.status,
+            // Add any other properties that might have changed
+            transactionHash: updatedTransaction.transactionHash || storedTransactions[index].transactionHash
+          };
+          
+          // Save back to localStorage
+          localStorage.setItem('anonymousTransactions', JSON.stringify(storedTransactions));
+          console.log('Updated transaction in localStorage:', updatedTransaction.id);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating localStorage transaction:', error);
+    }
   }
 
   // Существующие методы остаются без изменений
@@ -120,10 +181,11 @@ export class AssetConvertService {
     this.hubConnection?.on('assetconversiondata', (data) => {
       console.log("data received", data);
       this.transaction = data as AssetConverssionViewModel;
+      
+      // Also broadcast this update
+      this.transactionUpdatedSubject.next(data);
     })
   }
-
-
 
   public async GetTransactionLock(id: string): Promise<ApiResult<AssetConversionLockViewModel>> {
     // Check if we have a stored guest transaction
@@ -274,12 +336,33 @@ export class AssetConvertService {
   }
 
   public async ConfirmAnonymousTransaction(dto: AnonymousExchangeConfirmationDto): Promise<ApiResult> {
-    return this.http.Post("PublicExchange/confirmTransaction", dto);
+    const result = await this.http.Post("PublicExchange/confirmTransaction", dto);
+    
+    if (result.success) {
+      // Update the transaction in localStorage
+      this.updateLocalStorageTransaction({
+        id: dto.exchangeId,
+        status: PaymentStatus.pending,
+        transactionHash: dto.transactionHash,
+        senderWalletAddress: dto.senderWalletAddress
+      });
+      
+      // Broadcast the update
+      this.transactionUpdatedSubject.next({
+        id: dto.exchangeId,
+        status: PaymentStatus.pending,
+        transactionHash: dto.transactionHash,
+        senderWalletAddress: dto.senderWalletAddress
+      });
+    }
+    
+    return result;
   }
-  // Add this method to your asset-convert.service.ts
+  
   public async GetAnonymousExchanges(): Promise<ApiResult<any[]>> {
     return this.http.Get("Admin/anonymousExchanges");
   }
+  
   public async GetExchangeInfo(id: string): Promise<ApiResult<any>> {
     return this.http.Get(`PublicExchange/exchange/${id}`);
   }

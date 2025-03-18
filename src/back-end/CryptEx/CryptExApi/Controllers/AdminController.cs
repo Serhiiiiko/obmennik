@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CryptExApi.Models;
 using CryptExApi.Models.Database;
+using CryptExApi.Models.SignalR;
 using CryptExApi.Models.ViewModel;
 using CryptExApi.Models.ViewModel.Admin;
 using CryptExApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace CryptExApi.Controllers
@@ -24,14 +26,17 @@ namespace CryptExApi.Controllers
         private readonly IUserService userService;
         private readonly IAssetConvertService assetConvertService;
         private readonly IAnonymousExchangeService anonymousExchangeService;
+        private readonly IHubContext<AnonymousExchangeHub> hubContext;
 
         public AdminController(
             ILogger<AdminController> logger,
+            IHubContext<AnonymousExchangeHub> hubContext,
             IExceptionHandlerService exHandler,
             IAdminService adminService,
             IUserService userService,
             IAssetConvertService assetConvertService,
             IAnonymousExchangeService anonymousExchangeService)
+
         {
             this.logger = logger;
             this.exHandler = exHandler;
@@ -39,6 +44,7 @@ namespace CryptExApi.Controllers
             this.userService = userService;
             this.assetConvertService = assetConvertService;
             this.anonymousExchangeService = anonymousExchangeService;
+            this.hubContext = hubContext;
         }
 
         [HttpGet("user")]
@@ -48,11 +54,14 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetFullUser([FromQuery] Guid userId)
         {
-            try {
+            try
+            {
                 var user = await userService.GetFullUser(userId);
 
                 return Ok(user);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.LogWarning(ex, "Couldn't get user.");
                 return exHandler.Handle(ex, Request);
             }
@@ -65,11 +74,14 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> SearchUser([FromQuery] string query)
         {
-            try {
+            try
+            {
                 var users = await adminService.SearchUser(query);
 
                 return Ok(users);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.LogWarning(ex, "Couldn't search user.");
                 return exHandler.Handle(ex, Request);
             }
@@ -82,11 +94,14 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetStats()
         {
-            try {
+            try
+            {
                 var stats = await adminService.GetStats();
 
                 return Ok(stats);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.LogWarning(ex, "Couldn't get stats");
                 return exHandler.Handle(ex, Request);
             }
@@ -99,11 +114,14 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAllDeposits([FromQuery] Guid? userId, [FromQuery] PaymentStatus? status, [FromQuery] WalletType? type)
         {
-            try {
+            try
+            {
                 var deposits = await adminService.GetAllDeposits(userId, status, type.GetValueOrDefault(WalletType.Fiat));
 
                 return Ok(deposits);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.LogWarning(ex, "Couldn't get all deposits.");
                 return exHandler.Handle(ex, Request);
             }
@@ -116,11 +134,14 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> SetPaymentStatus([FromQuery] string sessionId, [FromQuery] PaymentStatus status)
         {
-            try {
+            try
+            {
                 await adminService.SetPaymentStatus(sessionId, status);
 
                 return Ok();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.LogWarning(ex, "Couldn't set payment status");
                 return exHandler.Handle(ex, Request);
             }
@@ -133,11 +154,14 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> SetPaymentAmount([FromQuery] Guid id, [FromQuery] decimal amount)
         {
-            try {
+            try
+            {
                 await adminService.SetPaymentAmount(id, amount);
 
                 return Ok();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.LogWarning(ex, "Couldn't set payment amount");
                 return exHandler.Handle(ex, Request);
             }
@@ -150,11 +174,14 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> SetCryptoDepositStatus([FromQuery] Guid id, [FromQuery] PaymentStatus status)
         {
-            try {
+            try
+            {
                 await adminService.SetPaymentStatus(id, status);
 
                 return Ok();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.LogWarning(ex, "Couldn't set payment status");
                 return exHandler.Handle(ex, Request);
             }
@@ -167,11 +194,14 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetPendingBankAccounts()
         {
-            try {
+            try
+            {
                 var result = await adminService.GetPendingBankAccounts();
 
                 return Ok(result);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.LogWarning(ex, "Couldn't get pending bank accounts.");
                 return exHandler.Handle(ex, Request);
             }
@@ -200,6 +230,7 @@ namespace CryptExApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AnonymousExchange>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetPendingAnonymousExchanges()
         {
             try
@@ -215,26 +246,39 @@ namespace CryptExApi.Controllers
         }
 
         [HttpPost("anonymousExchanges/update")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateAnonymousExchangeStatus(
-            [FromQuery] Guid exchangeId,
-            [FromQuery] PaymentStatus status,
-            [FromBody] string adminNotes = null)
+    [FromQuery] Guid exchangeId,
+    [FromQuery] PaymentStatus status,
+    [FromBody] string adminNotes = null)
         {
             try
             {
+                var exchange = await anonymousExchangeService.GetExchangeById(exchangeId);
+
+                // Добавьте логирование для отладки
+                logger.LogInformation($"Updating exchange {exchangeId} status to {status}");
+
+                // Обновление статуса
                 await anonymousExchangeService.UpdateExchangeStatus(exchangeId, status, adminNotes);
-                return Ok();
+
+                // Отправка SignalR уведомления
+                await hubContext.Clients.User(exchange.UserEmail)
+            .SendAsync("anonymousexchangedata", new
+            {
+                exchangeId = exchangeId,
+                status = (int)status,
+                adminNotes = adminNotes
+            });
+
+                return Ok(new { success = true });
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, "Couldn't update anonymous exchange status.");
-                return exHandler.Handle(ex, Request);
+                logger.LogError(ex, $"Error updating exchange {exchangeId} status");
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
-
         // Добавьте этот метод в AdminController.cs или обновите существующий
         [HttpPost("setWalletAddress")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -257,11 +301,14 @@ namespace CryptExApi.Controllers
         [HttpPost("setAccountStatus")]
         public async Task<IActionResult> SetAccountStatus([FromQuery] Guid userId, [FromQuery] AccountStatus status)
         {
-            try {
+            try
+            {
                 await userService.SetAccountStatus(userId, status);
-                
+
                 return Ok();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.LogWarning(ex, "Could not set accoutn status");
                 return exHandler.Handle(ex, Request);
             }

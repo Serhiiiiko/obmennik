@@ -28,5 +28,6 @@ namespace CryptExApi.Models.DTO
         public decimal ExchangeRate { get; set; }
         public string AdminWalletAddress { get; set; }
         public PaymentStatus Status { get; set; }
+        public string UserEmail { get; internal set; }
     }
 }

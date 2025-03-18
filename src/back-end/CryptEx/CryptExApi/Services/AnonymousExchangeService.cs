@@ -5,7 +5,9 @@ using CryptExApi.Exceptions;
 using CryptExApi.Models;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.DTO;
+using CryptExApi.Models.SignalR;
 using CryptExApi.Repositories;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CryptExApi.Services
 {
@@ -22,13 +24,16 @@ namespace CryptExApi.Services
     {
         private readonly IAnonymousExchangeRepository anonymousExchangeRepository;
         private readonly IWalletRepository walletRepository;
+        private readonly IHubContext<AnonymousExchangeHub> hubContext;
 
         public AnonymousExchangeService(
             IAnonymousExchangeRepository anonymousExchangeRepository,
-            IWalletRepository walletRepository)
+            IWalletRepository walletRepository,
+            IHubContext<AnonymousExchangeHub> hubContext)
         {
             this.anonymousExchangeRepository = anonymousExchangeRepository;
             this.walletRepository = walletRepository;
+            this.hubContext = hubContext;
         }
 
         public async Task<AnonymousExchangeResponseDto> CreateExchangeRequest(AnonymousExchangeRequestDto dto)
@@ -99,6 +104,19 @@ namespace CryptExApi.Services
 
         public async Task UpdateExchangeStatus(Guid id, PaymentStatus status, string adminNotes = null)
         {
+            var exchange = await anonymousExchangeRepository.GetExchangeById(id);
+            if (exchange == null)
+                throw new NotFoundException("Exchange not found");
+            await anonymousExchangeRepository.UpdateExchangeStatus(id, status, adminNotes);
+
+            // Уведомляем пользователя через SignalR
+            await hubContext.Clients.User(exchange.UserEmail)
+                .SendAsync(AnonymousExchangeHub.Name, new
+                {
+                    ExchangeId = id,
+                    Status = status,
+                    AdminNotes = adminNotes
+                });
             await anonymousExchangeRepository.UpdateExchangeStatus(id, status, adminNotes);
         }
 
