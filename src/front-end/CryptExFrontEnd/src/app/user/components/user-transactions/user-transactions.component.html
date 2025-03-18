@@ -246,3 +246,69 @@
       <p>{{ 'Transactions.AutoRefresh' | translate }}</p>
     </div>
   </div>
+
+  <!-- Add this at the bottom of user-transactions.component.html -->
+<div *ngIf="showDebugPanel" class="bg-gray-900 text-gray-100 p-4 rounded-lg mt-8 text-sm font-mono">
+    <div class="flex justify-between items-center mb-2">
+      <h3 class="text-lg font-bold">Diagnostics Panel</h3>
+      <button (click)="showDebugPanel = false" class="text-gray-400 hover:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div>
+        <p class="text-gray-400">SignalR Status:</p>
+        <p [ngClass]="signalRStatus === 'Connected' ? 'text-green-400' : 'text-red-400'">
+          {{signalRStatus}}
+        </p>
+      </div>
+      <div>
+        <p class="text-gray-400">Transactions Count:</p>
+        <p>{{transactions.length}}</p>
+      </div>
+      <div>
+        <p class="text-gray-400">Last Update:</p>
+        <p>{{lastUpdate || 'None'}}</p>
+      </div>
+      <div>
+        <p class="text-gray-400">Auth Status:</p>
+        <p>{{authService.IsAuthenticated ? 'Authenticated' : 'Guest'}}</p>
+      </div>
+    </div>
+    
+    <div class="mb-4">
+      <p class="text-gray-400 mb-1">Debug Log:</p>
+      <div class="bg-gray-800 p-2 rounded h-32 overflow-y-auto">
+        <pre>{{debugInfo}}</pre>
+      </div>
+    </div>
+    
+    <div class="flex space-x-3">
+      <button 
+        (click)="refreshTransactionsFromServer()"
+        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
+        Force Refresh
+      </button>
+      <button 
+        (click)="checkSignalRConnection()"
+        class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
+        Check SignalR
+      </button>
+      <button 
+        (click)="clearLocalStorage()"
+        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+        Clear Cache
+      </button>
+    </div>
+  </div>
+  
+  <!-- Add a "Debug" button somewhere in the page (like in the top-right corner) -->
+  <button 
+    *ngIf="!showDebugPanel"
+    (click)="showDebugPanel = true"
+    class="fixed bottom-4 right-4 bg-gray-700 text-white px-3 py-1 rounded hover:bg-gray-600 text-sm">
+    Debug
+  </button>
