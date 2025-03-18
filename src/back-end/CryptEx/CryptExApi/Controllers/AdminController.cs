@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CryptExApi.Exceptions;
 using CryptExApi.Models;
 using CryptExApi.Models.Database;
 using CryptExApi.Models.SignalR;
@@ -256,21 +257,29 @@ namespace CryptExApi.Controllers
             try
             {
                 var exchange = await anonymousExchangeService.GetExchangeById(exchangeId);
+                if (exchange == null)
+                    throw new NotFoundException("Exchange not found");
 
-                // Добавьте логирование для отладки
                 logger.LogInformation($"Updating exchange {exchangeId} status to {status}");
 
-                // Обновление статуса
+                // Update the database
                 await anonymousExchangeService.UpdateExchangeStatus(exchangeId, status, adminNotes);
 
-                // Отправка SignalR уведомления
-                await hubContext.Clients.User(exchange.UserEmail)
-            .SendAsync("anonymousexchangedata", new
-            {
-                exchangeId = exchangeId,
-                status = (int)status,
-                adminNotes = adminNotes
-            });
+                // Create a data object containing all important fields
+                var notificationData = new
+                {
+                    id = exchangeId.ToString(),
+                    status = (int)status,
+                    adminNotes = adminNotes ?? "",
+                    userEmail = exchange.UserEmail,
+                    // Remove the transactionHash reference since it's not available in AnonymousExchangeResponseDto
+                    timestamp = DateTime.UtcNow
+                };
+
+                // Send to all clients instead of trying to target by email
+                await hubContext.Clients.All.SendAsync(AnonymousExchangeHub.Name, notificationData);
+
+                logger.LogInformation($"SignalR notification sent for exchange {exchangeId}");
 
                 return Ok(new { success = true });
             }

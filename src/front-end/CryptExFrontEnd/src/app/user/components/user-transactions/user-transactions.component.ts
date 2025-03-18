@@ -5,7 +5,9 @@ import { PaymentStatus } from 'src/app/deposit-withdraw/models/deposit-view-mode
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { Subscription, interval } from 'rxjs';
+import { Subscription, interval, merge, of } from 'rxjs';
+import { switchMap, catchError, delay } from 'rxjs/operators';
+import { AnonymousExchangeConfirmationDto } from 'src/app/asset-convert/models/anonymous-exchange-request-dto';
 
 @Component({
   selector: 'app-user-transactions',
@@ -19,12 +21,16 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
   paymentStatusRef = PaymentStatus;
   debugInfo: string = '';
   showDebugPanel: boolean = false;
-signalRStatus: string = 'Unknown';
-lastUpdate: string = null;
+  signalRStatus: string = 'Unknown';
+  lastUpdate: string = null;
+  userEmail: string = '';
+  newTransactionHash: string = '';
+  isConfirming: boolean = false;
   
   private subscription: Subscription;
   private refreshSubscription: Subscription;
   private signalRSubscription: Subscription;
+  private connectionStatusSubscription: Subscription;
   
   constructor(
     private assetConvertService: AssetConvertService,
@@ -34,12 +40,36 @@ lastUpdate: string = null;
   ) { }
 
   ngOnInit() {
+    this.debugInfo = 'Component initialized at ' + new Date().toISOString();
+    
+    // Get user email from localStorage for guest users
+    if (!this.authService.IsAuthenticated) {
+      try {
+        const storedTransactions = localStorage.getItem('anonymousTransactions');
+        if (storedTransactions) {
+          const transactions = JSON.parse(storedTransactions);
+          if (transactions.length > 0 && transactions[0].userEmail) {
+            this.userEmail = transactions[0].userEmail;
+            this.debugInfo += '\nFound user email in stored transactions: ' + this.userEmail;
+          }
+        }
+      } catch (error) {
+        console.error('Error reading stored transactions:', error);
+      }
+    }
+    
     // Subscribe to transaction updates first
     this.subscription = this.assetConvertService.transactionUpdated$.subscribe(updatedTransaction => {
       if (updatedTransaction) {
         console.log('Received transaction update:', updatedTransaction);
         this.updateTransactionInList(updatedTransaction);
       }
+    });
+    
+    // Monitor connection status
+    this.connectionStatusSubscription = this.assetConvertService['connectionStatus$']?.subscribe(status => {
+      this.signalRStatus = status;
+      this.debugInfo += `\nSignalR connection status changed to: ${status}`;
     });
     
     // Then load initial transactions
@@ -64,38 +94,28 @@ lastUpdate: string = null;
     if (this.signalRSubscription) {
       this.signalRSubscription.unsubscribe();
     }
+    
+    if (this.connectionStatusSubscription) {
+      this.connectionStatusSubscription.unsubscribe();
+    }
   }
+  
   checkSignalRConnection(): void {
-    // Try to check the connection status via the AssetConvertService
-    if (this.assetConvertService['anonymousExchangeHubConnection']) {
-      const connection = this.assetConvertService['anonymousExchangeHubConnection'];
-      const connectionState = connection.state;
-      
-      this.signalRStatus = connectionState;
-      this.debugInfo += `\nSignalR connection state: ${connectionState}`;
-      
-      this.snackbar.ShowSnackbar(new SnackBarCreate(
-        "SignalR Status", 
-        `Connection is ${connectionState}`, 
-        connectionState === 'Connected' ? AlertType.Success : AlertType.Warning
-      ));
-      
-      // If not connected, try to restart
-      if (connectionState !== 'Connected') {
-        this.debugInfo += '\nAttempting to restart SignalR connection...';
-        if (typeof this.assetConvertService['startAnonymousExchangeConnection'] === 'function') {
-          this.assetConvertService['startAnonymousExchangeConnection']();
-        }
-      }
-    } else {
-      this.signalRStatus = 'Not Available';
-      this.debugInfo += '\nSignalR connection object not available';
-      
-      this.snackbar.ShowSnackbar(new SnackBarCreate(
-        "SignalR Status", 
-        "Connection not available", 
-        AlertType.Error
-      ));
+    // Get the current connection status directly from the service
+    const status = this.assetConvertService['getConnectionStatus']();
+    this.signalRStatus = status;
+    this.debugInfo += `\nSignalR current status: ${status}`;
+    
+    this.snackbar.ShowSnackbar(new SnackBarCreate(
+      "SignalR Status", 
+      `Connection is ${status}`, 
+      status === 'Connected' ? AlertType.Success : AlertType.Warning
+    ));
+    
+    // If not connected, try to restart
+    if (status !== 'Connected') {
+      this.debugInfo += '\nAttempting to rebuild SignalR connection...';
+      this.assetConvertService['rebuildConnection']();
     }
   }
   
@@ -118,11 +138,12 @@ lastUpdate: string = null;
       this.debugInfo += `\nError clearing localStorage: ${error.message}`;
     }
   }
+  
   updateTransactionInList(updatedTransaction: any): void {
     this.lastUpdate = new Date().toLocaleTimeString();
-  
-  // Add to debug info
-  this.debugInfo += `\n${this.lastUpdate} - Updated transaction ${updatedTransaction.id} to status ${updatedTransaction.status}`;
+    
+    // Add to debug info
+    this.debugInfo += `\n${this.lastUpdate} - Updated transaction ${updatedTransaction.id} to status ${updatedTransaction.status}`;
 
     if (!updatedTransaction || !updatedTransaction.id) {
       console.warn('Received invalid transaction update:', updatedTransaction);
@@ -141,23 +162,19 @@ lastUpdate: string = null;
       const oldStatus = this.transactions[index].status;
       const newStatus = updatedTransaction.status;
       
+      // Create a deep copy of the transaction to ensure all properties are preserved
+      const updatedTx = {
+        ...this.transactions[index],  // Keep all original properties
+        ...updatedTransaction         // Update with new properties
+      };
+      
+      console.log('Updated transaction object:', updatedTx);
+      
+      // Replace the transaction in the array
+      this.transactions[index] = updatedTx;
+      
+      // Show notification to user if status changed
       if (oldStatus !== newStatus) {
-        // Create a deep copy of the transaction to ensure all properties are preserved
-        const updatedTx = {
-          ...this.transactions[index],  // Keep all original properties
-          status: newStatus             // Update the status
-        };
-        
-        // Add any additional properties from the update
-        if (updatedTransaction.adminNotes) updatedTx.adminNotes = updatedTransaction.adminNotes;
-        if (updatedTransaction.transactionHash) updatedTx.transactionHash = updatedTransaction.transactionHash;
-        
-        console.log('Updated transaction object:', updatedTx);
-        
-        // Replace the transaction in the array
-        this.transactions[index] = updatedTx;
-        
-        // Show notification to user
         const statusText = this.getTransactionStatusText(newStatus);
         this.snackbar.ShowSnackbar(new SnackBarCreate(
           "Transaction Updated",
@@ -166,19 +183,31 @@ lastUpdate: string = null;
           newStatus === PaymentStatus.failed ? AlertType.Error :
           AlertType.Info
         ));
-        
-        // Force Angular change detection
-        this.transactions = [...this.transactions];
-      } else {
-        console.log('Transaction status unchanged, no update needed');
       }
-    } else {
-      // This is a new transaction, add it to the list
-      console.log('New transaction, adding to list:', updatedTransaction);
-      this.transactions.push(updatedTransaction);
       
       // Force Angular change detection
       this.transactions = [...this.transactions];
+    } else {
+      // This is a new transaction, add it to the list
+      console.log('New transaction, adding to list:', updatedTransaction);
+      
+      // Only add the transaction if:
+      // 1. User is authenticated, or
+      // 2. User is guest but the transaction matches their email
+      if (this.authService.IsAuthenticated || 
+          (updatedTransaction.userEmail && this.userEmail && 
+           updatedTransaction.userEmail.toLowerCase() === this.userEmail.toLowerCase())) {
+        this.transactions.push(updatedTransaction);
+        
+        // Force Angular change detection
+        this.transactions = [...this.transactions];
+        
+        this.snackbar.ShowSnackbar(new SnackBarCreate(
+          "New Transaction", 
+          "A new transaction has been added to your list", 
+          AlertType.Info
+        ));
+      }
     }
   }
   
@@ -188,48 +217,57 @@ lastUpdate: string = null;
     this.loading = true;
     
     // Make specific API calls to get the latest transaction status
-    if (this.adminService.GetAllTransactions) {
-      this.adminService.GetAllTransactions().then(result => {
-        this.loading = false;
-        if (result.success && Array.isArray(result.content)) {
-          console.log('Retrieved latest transactions from server:', result.content.length);
-          
-          // Update existing transactions with fresh data
-          for (const freshTx of result.content) {
-            if (freshTx && freshTx.id) {
-              const index = this.transactions.findIndex(t => t.id === freshTx.id);
-              if (index !== -1) {
-                // Update with fresh data
-                this.transactions[index] = {
-                  ...this.transactions[index],
-                  ...freshTx
-                };
-              } else {
-                // Add new transaction
-                this.transactions.push(freshTx);
-              }
+    this.assetConvertService.forceRefreshTransactions().then(result => {
+      this.loading = false;
+      if (result.success && Array.isArray(result.content)) {
+        console.log('Retrieved latest transactions from server:', result.content.length);
+        
+        // Filter transactions based on user authentication
+        let relevantTransactions = result.content;
+        
+        // For guest users, filter by email
+        if (!this.authService.IsAuthenticated && this.userEmail) {
+          relevantTransactions = result.content.filter(tx => 
+            tx.userEmail && tx.userEmail.toLowerCase() === this.userEmail.toLowerCase()
+          );
+          console.log('Filtered for guest user, found:', relevantTransactions.length);
+        }
+        
+        // Update existing transactions with fresh data
+        for (const freshTx of relevantTransactions) {
+          if (freshTx && freshTx.id) {
+            const index = this.transactions.findIndex(t => t.id === freshTx.id);
+            if (index !== -1) {
+              // Update with fresh data
+              this.transactions[index] = {
+                ...this.transactions[index],
+                ...freshTx
+              };
+            } else {
+              // Add new transaction
+              this.transactions.push(freshTx);
             }
           }
-          
-          // Force Angular change detection
-          this.transactions = [...this.transactions];
-          
-          this.snackbar.ShowSnackbar(new SnackBarCreate(
-            "Refresh Complete", 
-            "Transaction list updated from server", 
-            AlertType.Success
-          ));
         }
-      }).catch(error => {
-        this.loading = false;
-        console.error('Error refreshing from server:', error);
+        
+        // Force Angular change detection
+        this.transactions = [...this.transactions];
+        
         this.snackbar.ShowSnackbar(new SnackBarCreate(
-          "Refresh Error", 
-          "Could not retrieve latest transaction data", 
-          AlertType.Error
+          "Refresh Complete", 
+          "Transaction list updated from server", 
+          AlertType.Success
         ));
-      });
-    }
+      }
+    }).catch(error => {
+      this.loading = false;
+      console.error('Error refreshing from server:', error);
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Refresh Error", 
+        "Could not retrieve latest transaction data", 
+        AlertType.Error
+      ));
+    });
   }
   
   // Modify manualRefresh to use the new method
@@ -339,6 +377,14 @@ lastUpdate: string = null;
   mergeTransactions(newTransactions: any[]): void {
     if (!newTransactions || newTransactions.length === 0) return;
     
+    // For guest users, filter by email
+    if (!this.authService.IsAuthenticated && this.userEmail) {
+      newTransactions = newTransactions.filter(tx => 
+        tx.userEmail && tx.userEmail.toLowerCase() === this.userEmail.toLowerCase()
+      );
+      console.log('Filtered transactions for guest user:', newTransactions.length);
+    }
+    
     // Create a map of existing transactions by ID for quick lookup
     const existingTransactionsMap = new Map(
       this.transactions.map(transaction => [transaction.id, transaction])
@@ -369,7 +415,7 @@ lastUpdate: string = null;
               ));
             }
             
-            // IMPORTANT FIX: Keep all original properties and just update what's new
+            // IMPORTANT: Keep all original properties and just update what's new
             this.transactions[index] = {
               ...this.transactions[index],
               ...newTransaction
@@ -407,13 +453,23 @@ lastUpdate: string = null;
       if (storedTransactions) {
         const localTransactions = JSON.parse(storedTransactions);
         console.log('Local storage transactions:', localTransactions);
-        this.debugInfo += '\nLocal storage transactions: ' + storedTransactions;
+        this.debugInfo += '\nLocal storage transactions found: ' + localTransactions.length;
+        
+        // For guest users, set the email if found
+        if (!this.authService.IsAuthenticated && localTransactions.length > 0) {
+          const firstTx = localTransactions[0];
+          if (firstTx && firstTx.userEmail && !this.userEmail) {
+            this.userEmail = firstTx.userEmail;
+            this.debugInfo += '\nExtracted user email: ' + this.userEmail;
+          }
+        }
         
         // Merge with existing transactions
         this.mergeTransactions(localTransactions);
       }
     } catch (error) {
       console.error('Error loading from localStorage:', error);
+      this.debugInfo += '\nError loading from localStorage: ' + error.message;
     }
   }
 
@@ -469,13 +525,18 @@ lastUpdate: string = null;
   getFormattedDate(dateString: string): string {
     if (!dateString) return 'N/A';
     
-    return new Date(dateString).toLocaleString([], {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric'
-    });
+    try {
+      return new Date(dateString).toLocaleString([], {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString || 'N/A';
+    }
   }
 
   copyToClipboard(text: string): void {
@@ -494,4 +555,55 @@ lastUpdate: string = null;
     });
   }
   
+  // New method to confirm transaction manually
+  confirmTransaction(transaction: any): void {
+    if (!transaction || this.isConfirming) return;
+    if (!this.newTransactionHash) {
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Input Required",
+        "Please enter a transaction hash",
+        AlertType.Warning
+      ));
+      return;
+    }
+    
+    this.isConfirming = true;
+    
+    const confirmData: AnonymousExchangeConfirmationDto = {
+      exchangeId: transaction.id,
+      transactionHash: this.newTransactionHash,
+      senderWalletAddress: transaction.senderWalletAddress || `sender-${Math.random().toString(36).substring(2, 15)}`
+    };
+    
+    this.assetConvertService.ConfirmAnonymousTransaction(confirmData)
+      .then(result => {
+        this.isConfirming = false;
+        if (result.success) {
+          this.snackbar.ShowSnackbar(new SnackBarCreate(
+            "Success",
+            "Transaction confirmed successfully",
+            AlertType.Success
+          ));
+          this.newTransactionHash = '';
+          
+          // Auto-refresh transactions
+          setTimeout(() => this.refreshTransactionsFromServer(), 1000);
+        } else {
+          this.snackbar.ShowSnackbar(new SnackBarCreate(
+            "Error",
+            "Failed to confirm transaction: " + (result.error?.message || "Unknown error"),
+            AlertType.Error
+          ));
+        }
+      })
+      .catch(error => {
+        this.isConfirming = false;
+        console.error('Error confirming transaction:', error);
+        this.snackbar.ShowSnackbar(new SnackBarCreate(
+          "Error",
+          "Failed to confirm transaction. Please try again.",
+          AlertType.Error
+        ));
+      });
+  }
 }

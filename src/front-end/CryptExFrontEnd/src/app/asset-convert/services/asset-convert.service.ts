@@ -26,15 +26,24 @@ export class AssetConvertService {
   private hubConnection: signalR.HubConnection;
   private anonymousExchangeHubConnection: signalR.HubConnection;
   
-  // Add a subject to broadcast transaction updates
+  // Subject to broadcast transaction updates
   private transactionUpdatedSubject = new BehaviorSubject<any>(null);
   public transactionUpdated$ = this.transactionUpdatedSubject.asObservable();
   
+  // Connection status tracking
+  private connectionStatusSubject = new BehaviorSubject<string>('Disconnected');
+  public connectionStatus$ = this.connectionStatusSubject.asObservable();
+  
   // Fallback rates for cryptocurrencies in USD
   private fallbackRates = {
+    "BTC": 61250.00,
+    "ETH": 3350.00,
+    "LTC": 85.50,
     "XRP": 0.55,
     "ADA": 0.45,
     "ATOM": 9.25,
+    "ZEC": 28.75,
+    "BNB": 580.00,
     "TON": 5.95,
     "USDT": 1.00,
     "USDT-BEP20": 1.00,
@@ -48,179 +57,215 @@ export class AssetConvertService {
     private snackbar: SnackbarService
   ) {
     this.buildAnonymousExchangeConnection();
+    
+    // Listen for auth status changes to rebuild connection if needed
+    
   }
 
-  // Построение подключения для анонимных обменов
-  
-  
-  // Updates for asset-convert.service.ts
+  // Force rebuild the connection (used when auth status changes)
+  private rebuildConnection(): void {
+    try {
+      if (this.anonymousExchangeHubConnection) {
+        this.anonymousExchangeHubConnection.stop().then(() => {
+          console.log('Stopped connection after auth change');
+          this.buildAnonymousExchangeConnection();
+        });
+      } else {
+        this.buildAnonymousExchangeConnection();
+      }
+    } catch (error) {
+      console.error('Error rebuilding connection:', error);
+    }
+  }
 
-// Improved startAnonymousExchangeConnection method
-private async startAnonymousExchangeConnection(retryAttempt = 0): Promise<void> {
-  try {
-    console.log('Starting Anonymous Exchange SignalR connection...');
-    await this.anonymousExchangeHubConnection.start();
-    console.log('SignalR connected for anonymous exchanges');
+  // Improved connection start with retry logic
+  private async startAnonymousExchangeConnection(retryAttempt = 0): Promise<void> {
+    try {
+      console.log('Starting Anonymous Exchange SignalR connection...');
+      await this.anonymousExchangeHubConnection.start();
+      console.log('SignalR connected for anonymous exchanges');
+      
+      this.connectionStatusSubject.next('Connected');
+      
+      // Only show a notification when reconnecting, not on initial connect
+      if (retryAttempt > 0) {
+        this.snackbar.ShowSnackbar(new SnackBarCreate(
+          "Connection Status", 
+          "Real-time transaction updates reconnected", 
+          AlertType.Success
+        ));
+      }
+    } catch (err) {
+      console.error('Error starting Anonymous Exchange SignalR connection:', err);
+      this.connectionStatusSubject.next('Error');
+      
+      // Retry with exponential backoff up to 5 times
+      if (retryAttempt < 5) {
+        const delayMs = Math.min(1000 * Math.pow(2, retryAttempt), 30000);
+        console.log(`Retrying in ${delayMs}ms...`);
+        setTimeout(() => this.startAnonymousExchangeConnection(retryAttempt + 1), delayMs);
+      } else {
+        // After 5 retries, show a notification to the user
+        this.snackbar.ShowSnackbar(new SnackBarCreate(
+          "Connection Error", 
+          "Could not connect to real-time updates. Status changes may be delayed.", 
+          AlertType.Warning
+        ));
+      }
+    }
+  }
+
+  // Enhanced buildAnonymousExchangeConnection method with reconnection handling
+  private buildAnonymousExchangeConnection(): void {
+    console.log('Building anonymous exchange connection...');
     
-    // Add a specific logging message when connected
-    this.snackbar.ShowSnackbar(new SnackBarCreate(
-      "Connection Status", 
-      "Real-time transaction updates connected", 
-      AlertType.Success
-    ));
-  } catch (err) {
-    console.error('Error starting Anonymous Exchange SignalR connection:', err);
+    // First stop any existing connection
+    if (this.anonymousExchangeHubConnection) {
+      try {
+        this.anonymousExchangeHubConnection.stop();
+      } catch (error) {
+        console.error('Error stopping existing connection:', error);
+      }
+    }
     
-    // Retry with exponential backoff up to 5 times
-    if (retryAttempt < 5) {
-      const delayMs = Math.min(1000 * Math.pow(2, retryAttempt), 30000);
-      console.log(`Retrying in ${delayMs}ms...`);
-      setTimeout(() => this.startAnonymousExchangeConnection(retryAttempt + 1), delayMs);
+    const options: signalR.IHttpConnectionOptions = {
+      transport: signalR.HttpTransportType.LongPolling,
+      accessTokenFactory: () => {
+        if (this.auth.IsAuthenticated)
+          return this.auth.JWToken;
+        else
+          return null;
+      }
+    };
+
+    this.anonymousExchangeHubConnection = new signalR.HubConnectionBuilder()
+      .withAutomaticReconnect([0, 2000, 5000, 10000, 20000]) // More aggressive reconnect strategy
+      .configureLogging(signalR.LogLevel.Information) // More detailed logging
+      .withUrl(this.env.apiBaseUrl + "feed/anonymousexchange", options)
+      .build();
+
+    // Reset connection status
+    this.connectionStatusSubject.next('Connecting');
+
+    // Listen for the specific message from the server
+    this.anonymousExchangeHubConnection.on('anonymousexchangedata', (data) => {
+      console.log('RAW SignalR Message Received:', data);
+      this.handleExchangeStatusUpdate(data);
+    });
+
+    // Handle reconnection events
+    this.anonymousExchangeHubConnection.onreconnecting(error => {
+      console.log('SignalR connection lost. Attempting to reconnect...', error);
+      this.connectionStatusSubject.next('Reconnecting');
+    });
+    
+    this.anonymousExchangeHubConnection.onreconnected(connectionId => {
+      console.log('SignalR reconnected with ID:', connectionId);
+      this.connectionStatusSubject.next('Connected');
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Connection Restored", 
+        "Real-time transaction updates reconnected", 
+        AlertType.Success
+      ));
+    });
+
+    this.anonymousExchangeHubConnection.onclose(error => {
+      console.log('SignalR connection closed', error);
+      this.connectionStatusSubject.next('Disconnected');
+      // Try to restart the connection if it closes
+      setTimeout(() => this.startAnonymousExchangeConnection(), 5000);
+    });
+
+    // Start the connection with retry logic
+    this.startAnonymousExchangeConnection();
+  }
+
+  // Completely rewritten handleExchangeStatusUpdate method to handle various data formats
+  private handleExchangeStatusUpdate(data: any): void {
+    console.log('Received exchange status update:', data);
+    
+    // Different SignalR implementations might send data in different formats
+    // Let's handle different possible formats
+    
+    let transactionId: string;
+    let status: number;
+    let adminNotes: string;
+    let transactionHash: string;
+    
+    // Try to extract data based on different possible formats
+    if (data) {
+      // Format 1: Standard object with id and status
+      if (data.id) {
+        transactionId = data.id;
+        status = data.status;
+        adminNotes = data.adminNotes;
+        transactionHash = data.transactionHash;
+      } 
+      // Format 2: Object with exchangeId instead of id
+      else if (data.exchangeId) {
+        transactionId = data.exchangeId;
+        status = data.status;
+        adminNotes = data.adminNotes;
+        transactionHash = data.transactionHash;
+      }
+      // Format 3: Object with field containing transaction object
+      else if (data.transaction && data.transaction.id) {
+        transactionId = data.transaction.id;
+        status = data.transaction.status;
+        adminNotes = data.transaction.adminNotes;
+        transactionHash = data.transaction.transactionHash;
+      }
+    }
+    
+    // If we successfully extracted an ID, process the update
+    if (transactionId) {
+      console.log(`Processing update for transaction ${transactionId} with status ${status}`);
+      
+      // Create an update object with all the data we have
+      const updateData = {
+        id: transactionId,
+        status: status
+      };
+      
+      // Add optional fields if present
+      if (adminNotes) updateData['adminNotes'] = adminNotes;
+      if (transactionHash) updateData['transactionHash'] = transactionHash;
+      
+      // Create a complete transaction by merging with existing data
+      const completeTransaction = this.createCompleteTransaction(updateData);
+      
+      // Log the complete transaction for debugging
+      console.log('Complete transaction object created:', completeTransaction);
+      
+      // Update in localStorage
+      this.updateLocalStorageTransaction(completeTransaction);
+      
+      // Broadcast to all subscribers
+      this.transactionUpdatedSubject.next(completeTransaction);
+      
+      // Show notification
+      const statusMap = {
+        '-1': 'Not Processed',
+        '0': 'Failed',
+        '1': 'Success',
+        '2': 'Pending',
+        '3': 'Awaiting Verification'
+      };
+      
+      if (status !== undefined) {
+        const statusText = statusMap[status] || `Status ${status}`;
+        this.snackbar.ShowSnackbar(new SnackBarCreate(
+          "Exchange Status Update", 
+          `Transaction ${transactionId.substring(0, 8)}... status: ${statusText}`, 
+          status === 1 ? AlertType.Success : 
+          status === 0 ? AlertType.Error : 
+          AlertType.Info
+        ));
+      }
     } else {
-      // After 5 retries, show a notification to the user
-      this.snackbar.ShowSnackbar(new SnackBarCreate(
-        "Connection Error", 
-        "Could not connect to real-time updates. Status changes may be delayed.", 
-        AlertType.Warning
-      ));
+      console.warn('Received SignalR message but could not extract transaction data:', data);
     }
   }
-}
-
-// Enhanced buildAnonymousExchangeConnection method with reconnection handling
-private buildAnonymousExchangeConnection(): void {
-  const options: signalR.IHttpConnectionOptions = {
-    transport: signalR.HttpTransportType.LongPolling,
-    accessTokenFactory: () => {
-      if (this.auth.IsAuthenticated)
-        return this.auth.JWToken;
-      else
-        return null
-    }
-  };
-
-  this.anonymousExchangeHubConnection = new signalR.HubConnectionBuilder()
-    .withAutomaticReconnect([0, 2000, 5000, 10000, 20000]) // More aggressive reconnect strategy
-    .configureLogging(signalR.LogLevel.Information) // More detailed logging
-    .withUrl(this.env.apiBaseUrl + "feed/anonymousexchange", options)
-    .build();
-
-  // Listen for the specific message from the server
-  this.anonymousExchangeHubConnection.on('anonymousexchangedata', (data) => {
-    console.log('RAW SignalR Message Received:', data);
-    this.handleExchangeStatusUpdate(data);
-  });
-
-  // Handle reconnection events
-  this.anonymousExchangeHubConnection.onreconnecting(error => {
-    console.log('SignalR connection lost. Attempting to reconnect...', error);
-  });
-  
-  this.anonymousExchangeHubConnection.onreconnected(connectionId => {
-    console.log('SignalR reconnected with ID:', connectionId);
-    this.snackbar.ShowSnackbar(new SnackBarCreate(
-      "Connection Restored", 
-      "Real-time transaction updates reconnected", 
-      AlertType.Success
-    ));
-  });
-
-  this.anonymousExchangeHubConnection.onclose(error => {
-    console.log('SignalR connection closed', error);
-    // Try to restart the connection if it closes
-    setTimeout(() => this.startAnonymousExchangeConnection(), 5000);
-  });
-
-  // Start the connection with retry logic
-  this.startAnonymousExchangeConnection();
-}
-
-// Completely rewritten handleExchangeStatusUpdate method to handle various data formats
-private handleExchangeStatusUpdate(data: any): void {
-  console.log('Received exchange status update:', data);
-  
-  // Different SignalR implementations might send data in different formats
-  // Let's handle different possible formats
-  
-  let transactionId: string;
-  let status: number;
-  let adminNotes: string;
-  let transactionHash: string;
-  
-  // Try to extract data based on different possible formats
-  if (data) {
-    // Format 1: Standard object with id and status
-    if (data.id) {
-      transactionId = data.id;
-      status = data.status;
-      adminNotes = data.adminNotes;
-      transactionHash = data.transactionHash;
-    } 
-    // Format 2: Object with exchangeId instead of id
-    else if (data.exchangeId) {
-      transactionId = data.exchangeId;
-      status = data.status;
-      adminNotes = data.adminNotes;
-      transactionHash = data.transactionHash;
-    }
-    // Format 3: Object with field containing transaction object
-    else if (data.transaction && data.transaction.id) {
-      transactionId = data.transaction.id;
-      status = data.transaction.status;
-      adminNotes = data.transaction.adminNotes;
-      transactionHash = data.transaction.transactionHash;
-    }
-  }
-  
-  // If we successfully extracted an ID, process the update
-  if (transactionId) {
-    console.log(`Processing update for transaction ${transactionId} with status ${status}`);
-    
-    // Create an update object with all the data we have
-    const updateData = {
-      id: transactionId,
-      status: status
-    };
-    
-    // Add optional fields if present
-    if (adminNotes) updateData['adminNotes'] = adminNotes;
-    if (transactionHash) updateData['transactionHash'] = transactionHash;
-    
-    // Create a complete transaction by merging with existing data
-    const completeTransaction = this.createCompleteTransaction(updateData);
-    
-    // Log the complete transaction for debugging
-    console.log('Complete transaction object created:', completeTransaction);
-    
-    // Update in localStorage
-    this.updateLocalStorageTransaction(completeTransaction);
-    
-    // Broadcast to all subscribers
-    this.transactionUpdatedSubject.next(completeTransaction);
-    
-    // Show notification
-    const statusMap = {
-      '-1': 'Not Processed',
-      '0': 'Failed',
-      '1': 'Success',
-      '2': 'Pending',
-      '3': 'Awaiting Verification'
-    };
-    
-    if (status !== undefined) {
-      const statusText = statusMap[status] || `Status ${status}`;
-      this.snackbar.ShowSnackbar(new SnackBarCreate(
-        "Exchange Status Update", 
-        `Transaction ${transactionId.substring(0, 8)}... status: ${statusText}`, 
-        status === 1 ? AlertType.Success : 
-        status === 0 ? AlertType.Error : 
-        AlertType.Info
-      ));
-    }
-  } else {
-    console.warn('Received SignalR message but could not extract transaction data:', data);
-  }
-}
 
   // New helper method to create a complete transaction object
   private createCompleteTransaction(updateData: any): any {
@@ -247,7 +292,7 @@ private handleExchangeStatusUpdate(data: any): void {
     return updateData;
   }
   
-  // Update transaction in localStorage if it exists - IMPROVED VERSION
+  // Update transaction in localStorage if it exists
   private updateLocalStorageTransaction(updatedTransaction: any): void {
     if (!updatedTransaction || !updatedTransaction.id) return;
     
@@ -280,6 +325,11 @@ private handleExchangeStatusUpdate(data: any): void {
     } catch (error) {
       console.error('Error updating localStorage transaction:', error);
     }
+  }
+
+  // Get connection status
+  public getConnectionStatus(): string {
+    return this.connectionStatusSubject.getValue();
   }
 
   // Existing methods remain unchanged
@@ -495,5 +545,21 @@ private handleExchangeStatusUpdate(data: any): void {
   
   public async GetExchangeInfo(id: string): Promise<ApiResult<any>> {
     return this.http.Get(`PublicExchange/exchange/${id}`);
+  }
+  
+  // Force refresh all transactions from server
+  public forceRefreshTransactions(): Promise<ApiResult<any[]>> {
+    // For anonymous users, get all exchanges that might be related to them
+    return this.http.Get("Admin/allAnonymousExchanges");
+  }
+  
+  // Clear transaction cache
+  public clearTransactionCache(): void {
+    try {
+      localStorage.removeItem('anonymousTransactions');
+      console.log('Transaction cache cleared');
+    } catch (error) {
+      console.error('Error clearing transaction cache:', error);
+    }
   }
 }
