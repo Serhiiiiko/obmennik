@@ -6,12 +6,14 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { MainModule } from '../main/main.module';
+import { UserTransactionsComponent } from './components/user-transactions/user-transactions.component';
 
 
 
 @NgModule({
   declarations: [
-    MyAccountComponent
+    MyAccountComponent,
+    UserTransactionsComponent
   ],
   imports: [
     CommonModule,

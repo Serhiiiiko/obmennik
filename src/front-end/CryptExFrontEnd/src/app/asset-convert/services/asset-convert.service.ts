@@ -12,6 +12,8 @@ import { AssetConversionLockViewModel } from '../models/asset-conversion-lock-vi
 import { ManualDepositNotificationDto } from '../models/manual-deposit-notification-dto';
 import { AnonymousExchangeConfirmationDto, AnonymousExchangeRequestDto } from '../models/anonymous-exchange-request-dto';
 import { WalletViewModel } from '../../wallet/models/wallet-view-model';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +22,73 @@ export class AssetConvertService {
   public transaction: AssetConverssionViewModel;
   private guestTransactions: Map<string, AssetConversionLockViewModel> = new Map();
   private hubConnection: signalR.HubConnection;
+  private anonymousExchangeHubConnection: signalR.HubConnection;
+  
+  // Fallback rates for cryptocurrencies in USD
+  private fallbackRates = {
+    "XRP": 0.55,
+    "ADA": 0.45,
+    "ATOM": 9.25,
+    "TON": 5.95,
+    "USDT": 1.00,
+    "USDT-BEP20": 1.00,
+    "UST-TRC20": 1.00
+  };
 
-  constructor(private http: CustomHttpClientService, private auth: AuthService, private env: EnvironmentService) { }
+  constructor(
+    private http: CustomHttpClientService, 
+    private auth: AuthService, 
+    private env: EnvironmentService,
+    private snackbar: SnackbarService
+  ) {
+    this.buildAnonymousExchangeConnection();
+  }
 
+  // Построение подключения для анонимных обменов
+  private buildAnonymousExchangeConnection(): void {
+    const options: signalR.IHttpConnectionOptions = {
+      transport: signalR.HttpTransportType.LongPolling,
+      accessTokenFactory: () => {
+        if (this.auth.IsAuthenticated)
+          return this.auth.JWToken;
+        else
+          return null
+      }
+    };
+
+    this.anonymousExchangeHubConnection = new signalR.HubConnectionBuilder()
+      .withAutomaticReconnect()
+      .withUrl(this.env.apiBaseUrl + "feed/anonymousexchange", options)
+      .build();
+
+    this.anonymousExchangeHubConnection.on('anonymousexchangedata', (data) => {
+      this.handleExchangeStatusUpdate(data);
+    });
+
+    this.anonymousExchangeHubConnection.start()
+      .catch(err => console.error('Error starting Anonymous Exchange SignalR connection:', err));
+  }
+
+  // Обработка обновления статуса обмена
+  private handleExchangeStatusUpdate(data: any): void {
+    const statusMap = {
+      '-1': 'Not Processed',
+      '0': 'Failed',
+      '1': 'Success',
+      '2': 'Pending',
+      '3': 'Awaiting Verification'
+    };
+
+    this.snackbar.ShowSnackbar(new SnackBarCreate(
+      "Exchange Status Update", 
+      `Your exchange ${data.exchangeId} status is now: ${statusMap[data.status]}`, 
+      data.status === 1 ? AlertType.Success : 
+      data.status === 0 ? AlertType.Error : 
+      AlertType.Info
+    ));
+  }
+
+  // Существующие методы остаются без изменений
   public async BeginSignalR(id: string): Promise<void> {
     const transaction = await this.GetTransaction(id);
     if (transaction.success)
@@ -56,6 +122,8 @@ export class AssetConvertService {
       this.transaction = data as AssetConverssionViewModel;
     })
   }
+
+
 
   public async GetTransactionLock(id: string): Promise<ApiResult<AssetConversionLockViewModel>> {
     // Check if we have a stored guest transaction
@@ -103,14 +171,34 @@ export class AssetConvertService {
         }
         
         // Get exchange rate
-        const rateResponse = await this.http.Get<number>("PublicExchange/exchangeRate", {
-          params: new HttpParams()
-            .set("sourceWalletId", dto.leftAssetId)
-            .set("destinationWalletId", dto.rightAssetId)
-        });
-        
-        if (!rateResponse.success || typeof rateResponse.content !== 'number') {
-          throw new Error("Could not get exchange rate");
+        let exchangeRate: number;
+        try {
+          const rateResponse = await this.http.Get<number>("PublicExchange/exchangeRate", {
+            params: new HttpParams()
+              .set("sourceWalletId", dto.leftAssetId)
+              .set("destinationWalletId", dto.rightAssetId)
+          });
+          
+          if (rateResponse.success && typeof rateResponse.content === 'number' && rateResponse.content > 0) {
+            exchangeRate = rateResponse.content;
+          } else {
+            throw new Error("Invalid exchange rate returned");
+          }
+        } catch (error) {
+          console.warn("API exchange rate fetch failed, using fallback rate", error);
+          
+          // Use fallback rates if API call fails
+          if (rightWallet.ticker === "USD") {
+            exchangeRate = this.fallbackRates[leftWallet.ticker] || 1.0;
+          } else if (leftWallet.ticker === "USD") {
+            exchangeRate = 1.0 / (this.fallbackRates[rightWallet.ticker] || 1.0);
+          } else if (this.fallbackRates[leftWallet.ticker] && this.fallbackRates[rightWallet.ticker]) {
+            // Cross-currency conversion using USD as intermediary
+            exchangeRate = this.fallbackRates[leftWallet.ticker] / this.fallbackRates[rightWallet.ticker];
+          } else {
+            exchangeRate = 1.0; // Default fallback if no rates available
+            console.error("No fallback rate available for", leftWallet.ticker, rightWallet.ticker);
+          }
         }
         
         // Create a mock lock for guest users
@@ -120,7 +208,7 @@ export class AssetConvertService {
           pair: {
             left: leftWallet,
             right: rightWallet,
-            rate: rateResponse.content
+            rate: exchangeRate
           }
         };
         
@@ -188,7 +276,10 @@ export class AssetConvertService {
   public async ConfirmAnonymousTransaction(dto: AnonymousExchangeConfirmationDto): Promise<ApiResult> {
     return this.http.Post("PublicExchange/confirmTransaction", dto);
   }
-
+  // Add this method to your asset-convert.service.ts
+  public async GetAnonymousExchanges(): Promise<ApiResult<any[]>> {
+    return this.http.Get("Admin/anonymousExchanges");
+  }
   public async GetExchangeInfo(id: string): Promise<ApiResult<any>> {
     return this.http.Get(`PublicExchange/exchange/${id}`);
   }

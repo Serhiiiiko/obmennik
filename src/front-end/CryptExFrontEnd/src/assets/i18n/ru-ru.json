@@ -15,7 +15,9 @@
       "Premium": "Премиум",
       "Admin": "Админ-портал",
       "Contact": "Контакты",
-      "OpenUserMenu": "Открыть меню пользователя"
+      "OpenUserMenu": "Открыть меню пользователя",
+      "Transactions": "Ваши транзакции"
+
     },
     "UserMenu": {
       "Login": "Войти",
@@ -79,6 +81,22 @@
       "ConvertButton": "Обменять"
     }
   },
+  "Transactions": {
+    "Title": "Ваши транзакции",
+    "NoTransactions": "У вас пока нет транзакций",
+    "StartTrading": "Начать торговлю",
+    "From": "Отправлено",
+    "To": "Получено",
+    "Rate": "Курс обмена",
+    "Date": "Дата",
+    "TransactionHash": "Хеш транзакции",
+    "SuccessfulTransaction": "Транзакция подтверждена",
+    "PendingConfirmation": "Ожидает подтверждения",
+    "SendToAddress": "Пожалуйста, отправьте средства на этот адрес:",
+    "ConfirmTransfer": "После отправки, укажите хеш транзакции:",
+    "Confirm": "Подтвердить"
+  },
+
   "Premium": {
     "Title": "Премиум",
     "Pay": {

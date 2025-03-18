@@ -6,6 +6,7 @@ import { WalletViewModel } from 'src/app/wallet/models/wallet-view-model';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { AssetConvertService } from '../../services/asset-convert.service';
 import { AnonymousExchangeRequestDto, AnonymousExchangeConfirmationDto } from '../../models/anonymous-exchange-request-dto';
+import { PaymentStatus } from 'src/app/deposit-withdraw/models/deposit-view-model';
 
 @Component({
   selector: 'app-manual-deposit',
@@ -30,6 +31,7 @@ export class ManualDepositComponent implements OnInit {
   // Store the wallet objects
   sourceWallet: WalletViewModel = null;
   destinationWallet: WalletViewModel = null;
+  destinationAmount: any;
   
   constructor(
     private route: ActivatedRoute,
@@ -307,6 +309,34 @@ export class ManualDepositComponent implements OnInit {
           AlertType.Error
         ));
       }
+      const transaction = {
+        id: this.exchangeId,
+        amount: this.amount,
+        creationDate: new Date().toISOString(),
+        pair: {
+          left: { ticker: this.sourceCurrency },
+          right: { ticker: this.targetCurrency },
+          rate: this.amount, 
+        },
+        status: PaymentStatus.awaitingVerification,
+        transactionHash: this.transactionHash || 'Pending'
+      };
+      
+      // Add to localStorage
+      try {
+        let transactions = [];
+        const stored = localStorage.getItem('anonymousTransactions');
+        if (stored) {
+          transactions = JSON.parse(stored);
+        }
+        transactions.push(transaction);
+        localStorage.setItem('anonymousTransactions', JSON.stringify(transactions));
+        console.log('Saved transaction to localStorage');
+      } catch (error) {
+        console.error('Error saving transaction to localStorage', error);
+      }
+
+
     } catch (error) {
       console.error("Error confirming transaction:", error);
       this.snackbar.ShowSnackbar(new SnackBarCreate(
@@ -315,6 +345,7 @@ export class ManualDepositComponent implements OnInit {
         AlertType.Error
       ));
     }
+    
   }
 
   // Helper method to generate a random ID

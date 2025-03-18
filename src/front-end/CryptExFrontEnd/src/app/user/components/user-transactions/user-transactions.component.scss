@@ -1,0 +1,60 @@
+/* Transaction card styling */
+.transaction-card {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .transaction-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Status badges */
+  .status-badge {
+    border-radius: 9999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .status-badge.success {
+    background-color: #DEF7EC;
+    color: #03543E;
+  }
+  
+  .status-badge.pending {
+    background-color: #FEF3C7;
+    color: #92400E;
+  }
+  
+  .status-badge.failed {
+    background-color: #FEE2E2;
+    color: #B91C1C;
+  }
+  
+  /* Expanded content animation */
+  .expanded-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+  }
+  
+  .expanded-content.open {
+    max-height: 1000px;
+  }
+  
+  /* Copy button effect */
+  .copy-button {
+    transition: all 0.15s ease;
+  }
+  
+  .copy-button:active {
+    transform: scale(0.95);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .transaction-grid {
+      grid-template-columns: 1fr;
+    }
+  }
