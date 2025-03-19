@@ -442,7 +442,44 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     // A status is more final if it has higher priority
     return statusPriority[newStatus] > statusPriority[oldStatus];
   }
+  formatExchangeRate(transaction: any): string {
+    // Get the exchange rate from either pair.rate or exchangeRate property
+    const rate = transaction.pair?.rate || transaction.exchangeRate || 0;
+    
+    // Format the rate based on its magnitude for better readability
+    if (rate === 0) return '0';
+    
+    if (rate < 0.0001) return rate.toExponential(4);
+    if (rate < 0.01) return rate.toFixed(6);
+    if (rate < 1) return rate.toFixed(4);
+    if (rate < 100) return rate.toFixed(2);
+    
+    // For very large rates, round to 2 decimal places
+    return rate.toLocaleString(undefined, { 
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2
+    });
+  }
   
+  // Add this method to calculate the resulting amount
+  calculateResultAmount(transaction: any): string {
+    const amount = transaction.amount || transaction.sourceAmount || 0;
+    const rate = transaction.pair?.rate || transaction.exchangeRate || 0;
+    const result = amount * rate;
+    
+    // Format result based on its magnitude
+    if (result === 0) return '0';
+    
+    if (result < 0.0001) return result.toExponential(4);
+    if (result < 0.01) return result.toFixed(6);
+    if (result < 1000) return result.toFixed(4);
+    
+    // For larger numbers, use locale string with 2 decimal places
+    return result.toLocaleString(undefined, { 
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2
+    });
+  }
   // Add method to show notification about status changes
   showStatusChangeNotification(oldStatus: PaymentStatus, newStatus: PaymentStatus): void {
     // Don't show notifications for certain status transitions
@@ -566,7 +603,7 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
       ));
     });
   }
-  
+ 
   // New method to confirm transaction manually
   confirmTransaction(transaction: any): void {
     if (!transaction || this.isConfirming) return;

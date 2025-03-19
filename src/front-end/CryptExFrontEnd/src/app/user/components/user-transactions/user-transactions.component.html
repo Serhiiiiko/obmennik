@@ -36,15 +36,15 @@
             <!-- Currency icons -->
             <div class="flex items-center">
               <img class="h-8 w-8 rounded-full" 
-                   src="/assets/images/{{ transaction.pair?.left?.type == 1 ? 'fiat' : 'crypto' }}/{{transaction.pair?.left?.ticker || 'generic'}}.svg" 
-                   alt="{{ transaction.pair?.left?.ticker || 'unknown' }}"
+                   src="/assets/images/{{ transaction.pair?.left?.type == 1 ? 'fiat' : 'crypto' }}/{{transaction.pair?.left?.ticker || transaction.sourceWalletTicker || 'generic'}}.svg" 
+                   alt="{{ transaction.pair?.left?.ticker || transaction.sourceWalletTicker || 'unknown' }}"
                    onError="this.src='/assets/images/crypto/generic.svg'">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
               <img class="h-8 w-8 rounded-full" 
-                   src="/assets/images/{{ transaction.pair?.right?.type == 1 ? 'fiat' : 'crypto' }}/{{transaction.pair?.right?.ticker || 'generic'}}.svg" 
-                   alt="{{ transaction.pair?.right?.ticker || 'unknown' }}"
+                   src="/assets/images/{{ transaction.pair?.right?.type == 1 ? 'fiat' : 'crypto' }}/{{transaction.pair?.right?.ticker || transaction.destinationWalletTicker || 'generic'}}.svg" 
+                   alt="{{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || 'unknown' }}"
                    onError="this.src='/assets/images/crypto/generic.svg'">
             </div>
             
@@ -53,7 +53,7 @@
               <p class="font-medium">
                 {{ transaction.amount || transaction.sourceAmount || 0 }} 
                 {{ transaction.pair?.left?.ticker || transaction.sourceWalletTicker || '' }} → 
-                {{ ((transaction.amount || transaction.sourceAmount || 0) * (transaction.pair?.rate || transaction.exchangeRate || 0)).toFixed(4) }} 
+                {{ calculateResultAmount(transaction) }} 
                 {{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || '' }}
               </p>
               <p class="text-sm text-gray-500">{{ getFormattedDate(transaction.creationDate || transaction.date) }}</p>
@@ -100,12 +100,12 @@
               
               <div>
                 <p class="text-sm text-gray-500">{{ 'Transactions.To' | translate }}</p>
-                <p class="font-medium">{{ ((transaction.amount || transaction.sourceAmount || 0) * (transaction.pair?.rate || transaction.exchangeRate || 0)).toFixed(4) }} {{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || '' }}</p>
+                <p class="font-medium">{{ calculateResultAmount(transaction) }} {{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || '' }}</p>
               </div>
               
               <div>
                 <p class="text-sm text-gray-500">{{ 'Transactions.Rate' | translate }}</p>
-                <p class="font-medium">1 {{ transaction.pair?.left?.ticker || transaction.sourceWalletTicker || '' }} = {{ transaction.pair?.rate || transaction.exchangeRate || 0 }} {{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || '' }}</p>
+                <p class="font-medium">1 {{ transaction.pair?.left?.ticker || transaction.sourceWalletTicker || '' }} = {{ formatExchangeRate(transaction) }} {{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || '' }}</p>
               </div>
               
               <div>
@@ -148,7 +148,7 @@
               
               <div>
                 <p class="text-sm text-gray-500">{{ 'Transactions.To' | translate }}</p>
-                <p class="font-medium">{{ ((transaction.amount || transaction.sourceAmount || 0) * (transaction.pair?.rate || transaction.exchangeRate || 0)).toFixed(4) }} {{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || '' }}</p>
+                <p class="font-medium">{{ calculateResultAmount(transaction) }} {{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || '' }}</p>
               </div>
               
               <div>
@@ -181,12 +181,12 @@
               
               <div>
                 <p class="text-sm text-gray-500">{{ 'Transactions.To' | translate }}</p>
-                <p class="font-medium">{{ ((transaction.amount || transaction.sourceAmount || 0) * (transaction.pair?.rate || transaction.exchangeRate || 0)).toFixed(4) }} {{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || '' }}</p>
+                <p class="font-medium">{{ calculateResultAmount(transaction) }} {{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || '' }}</p>
               </div>
               
               <div>
                 <p class="text-sm text-gray-500">{{ 'Transactions.Rate' | translate }}</p>
-                <p class="font-medium">1 {{ transaction.pair?.left?.ticker || transaction.sourceWalletTicker || '' }} = {{ transaction.pair?.rate || transaction.exchangeRate || 0 }} {{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || '' }}</p>
+                <p class="font-medium">1 {{ transaction.pair?.left?.ticker || transaction.sourceWalletTicker || '' }} = {{ formatExchangeRate(transaction) }} {{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || '' }}</p>
               </div>
               
               <div>
