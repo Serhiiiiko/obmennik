@@ -385,65 +385,77 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
       console.log('Filtered transactions for guest user:', newTransactions.length);
     }
     
-    // Create a map of existing transactions by ID for quick lookup
-    const existingTransactionsMap = new Map(
-      this.transactions.map(transaction => [transaction.id, transaction])
-    );
-    
-    // Flag to check if we need to sort transactions
-    let listChanged = false;
+    // Create a deep copy of existing transactions to avoid reference issues
+    let updatedTransactions = [...this.transactions];
     
     // Process each new transaction
     for (const newTransaction of newTransactions) {
       if (newTransaction && newTransaction.id) {
-        if (existingTransactionsMap.has(newTransaction.id)) {
-          // Update existing transaction
-          const index = this.transactions.findIndex(t => t.id === newTransaction.id);
-          if (index !== -1) {
-            // If status changed, show notification
-            const oldStatus = this.transactions[index].status;
-            const newStatus = newTransaction.status;
-            
-            if (oldStatus !== newStatus) {
-              const statusText = this.getTransactionStatusText(newStatus);
-              this.snackbar.ShowSnackbar(new SnackBarCreate(
-                "Transaction Updated",
-                `Transaction status changed to: ${statusText}`,
-                newStatus === PaymentStatus.success ? AlertType.Success :
-                newStatus === PaymentStatus.failed ? AlertType.Error :
-                AlertType.Info
-              ));
-            }
-            
-            // IMPORTANT: Keep all original properties and just update what's new
-            this.transactions[index] = {
-              ...this.transactions[index],
-              ...newTransaction
-            };
-            
-            // Make sure we have essential properties
-            if (!this.transactions[index].pair && newTransaction.pair) {
-              this.transactions[index].pair = newTransaction.pair;
-            }
-            
-            listChanged = true;
+        const existingIndex = updatedTransactions.findIndex(t => t.id === newTransaction.id);
+        
+        if (existingIndex >= 0) {
+          // Update existing transaction - CRITICAL: preserve status if newer transaction doesn't have it
+          const existingStatus = updatedTransactions[existingIndex].status;
+          
+          // Only update status if:
+          // 1. New transaction has a defined status AND
+          // 2. Either the existing transaction has no status OR the new status is more final
+          const shouldUpdateStatus = 
+            newTransaction.status !== undefined && 
+            (existingStatus === undefined || 
+             this.isMoreFinalStatus(newTransaction.status, existingStatus));
+          
+          // Create updated transaction object
+          updatedTransactions[existingIndex] = {
+            ...updatedTransactions[existingIndex],  // Start with existing data
+            ...newTransaction,                     // Apply updates
+            // Override with existing status if needed
+            status: shouldUpdateStatus ? newTransaction.status : existingStatus
+          };
+          
+          // Show notification if status changed and it's a final status
+          if (shouldUpdateStatus && existingStatus !== newTransaction.status) {
+            this.showStatusChangeNotification(existingStatus, newTransaction.status);
           }
         } else {
-          // Add new transaction
-          console.log('Adding new transaction to list:', newTransaction);
-          this.transactions.push(newTransaction);
-          listChanged = true;
+          // This is a new transaction we haven't seen before
+          updatedTransactions.push(newTransaction);
         }
       }
     }
     
-    // If we changed the list, sort transactions by date (newest first)
-    if (listChanged) {
-      this.transactions.sort((a, b) => {
-        const dateA = new Date(a.creationDate || a.date || 0);
-        const dateB = new Date(b.creationDate || b.date || 0);
-        return dateB.getTime() - dateA.getTime();
-      });
+    // Replace the transactions array (creates a new reference for Angular change detection)
+    this.transactions = updatedTransactions;
+  }
+  
+  // Helper method to determine if a status is more "final" than another
+  isMoreFinalStatus(newStatus: PaymentStatus, oldStatus: PaymentStatus): boolean {
+    // Define status priority (higher number = more final)
+    const statusPriority = {
+      [PaymentStatus.notProcessed]: 1,
+      [PaymentStatus.awaitingVerification]: 2,
+      [PaymentStatus.pending]: 3,
+      [PaymentStatus.failed]: 4,
+      [PaymentStatus.success]: 5
+    };
+    
+    // A status is more final if it has higher priority
+    return statusPriority[newStatus] > statusPriority[oldStatus];
+  }
+  
+  // Add method to show notification about status changes
+  showStatusChangeNotification(oldStatus: PaymentStatus, newStatus: PaymentStatus): void {
+    // Don't show notifications for certain status transitions
+    if (oldStatus === newStatus) return;
+    
+    // Only show notifications for transitions to final states
+    if (newStatus === PaymentStatus.success || newStatus === PaymentStatus.failed) {
+      const statusText = this.getTransactionStatusText(newStatus);
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Transaction Updated",
+        `Transaction status changed to: ${statusText}`,
+        newStatus === PaymentStatus.success ? AlertType.Success : AlertType.Error
+      ));
     }
   }
 

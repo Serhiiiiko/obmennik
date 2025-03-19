@@ -29,17 +29,41 @@ export class TransactionUpdateService {
   
   addApprovedTransaction(transaction: any) {
     const currentTransactions = this.approvedTransactionsSubject.getValue();
-    // Avoid duplicates
-    if (!currentTransactions.some(t => t.id === transaction.id)) {
-      console.log('Adding approved transaction to service:', transaction);
-      const updatedTransactions = [...currentTransactions, transaction];
-      this.approvedTransactionsSubject.next(updatedTransactions);
-      // Save to localStorage
-      this.saveToStorage(this.APPROVED_STORAGE_KEY, updatedTransactions);
+    
+    // First check if we already have this transaction
+    const existingIndex = currentTransactions.findIndex(t => t.id === transaction.id);
+    
+    if (existingIndex !== -1) {
+      // Update the existing transaction without changing its approved state
+      const updatedTransactions = [...currentTransactions];
+      updatedTransactions[existingIndex] = {
+        ...currentTransactions[existingIndex],
+        ...transaction,
+        status: PaymentStatus.success // Ensure it stays approved
+      };
       
-      // Also update the main "anonymousTransactions" storage
-      this.updateMainStorage(transaction);
+      this.approvedTransactionsSubject.next(updatedTransactions);
+      this.saveToStorage(this.APPROVED_STORAGE_KEY, updatedTransactions);
+    } else if (!currentTransactions.some(t => t.id === transaction.id)) {
+      // Only add if it's not already in the list
+      console.log('Adding approved transaction to service:', transaction);
+      
+      // Force status to be success
+      const approvedTransaction = {
+        ...transaction,
+        status: PaymentStatus.success
+      };
+      
+      const updatedTransactions = [...currentTransactions, approvedTransaction];
+      this.approvedTransactionsSubject.next(updatedTransactions);
+      this.saveToStorage(this.APPROVED_STORAGE_KEY, updatedTransactions);
     }
+    
+    // Also update the main storage but preserve the success status
+    this.updateMainStorage({
+      ...transaction,
+      status: PaymentStatus.success
+    });
   }
   
   addRejectedTransaction(transaction: any) {
@@ -86,10 +110,18 @@ export class TransactionUpdateService {
         const index = transactions.findIndex(t => t.id === transaction.id);
         
         if (index !== -1) {
-          // Update existing transaction
+          // Update existing transaction while preserving certain fields
+          const currentStatus = transactions[index].status;
+          
+          // Only update status if new status is more final or if current status is undefined
+          const finalStatus = this.isMoreFinalStatus(transaction.status, currentStatus) 
+            ? transaction.status 
+            : currentStatus;
+            
           transactions[index] = {
-            ...transactions[index],
-            ...transaction
+            ...transactions[index], // Keep existing data
+            ...transaction,         // Apply updates
+            status: finalStatus     // Use the determined final status
           };
         } else {
           // Add new transaction
@@ -106,6 +138,22 @@ export class TransactionUpdateService {
     } catch (error) {
       console.error('Error updating main transactions storage:', error);
     }
+  }
+  
+  // Helper method to determine if a status is more "final"
+  private isMoreFinalStatus(newStatus: number, oldStatus: number): boolean {
+    if (oldStatus === undefined) return true;
+    
+    // Define finality priority (higher = more final)
+    const priority = {
+      [-1]: 1, // notProcessed
+      [3]: 2,  // awaitingVerification
+      [2]: 3,  // pending
+      [0]: 4,  // failed
+      [1]: 5   // success
+    };
+    
+    return priority[newStatus] > priority[oldStatus];
   }
   
   // Sync data with changes from localStorage (e.g., from other tabs/components)

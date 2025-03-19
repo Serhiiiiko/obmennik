@@ -184,31 +184,26 @@ export class AssetConvertService {
   private handleExchangeStatusUpdate(data: any): void {
     console.log('Received exchange status update:', data);
     
-    // Different SignalR implementations might send data in different formats
-    // Let's handle different possible formats
-    
+    // Extract transaction data from different possible formats
     let transactionId: string;
     let status: number;
     let adminNotes: string;
     let transactionHash: string;
     
-    // Try to extract data based on different possible formats
+    // Handle different data formats
     if (data) {
-      // Format 1: Standard object with id and status
       if (data.id) {
         transactionId = data.id;
         status = data.status;
         adminNotes = data.adminNotes;
         transactionHash = data.transactionHash;
       } 
-      // Format 2: Object with exchangeId instead of id
       else if (data.exchangeId) {
         transactionId = data.exchangeId;
         status = data.status;
         adminNotes = data.adminNotes;
         transactionHash = data.transactionHash;
       }
-      // Format 3: Object with field containing transaction object
       else if (data.transaction && data.transaction.id) {
         transactionId = data.transaction.id;
         status = data.transaction.status;
@@ -217,25 +212,21 @@ export class AssetConvertService {
       }
     }
     
-    // If we successfully extracted an ID, process the update
     if (transactionId) {
       console.log(`Processing update for transaction ${transactionId} with status ${status}`);
       
-      // Create an update object with all the data we have
+      // Create an update object with just the fields we want to update
       const updateData = {
         id: transactionId,
         status: status
       };
       
-      // Add optional fields if present
+      // Only add optional fields if they exist
       if (adminNotes) updateData['adminNotes'] = adminNotes;
       if (transactionHash) updateData['transactionHash'] = transactionHash;
       
       // Create a complete transaction by merging with existing data
       const completeTransaction = this.createCompleteTransaction(updateData);
-      
-      // Log the complete transaction for debugging
-      console.log('Complete transaction object created:', completeTransaction);
       
       // Update in localStorage
       this.updateLocalStorageTransaction(completeTransaction);
@@ -243,30 +234,37 @@ export class AssetConvertService {
       // Broadcast to all subscribers
       this.transactionUpdatedSubject.next(completeTransaction);
       
-      // Show notification
-      const statusMap = {
-        '-1': 'Not Processed',
-        '0': 'Failed',
-        '1': 'Success',
-        '2': 'Pending',
-        '3': 'Awaiting Verification'
-      };
-      
-      if (status !== undefined) {
-        const statusText = statusMap[status] || `Status ${status}`;
-        this.snackbar.ShowSnackbar(new SnackBarCreate(
-          "Exchange Status Update", 
-          `Transaction ${transactionId.substring(0, 8)}... status: ${statusText}`, 
-          status === 1 ? AlertType.Success : 
-          status === 0 ? AlertType.Error : 
-          AlertType.Info
-        ));
-      }
-    } else {
-      console.warn('Received SignalR message but could not extract transaction data:', data);
+      // Show notification for status updates
+      this.showStatusUpdateNotification(status, transactionId);
     }
   }
-
+  private showStatusUpdateNotification(status: number, transactionId: string): void {
+    // Define status text mapping
+    const statusMap = {
+      '-1': 'Not Processed',
+      '0': 'Failed',
+      '1': 'Success',
+      '2': 'Pending',
+      '3': 'Awaiting Verification'
+    };
+    
+    // Only show notifications for significant status changes
+    if (status !== undefined) {
+      const statusText = statusMap[status] || `Status ${status}`;
+      
+      // Determine notification type based on status
+      let alertType = AlertType.Info;
+      if (status === 1) alertType = AlertType.Success; // Success
+      else if (status === 0) alertType = AlertType.Error; // Failed
+      
+      // Show the notification
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Exchange Status Update", 
+        `Transaction ${transactionId.substring(0, 8)}... status: ${statusText}`, 
+        alertType
+      ));
+    }
+  }
   // New helper method to create a complete transaction object
   private createCompleteTransaction(updateData: any): any {
     // First try to find existing transaction in localStorage
@@ -305,13 +303,17 @@ export class AssetConvertService {
         const index = storedTransactions.findIndex(t => t.id === updatedTransaction.id);
         
         if (index !== -1) {
-          // Update existing transaction, preserving fields that aren't in the update
+          // IMPORTANT: Create a new object merging existing data with updates
+          // but prioritize certain fields from the update, especially status
+          const existingTransaction = storedTransactions[index];
           storedTransactions[index] = {
-            ...storedTransactions[index],
-            ...updatedTransaction
+            ...existingTransaction,  // Keep existing fields as base
+            ...updatedTransaction,   // Apply updates
+            // Explicitly ensure status is updated (sometimes this gets overwritten)
+            status: updatedTransaction.status !== undefined ? updatedTransaction.status : existingTransaction.status
           };
         } else {
-          // Add new transaction
+          // This is a completely new transaction
           storedTransactions.push(updatedTransaction);
         }
       } else {
@@ -326,49 +328,7 @@ export class AssetConvertService {
       console.error('Error updating localStorage transaction:', error);
     }
   }
-
-  // Get connection status
-  public getConnectionStatus(): string {
-    return this.connectionStatusSubject.getValue();
-  }
-
-  // Existing methods remain unchanged
-  public async BeginSignalR(id: string): Promise<void> {
-    const transaction = await this.GetTransaction(id);
-    if (transaction.success)
-      this.transaction = transaction.content;
-    
-    this.buildConnection();
-    await this.hubConnection.start();
-    this.listen();
-  }
-
-  private buildConnection(): void {
-    const options: signalR.IHttpConnectionOptions = {
-      transport: signalR.HttpTransportType.LongPolling,
-      accessTokenFactory: () => {
-        if (this.auth.IsAuthenticated)
-          return this.auth.JWToken;
-        else
-          return null
-      }
-    };
-
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withAutomaticReconnect()
-      .withUrl(this.env.apiBaseUrl + "feed/assetconversion", options)
-      .build();
-  }
-
-  private listen(): void {
-    this.hubConnection?.on('assetconversiondata', (data) => {
-      console.log("data received", data);
-      this.transaction = data as AssetConverssionViewModel;
-      
-      // Also broadcast this update
-      this.transactionUpdatedSubject.next(data);
-    })
-  }
+  
 
   public async GetTransactionLock(id: string): Promise<ApiResult<AssetConversionLockViewModel>> {
     // Check if we have a stored guest transaction

@@ -102,19 +102,19 @@ export class AdminService {
         return exchangeInfo; // Return the error
       }
       
-      // Store the current data for comparison later
+      // Store the current data
       const originalData = exchangeInfo.content;
       
-      // Use correct parameter names and formatting to match backend expectations
+      // Use correct parameter names and formatting
       const result = await this.http.Post(
         "Admin/anonymousExchanges/update", 
-        JSON.stringify(adminNotes || ''), // Ensure body is properly JSON formatted
+        JSON.stringify(adminNotes || ''),
         { 
           params: new HttpParams()
             .set("exchangeId", exchangeId)
             .set("status", status.toString()),
           headers: {
-            'Content-Type': 'application/json' // Ensure correct content type
+            'Content-Type': 'application/json'
           }
         }
       );
@@ -127,25 +127,38 @@ export class AdminService {
           AlertType.Success
         ));
         
-        // If AssetConvertService is available, manually trigger an update to ensure all UI components update
-        if (this.assetConvertService) {
-          console.log("Manually triggering update via AssetConvertService");
+        // Create a complete transaction object with the updated status
+        const updatedTransaction: { id: string; status: PaymentStatus; adminNotes?: string } = {
+          ...(typeof originalData === 'object' && originalData !== null ? originalData : {}),
+          id: exchangeId,
+          status: status
+        };
+        
+        if (adminNotes) {
+          updatedTransaction.adminNotes = adminNotes;
+        }
+        
+        // Use local storage to ensure persistence
+        try {
+          // Get existing transactions
+          const storedData = localStorage.getItem('anonymousTransactions') || '[]';
+          const transactions = JSON.parse(storedData);
           
-          // Create a complete transaction object by combining original data with new status
-          const updatedTransaction: { status: PaymentStatus; adminNotes?: string } = {
-            ...(typeof originalData === 'object' && originalData !== null ? originalData : {}),
-            status: status
-          };
-          
-          if (adminNotes) {
-            updatedTransaction.adminNotes = adminNotes;
+          // Find and update the transaction
+          const index = transactions.findIndex(t => t.id === exchangeId);
+          if (index !== -1) {
+            transactions[index] = {
+              ...transactions[index],
+              ...updatedTransaction
+            };
+          } else {
+            transactions.push(updatedTransaction);
           }
           
-          // Broadcast the update through the service
-          this.assetConvertService['transactionUpdatedSubject'].next(updatedTransaction);
-          
-          // Also update localStorage
-          this.assetConvertService['updateLocalStorageTransaction'](updatedTransaction);
+          // Save back to storage
+          localStorage.setItem('anonymousTransactions', JSON.stringify(transactions));
+        } catch (error) {
+          console.error('Error updating localStorage:', error);
         }
       }
       
@@ -160,7 +173,7 @@ export class AdminService {
       
       return {
         success: false,
-        content: undefined, // Provide a default value for 'content'
+        content: undefined,
         error: error.message
       };
     }
