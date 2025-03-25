@@ -366,6 +366,40 @@ namespace CryptExApi.Repositories
 
         public async Task<decimal> GetCryptoExchangeRate(string left, string right, DateTime? at = null, bool noCache = false)
         {
+            // Define stablecoins that always have 1:1 ratio with USD
+            var usdStablecoins = new HashSet<string> { "USDT", "USDT-BEP20", "UST-TRC20" };
+
+            // Handle special cases for stablecoins
+            bool leftIsStablecoin = usdStablecoins.Contains(left);
+            bool rightIsStablecoin = usdStablecoins.Contains(right);
+
+            // Case 1: Converting between two stablecoins - always 1:1
+            if (leftIsStablecoin && rightIsStablecoin)
+            {
+                return 1.0m;
+            }
+
+            // Case 2: Converting between a stablecoin and USD - always 1:1
+            if ((leftIsStablecoin && right == "USD") || (left == "USD" && rightIsStablecoin))
+            {
+                return 1.0m;
+            }
+
+            // Case 3: Converting between a stablecoin and other crypto
+            // Use USD as an intermediary - get the crypto/USD rate instead
+            if (leftIsStablecoin && !rightIsStablecoin && right != "USD")
+            {
+                // For stablecoin->crypto, we need USD->crypto rate (inverse)
+                return 1.0m / await GetCryptoExchangeRate(right, "USD", at, noCache);
+            }
+
+            if (!leftIsStablecoin && rightIsStablecoin && left != "USD")
+            {
+                // For crypto->stablecoin, we need crypto->USD rate
+                return await GetCryptoExchangeRate(left, "USD", at, noCache);
+            }
+
+            // Continue with normal caching logic for non-stablecoin pairs
             var cacheKey = $"ExchangeRate.{left}-{right}@{at.GetValueOrDefault(DateTime.UtcNow).ToString("yyyy-MM-dd.HH", CultureInfo.InvariantCulture)}";
 
             bool cacheHit = memoryCache.TryGetValue(cacheKey, out decimal rate);
@@ -377,6 +411,7 @@ namespace CryptExApi.Repositories
 
             var pair = string.Empty;
             bool inverseRate = false;
+
 
             if (DefaultDataSeeder.Fiats.Any(x => x.ticker == left))
             { //Coinbase endpoint currency pair format is {CRYPTO}-{FIAT}

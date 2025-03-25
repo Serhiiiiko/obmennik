@@ -44,7 +44,7 @@ export class ChatWidgetComponent implements OnInit {
       });
       
       this.messages.push({
-        content: 'Вы можете мне помочь?',
+        content: 'Чем могу помочь?',
         isFromSupport: true,
         timestamp: new Date()
       });

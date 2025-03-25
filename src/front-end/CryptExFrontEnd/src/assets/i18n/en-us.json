@@ -17,7 +17,8 @@
       "Premium": "Premium",
       "Admin": "Admin portal",
       "Contact": "Contact",
-      "OpenUserMenu": "Open user menu"
+      "OpenUserMenu": "Open user menu",
+      "Transactions": "Your transactions"
     },
     "UserMenu": {
       "Login": "Login",
@@ -64,6 +65,7 @@
     "HeaderMessage": "Discover the world of cryptocurrencies in a few minutes",
     "HeaderDesc": "Nord-change is an exchange platform between Fiat and Crypto-currencies",
     "JoinBtn": "Exchange currency",
+    "Partners": "Our partners",
     "Faq": {
   "Title": "Frequently asked questions",
   "Q1": "How can I exchange between cryptocurrencies?",
@@ -82,6 +84,21 @@
       "ConvertButton": "Convert"
     }
   },
+  "Transactions": {
+    "Title": "Your Transactions",
+    "NoTransactions": "You have no transactions yet",
+    "StartTrading": "Start Trading",
+    "From": "Sent",
+    "To": "Received",
+    "Rate": "Exchange Rate",
+    "Date": "Date",
+    "TransactionHash": "Transaction Hash",
+    "SuccessfulTransaction": "Transaction Confirmed",
+    "PendingConfirmation": "Pending Confirmation",
+    "SendToAddress": "Please send funds to this address:",
+    "ConfirmTransfer": "After sending, enter the transaction hash:",
+    "Confirm": "Confirm"
+},
   "Premium": {
     "Title": "Premium",
     "Pay": {
