@@ -120,6 +120,17 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     }
   }
   
+  // Helper method to sort transactions by date in descending order (newest first)
+  private sortTransactionsByDateDesc(transactions: any[]): any[] {
+    if (!transactions || transactions.length === 0) return transactions;
+    
+    return transactions.sort((a, b) => {
+      const dateA = new Date(a.creationDate || a.date || 0);
+      const dateB = new Date(b.creationDate || b.date || 0);
+      return dateB.getTime() - dateA.getTime(); // Descending order (newest first)
+    });
+  }
+  
   checkSignalRConnection(): void {
     // Get the current connection status directly from the service
     const status = this.assetConvertService['getConnectionStatus'] ? 
@@ -206,6 +217,9 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
         ));
       }
       
+      // Sort the transactions by date (newest first)
+      this.transactions = this.sortTransactionsByDateDesc(this.transactions);
+      
       // Force Angular change detection and update pagination
       this.transactions = [...this.transactions];
       this.updatePagination();
@@ -220,6 +234,9 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
           (updatedTransaction.userEmail && this.userEmail && 
            updatedTransaction.userEmail.toLowerCase() === this.userEmail.toLowerCase())) {
         this.transactions.push(updatedTransaction);
+        
+        // Sort the transactions by date (newest first)
+        this.transactions = this.sortTransactionsByDateDesc(this.transactions);
         
         // Force Angular change detection and update pagination
         this.transactions = [...this.transactions];
@@ -272,6 +289,9 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
             }
           }
         }
+        
+        // Sort the transactions by date (newest first)
+        this.transactions = this.sortTransactionsByDateDesc(this.transactions);
         
         // Force Angular change detection and update pagination
         this.transactions = [...this.transactions];
@@ -434,7 +454,6 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
             (existingStatus === undefined || 
              this.isMoreFinalStatus(newTransaction.status, existingStatus));
           
-          
           updatedTransactions[existingIndex] = {
             ...updatedTransactions[existingIndex],  
             ...newTransaction,                     
@@ -442,16 +461,17 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
             status: shouldUpdateStatus ? newTransaction.status : existingStatus
           };
           
-          
           if (shouldUpdateStatus && existingStatus !== newTransaction.status) {
             this.showStatusChangeNotification(existingStatus, newTransaction.status);
           }
         } else {
-          
           updatedTransactions.push(newTransaction);
         }
       }
     }
+    
+    // Sort transactions by date (newest first)
+    updatedTransactions = this.sortTransactionsByDateDesc(updatedTransactions);
     
     // Replace the transactions array (creates a new reference for Angular change detection)
     this.transactions = updatedTransactions;
@@ -644,7 +664,6 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     );
   }
 
-
   getSourceTicker(transaction: any): string {
     return transaction?.sourceWallet?.ticker || 
            transaction?.pair?.left?.ticker || 
@@ -724,6 +743,9 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
       this.paginatedTransactions = [];
       return;
     }
+    
+    // Make sure transactions are always sorted by date (newest first)
+    this.transactions = this.sortTransactionsByDateDesc(this.transactions);
     
     this.totalPages = Math.ceil(this.transactions.length / this.pageSize);
     
