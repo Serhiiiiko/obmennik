@@ -1,0 +1,30 @@
+<!-- src/app/shared/components/pagination/pagination.component.html -->
+<div class="flex justify-center items-center space-x-2 mt-4" *ngIf="totalPages > 1">
+    <button 
+      [disabled]="currentPage === 1" 
+      (click)="previousPage()" 
+      class="px-3 py-1 rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+      &laquo;
+    </button>
+    
+    <div class="flex space-x-1">
+      <button 
+        *ngFor="let page of pages" 
+        (click)="changePage(page)" 
+        [class.bg-indigo-600]="page === currentPage" 
+        [class.text-white]="page === currentPage" 
+        [class.hover:bg-indigo-700]="page === currentPage" 
+        [class.border-indigo-600]="page === currentPage"
+        [class.hover:bg-gray-100]="page !== currentPage"
+        class="px-3 py-1 rounded border border-gray-300">
+        {{ page }}
+      </button>
+    </div>
+    
+    <button 
+      [disabled]="currentPage === totalPages" 
+      (click)="nextPage()" 
+      class="px-3 py-1 rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+      &raquo;
+    </button>
+  </div>

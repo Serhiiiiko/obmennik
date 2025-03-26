@@ -58,3 +58,64 @@
       grid-template-columns: 1fr;
     }
   }
+
+  /* Add this to your user-transactions.component.scss file */
+
+.crypto-icon-container {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  position: relative;
+}
+
+.crypto-icon-container img {
+  object-fit: contain;
+  max-width: 80%;
+  max-height: 80%;
+}
+
+/* Fallback for missing icons */
+.crypto-icon-container::after {
+  content: attr(data-ticker);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  color: #6b7280;
+  opacity: 0;
+}
+
+.crypto-icon-container img[src$="generic.svg"] + .crypto-icon-container::after {
+  opacity: 1;
+}
+
+/* Add ticker text fallback for icons that don't load */
+.crypto-text-fallback {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  color: #6b7280;
+}
+
+img.icon-error + .crypto-text-fallback {
+  display: flex;
+}

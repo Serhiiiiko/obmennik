@@ -12,6 +12,7 @@ import { RejectedTransactionsComponent } from './components/rejected-transaction
 import { SearchUserComponent } from './components/search-user/search-user.component';
 import { UserPageComponent } from './components/user-page/user-page.component';
 import { WalletAddressesComponent } from './components/wallet-addresses/wallet-addresses.component';
+import { TransactionSettingsComponent } from './components/transaction-settings/transaction-settings.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,10 @@ const routes: Routes = [
       {
         path: 'deposits',
         component: DepositsComponent
+      },
+      {
+        path: 'transaction-settings',
+        component: TransactionSettingsComponent
       },
       {
         path: 'bank-accounts',

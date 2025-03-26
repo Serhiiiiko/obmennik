@@ -1,3 +1,4 @@
+// src/app/user/components/user-transactions/user-transactions.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssetConvertService } from 'src/app/asset-convert/services/asset-convert.service';
 import { AdminService } from 'src/app/admin/services/admin.service';
@@ -5,8 +6,7 @@ import { PaymentStatus } from 'src/app/deposit-withdraw/models/deposit-view-mode
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { Subscription, interval, merge, of } from 'rxjs';
-import { switchMap, catchError, delay } from 'rxjs/operators';
+import { Subscription, interval } from 'rxjs';
 import { AnonymousExchangeConfirmationDto } from 'src/app/asset-convert/models/anonymous-exchange-request-dto';
 
 @Component({
@@ -16,6 +16,7 @@ import { AnonymousExchangeConfirmationDto } from 'src/app/asset-convert/models/a
 })
 export class UserTransactionsComponent implements OnInit, OnDestroy {
   transactions: any[] = [];
+  paginatedTransactions: any[] = []; // For displaying on the current page
   expandedTransactionId: string | null = null;
   loading = true;
   paymentStatusRef = PaymentStatus;
@@ -27,11 +28,19 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
   newTransactionHash: string = '';
   isConfirming: boolean = false;
   
+  // Pagination properties
+  pageSize: number = 5; // Use smaller page size for user transactions since they're more detailed
+  currentPage: number = 1;
+  totalPages: number = 1;
+  
+  // Add Math object to use in template
+  Math = Math;
+  
   private subscription: Subscription;
   private refreshSubscription: Subscription;
   private signalRSubscription: Subscription;
   private connectionStatusSubscription: Subscription;
-  
+
   constructor(
     private assetConvertService: AssetConvertService,
     private adminService: AdminService,
@@ -41,6 +50,7 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.debugInfo = 'Component initialized at ' + new Date().toISOString();
+    console.log('User transactions component initialized');
     
     // Get user email from localStorage for guest users
     if (!this.authService.IsAuthenticated) {
@@ -67,10 +77,12 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     });
     
     // Monitor connection status
-    this.connectionStatusSubscription = this.assetConvertService['connectionStatus$']?.subscribe(status => {
-      this.signalRStatus = status;
-      this.debugInfo += `\nSignalR connection status changed to: ${status}`;
-    });
+    if (this.assetConvertService['connectionStatus$']) {
+      this.connectionStatusSubscription = this.assetConvertService['connectionStatus$'].subscribe(status => {
+        this.signalRStatus = status;
+        this.debugInfo += `\nSignalR connection status changed to: ${status}`;
+      });
+    }
     
     // Then load initial transactions
     this.loadTransactions();
@@ -79,6 +91,14 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     this.refreshSubscription = interval(60000).subscribe(() => {
       this.refreshTransactions();
     });
+    
+    // Safety net - if loading still true after 10 seconds, set to false
+    setTimeout(() => {
+      if (this.loading) {
+        console.log('Loading timeout reached, setting loading to false');
+        this.loading = false;
+      }
+    }, 10000);
   }
   
   ngOnDestroy(): void {
@@ -102,7 +122,8 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
   
   checkSignalRConnection(): void {
     // Get the current connection status directly from the service
-    const status = this.assetConvertService['getConnectionStatus']();
+    const status = this.assetConvertService['getConnectionStatus'] ? 
+                   this.assetConvertService['getConnectionStatus']() : 'Unknown';
     this.signalRStatus = status;
     this.debugInfo += `\nSignalR current status: ${status}`;
     
@@ -113,7 +134,7 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     ));
     
     // If not connected, try to restart
-    if (status !== 'Connected') {
+    if (status !== 'Connected' && this.assetConvertService['rebuildConnection']) {
       this.debugInfo += '\nAttempting to rebuild SignalR connection...';
       this.assetConvertService['rebuildConnection']();
     }
@@ -185,8 +206,9 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
         ));
       }
       
-      // Force Angular change detection
+      // Force Angular change detection and update pagination
       this.transactions = [...this.transactions];
+      this.updatePagination();
     } else {
       // This is a new transaction, add it to the list
       console.log('New transaction, adding to list:', updatedTransaction);
@@ -199,8 +221,9 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
            updatedTransaction.userEmail.toLowerCase() === this.userEmail.toLowerCase())) {
         this.transactions.push(updatedTransaction);
         
-        // Force Angular change detection
+        // Force Angular change detection and update pagination
         this.transactions = [...this.transactions];
+        this.updatePagination();
         
         this.snackbar.ShowSnackbar(new SnackBarCreate(
           "New Transaction", 
@@ -250,8 +273,9 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
           }
         }
         
-        // Force Angular change detection
+        // Force Angular change detection and update pagination
         this.transactions = [...this.transactions];
+        this.updatePagination();
         
         this.snackbar.ShowSnackbar(new SnackBarCreate(
           "Refresh Complete", 
@@ -342,7 +366,10 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
         console.log('No transactions found from API sources');
       }
       
-      if (showLoading) this.loading = false;
+      if (showLoading) {
+        this.loading = false;
+        this.updatePagination();
+      }
     }).catch(error => {
       console.error('Error in combined transaction fetch:', error);
       if (showLoading) {
@@ -363,11 +390,13 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
         this.mergeTransactions(result.content);
         console.log('Transactions loaded successfully, count:', this.transactions.length);
         this.debugInfo += `\nLoaded ${this.transactions.length} transactions`;
+        this.updatePagination();
       } else {
         console.warn('Expected array but got:', typeof result.content);
         this.debugInfo += `\nUnexpected response format: ${typeof result.content}`;
         // Try to convert to array if possible
         this.mergeTransactions([result.content]);
+        this.updatePagination();
       }
     } else if (showLoading) {
       this.showLoadingError();
@@ -405,20 +434,20 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
             (existingStatus === undefined || 
              this.isMoreFinalStatus(newTransaction.status, existingStatus));
           
-          // Create updated transaction object
+          
           updatedTransactions[existingIndex] = {
-            ...updatedTransactions[existingIndex],  // Start with existing data
-            ...newTransaction,                     // Apply updates
-            // Override with existing status if needed
+            ...updatedTransactions[existingIndex],  
+            ...newTransaction,                     
+            
             status: shouldUpdateStatus ? newTransaction.status : existingStatus
           };
           
-          // Show notification if status changed and it's a final status
+          
           if (shouldUpdateStatus && existingStatus !== newTransaction.status) {
             this.showStatusChangeNotification(existingStatus, newTransaction.status);
           }
         } else {
-          // This is a new transaction we haven't seen before
+          
           updatedTransactions.push(newTransaction);
         }
       }
@@ -426,6 +455,7 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     
     // Replace the transactions array (creates a new reference for Angular change detection)
     this.transactions = updatedTransactions;
+    this.updatePagination();
   }
   
   // Helper method to determine if a status is more "final" than another
@@ -442,6 +472,7 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     // A status is more final if it has higher priority
     return statusPriority[newStatus] > statusPriority[oldStatus];
   }
+  
   formatExchangeRate(transaction: any): string {
     // Get the exchange rate from either pair.rate or exchangeRate property
     const rate = transaction.pair?.rate || transaction.exchangeRate || 0;
@@ -480,6 +511,7 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
       minimumFractionDigits: 2
     });
   }
+  
   // Add method to show notification about status changes
   showStatusChangeNotification(oldStatus: PaymentStatus, newStatus: PaymentStatus): void {
     // Don't show notifications for certain status transitions
@@ -603,6 +635,34 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
       ));
     });
   }
+  
+  // Add helper methods to safely get image paths and data
+  hasValidCurrencies(transaction: any): boolean {
+    return (
+      (transaction?.pair?.left?.ticker || transaction?.sourceWalletTicker) &&
+      (transaction?.pair?.right?.ticker || transaction?.destinationWalletTicker)
+    );
+  }
+
+
+  getSourceTicker(transaction: any): string {
+    return transaction?.sourceWallet?.ticker || 
+           transaction?.pair?.left?.ticker || 
+           transaction?.sourceWalletTicker || 
+           'Unknown';
+  }
+
+  getDestinationTicker(transaction: any): string {
+    return transaction?.destinationWallet?.ticker || 
+           transaction?.pair?.right?.ticker || 
+           transaction?.destinationWalletTicker || 
+           'Unknown';
+  }
+
+  getSourceAmount(transaction: any): string {
+    const amount = transaction?.amount || transaction?.sourceAmount || 0;
+    return typeof amount === 'number' ? amount.toLocaleString() : amount.toString();
+  }
  
   // New method to confirm transaction manually
   confirmTransaction(transaction: any): void {
@@ -654,5 +714,38 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
           AlertType.Error
         ));
       });
+  }
+
+  // Pagination methods
+  updatePagination(): void {
+    if (!this.transactions || this.transactions.length === 0) {
+      this.totalPages = 1;
+      this.currentPage = 1;
+      this.paginatedTransactions = [];
+      return;
+    }
+    
+    this.totalPages = Math.ceil(this.transactions.length / this.pageSize);
+    
+    // Ensure current page is within valid range
+    if (this.currentPage < 1) this.currentPage = 1;
+    if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
+    
+    // Get items for current page
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = Math.min(startIndex + this.pageSize, this.transactions.length);
+    
+    // Create a deep copy to avoid reference issues
+    this.paginatedTransactions = this.transactions.slice(startIndex, endIndex).map(t => ({...t}));
+    
+    console.log(`Pagination updated: page ${this.currentPage} of ${this.totalPages}, showing ${this.paginatedTransactions.length} transactions`);
+  }
+
+  changePage(pageNumber: number): void {
+    // Close any expanded transaction when changing pages
+    this.expandedTransactionId = null;
+    
+    this.currentPage = pageNumber;
+    this.updatePagination();
   }
 }

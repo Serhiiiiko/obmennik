@@ -16,6 +16,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AdminModule } from './admin/admin.module';
 import { PremiumModule } from './premium/premium.module';
+import { PaginationComponent } from './components/pagination/pagination.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -25,8 +26,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
-    SnackbarComponent
-    // Remove ChatWidgetComponent from here
+    SnackbarComponent,
   ],
   imports: [
     HttpClientModule,

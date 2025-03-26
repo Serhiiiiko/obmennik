@@ -18,6 +18,7 @@ import { WalletAddressesComponent } from './components/wallet-addresses/wallet-a
 import { PendingTransactionsComponent } from './components/pending-transactions/pending-transactions.component';
 import { ApprovedTransactionsComponent } from './components/approved-transactions/approved-transactions.component';
 import { RejectedTransactionsComponent } from './components/rejected-transactions/rejected-transactions.component';
+import { TransactionSettingsComponent } from './components/transaction-settings/transaction-settings.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { RejectedTransactionsComponent } from './components/rejected-transaction
     WalletAddressesComponent,
     PendingTransactionsComponent,
     ApprovedTransactionsComponent,
-    RejectedTransactionsComponent
+    RejectedTransactionsComponent,
+    TransactionSettingsComponent
   ],
   imports: [
     CommonModule,

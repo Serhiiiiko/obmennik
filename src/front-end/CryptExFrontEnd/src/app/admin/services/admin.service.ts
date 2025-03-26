@@ -18,12 +18,79 @@ import { AssetConvertService } from 'src/app/asset-convert/services/asset-conver
   providedIn: 'root'
 })
 export class AdminService {
+  // Constants for localStorage keys
+  private readonly MINIMUM_TRANSACTION_AMOUNT_KEY = 'cryptex-minimum-transaction-amount';
+  private readonly DEFAULT_MINIMUM_AMOUNT = 99; // Default value if not set
 
   constructor(
     private http: CustomHttpClientService,
     private snackbar: SnackbarService,
     private assetConvertService?: AssetConvertService // Optional injection to avoid circular dependency
   ) { }
+
+  // Get the minimum transaction amount
+  public async getMinimumTransactionAmount(): Promise<ApiResult<number>> {
+    try {
+      // First try to get from localStorage
+      const storedValue = localStorage.getItem(this.MINIMUM_TRANSACTION_AMOUNT_KEY);
+      let amount = this.DEFAULT_MINIMUM_AMOUNT;
+      
+      if (storedValue) {
+        amount = parseFloat(storedValue);
+      }
+      
+      // Simulate an API response
+      return {
+        success: true,
+        content: amount,
+        error: null
+      };
+    } catch (error) {
+      console.error('Error getting minimum transaction amount:', error);
+      return {
+        success: false,
+        content: this.DEFAULT_MINIMUM_AMOUNT,
+        error: error.message
+        }
+      };
+    }
+  
+  
+  // Set the minimum transaction amount
+  public async setMinimumTransactionAmount(amount: number): Promise<ApiResult<boolean>> {
+    try {
+      if (!amount || amount <= 0) {
+        throw new Error('Amount must be greater than 0');
+      }
+      
+      // Store in localStorage
+      localStorage.setItem(this.MINIMUM_TRANSACTION_AMOUNT_KEY, amount.toString());
+      
+      // Broadcast an event to notify other components
+      const event = new CustomEvent('minimum-transaction-amount-changed', { 
+        detail: { amount } 
+      });
+      window.dispatchEvent(event);
+      
+      console.log(`Minimum transaction amount set to $${amount}`);
+      
+      // Simulate an API response
+      return {
+        success: true,
+        content: true,
+        error: null
+      };
+    } catch (error) {
+      console.error('Error setting minimum transaction amount:', error);
+      return {
+        success: false,
+        content: false,
+        error:  error.message
+        }
+      };
+    }
+  
+  
 
   public async SetWalletAddress(walletId: string, address: string): Promise<ApiResult> {
     return this.http.Post("Admin/setWalletAddress", null, { 
