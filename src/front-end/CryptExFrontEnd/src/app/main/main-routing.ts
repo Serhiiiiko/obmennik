@@ -8,6 +8,7 @@ import { UnauthorizedComponent } from './components/unauthorized/unauthorized.co
 import { HomeExchangeComponent } from './components/home/home-exchange/home-exchange.component';
 import { TestimonialCarouselComponent } from './components/home/testimonial-carousel/testimonial-carousel.component';
 import { BuySellComponent } from '../asset-convert/components/buy-sell/buy-sell.component';
+import { AmlPolicyComponent } from './components/aml-policy/aml-policy.component';
 
 const routes: Routes = [
   {
@@ -41,6 +42,10 @@ const routes: Routes = [
   {
     path: 'testimonial-carousel',
     component: TestimonialCarouselComponent
+  },
+  {
+    path: 'aml-policy',
+    component: AmlPolicyComponent
   }
 ];
 

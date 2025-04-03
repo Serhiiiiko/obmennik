@@ -5,8 +5,6 @@
     "Saving": "Saving...",
     "Cancel": "Cancel"
   },
-  
-  
   "Header": {
     "NavBar": {
       "Home": "Home",
@@ -18,13 +16,62 @@
       "Admin": "Admin portal",
       "Contact": "Contact",
       "OpenUserMenu": "Open user menu",
-      "Transactions": "Your transactions"
+      "Transactions": "Your transactions",
+      "AmlPolicy": "AML Policy"
     },
     "UserMenu": {
       "Login": "Login",
       "SignUp": "Sign up",
       "MyAccount": "My account",
       "SignOut": "Sign out"
+    }
+  },
+  "AmlPolicy": {
+    "Title": "AML Policy",
+    "SubTitle": "Anti-Money Laundering Policy",
+    "Section1": {
+      "Title": "General Provisions",
+      "Content1": "The service adheres to practices and measures in the field of combating money laundering and terrorist financing (AML).",
+      "Content2": "The service reserves the right to suspend a transaction for up to 14 days, provided there is no request from the competent authorities regarding the transaction, or to hold the user's funds until the incident is fully investigated."
+    },
+    "Section2": {
+      "Title": "Purpose of Measures",
+      "Content": "The purpose of these measures is to demonstrate that the service takes any attempts to use it for illegal purposes seriously."
+    },
+    "Section3": {
+      "Title": "Warning",
+      "Content": "The service warns users against attempts to use it for money laundering, terrorist financing, fraud of any kind, as well as using it to purchase prohibited goods and services."
+    },
+    "Section4": {
+      "Title": "Conditions for Preventing Illegal Operations",
+      "Content": "To prevent illegal operations, the service establishes conditions for all Applications created by the User:",
+      "Point1": "The sender and recipient of the Payment under the Application must be the same person. Transfers to third parties are strictly prohibited when using the Service.",
+      "Point2": "All contact information entered by the User in the Application, as well as other personal data transmitted by the User to the Service, must be up-to-date and completely accurate.",
+      "Point3": "It is strictly forbidden for the User to create Applications using anonymous proxy servers or any other anonymous Internet connections.",
+      "Point4": "The User gives their consent to the Service for the accounting, processing, and storage of all data about the User's activity and their personal data during the entire period of using the Service.",
+      "Point5": "The User gives their consent to the Online Service to conduct any research that the Online Service deems necessary, as well as to involve third parties to achieve the research goals.",
+      "Point6": "For the procedure of identity verification (KYC), the User gives their consent to the Service to engage specialized services (third party).",
+      "Point7": "The User consents to the verification of all transactions by the Amlbot service. The wallet addresses of all transactions will undergo automatic AML verification.",
+      "Point8": "For refunds, you need to provide a screenshot (video) of the transfer from the wallet, as well as the transaction hash and cryptocurrency address from the email specified in the exchange application.",
+      "Point9": "Refunds can only be made to the User's account specified in the Application or from which the Service accepted the Assets, except for cases in clause 4.10 of the policy.",
+      "Point10": "The Service may make concessions and make a Refund to a User's account different from the one specified in the Application if it is necessary to return a cryptocurrency Asset or tokens.",
+      "Point11": "The Service Commission for performing a Refund is withheld from the amount of the Asset returned to the user.",
+      "Point12": "Refunds can only be made for an amount not exceeding the amount of the Asset sent by the User to the Service's accounts for Exchange.",
+      "Point13": "For Refunds stipulated by the policy, the Service withholds a commission of 3%."
+    },
+    "Section5": {
+      "Title": "Rights of the Service Administration",
+      "Content": "If the Service administration has reasonable suspicions that the user is trying to use the Service for money laundering or for the purpose of conducting any other illegal operations, the administration has the right to:",
+      "Point1": "Suspend the execution of the user's exchange operation during the investigation;",
+      "Point2": "Return funds according to clause 4.9. minus commissions according to clauses 4.11, 4.12, 4.13;",
+      "Point3": "Request additional information regarding payments."
+    },
+    "Section6": {
+      "Title": "Information Transfer",
+      "Content": "All information provided by the client may be transferred to the relevant authorities in the following cases:",
+      "Point1": "At the request of law enforcement agencies;",
+      "Point2": "By decision of courts of different instances;",
+      "Point3": "At the request of Payment system administrations."
     }
   },
   "Currencies": {
@@ -67,12 +114,12 @@
     "JoinBtn": "Exchange currency",
     "Partners": "Our partners",
     "Faq": {
-  "Title": "Frequently asked questions",
-  "Q1": "How can I exchange between cryptocurrencies?",
-  "A1": "To exchange cryptocurrencies, go to 'Buy / Sell', select the cryptocurrency you want to give in the 'You give' field, then select the cryptocurrency you want to receive in the 'You receive' field, and enter the amount you wish to exchange.",
-  "Q2": "How can I exchange between fiat and cryptocurrencies?",
-  "A2": "To exchange between fiat and cryptocurrencies, go to 'Buy / Sell', select the currency you want to exchange in the 'You give' field, then select the currency you want to receive in the 'You receive' field, enter the amount, and click 'Convert'."
-},
+      "Title": "Frequently asked questions",
+      "Q1": "How can I exchange between cryptocurrencies?",
+      "A1": "To exchange cryptocurrencies, go to 'Buy / Sell', select the cryptocurrency you want to give in the 'You give' field, then select the cryptocurrency you want to receive in the 'You receive' field, and enter the amount you wish to exchange.",
+      "Q2": "How can I exchange between fiat and cryptocurrencies?",
+      "A2": "To exchange between fiat and cryptocurrencies, go to 'Buy / Sell', select the currency you want to exchange in the 'You give' field, then select the currency you want to receive in the 'You receive' field, enter the amount, and click 'Convert'."
+    },
     "OurCryptos": "Our crypto-currencies",
     "Pricing": "Pricing",
     "PricingDesc": "If you're not satisfied, contact us within the first 14 days and we'll send you a full refund.",
@@ -80,7 +127,7 @@
       "Title": "Exchange",
       "Description": "Fast and reliable currency exchange 24/7. We offer competitive rates, instant transaction processing, and round-the-clock support. Try our service today!",
       "Give": "You give",
-      "Receive": "You receive", 
+      "Receive": "You receive",
       "ConvertButton": "Convert"
     }
   },
@@ -98,7 +145,7 @@
     "SendToAddress": "Please send funds to this address:",
     "ConfirmTransfer": "After sending, enter the transaction hash:",
     "Confirm": "Confirm"
-},
+  },
   "Premium": {
     "Title": "Premium",
     "Pay": {
@@ -167,19 +214,19 @@
   },
   "BuySell": {
     "Title": "Convert assets",
-  "Desc": "Select an asset to convert into another",
-  "Placeholder": "Enter an amount to convert",
-  "Convert": "CONVERT",
-  "Give": "You give",
-  "Receive": "You receive",
-  "GivePlaceholder": "Amount you give",
-  "ReceivePlaceholder": "Amount you receive",
-  "BonusPromoTitle": "Get $50 for a review",
-  "BonusPromoDesc": "Complete an exchange on our site and leave a review &mdash; promotion runs every month!",
-  "ExchangesTitle": "Number of exchanges",
-  "ExchangesToday": "Today",
-  "ExchangesMonth": "This month",
-  "ExchangesWeek": "This week",
+    "Desc": "Select an asset to convert into another",
+    "Placeholder": "Enter an amount to convert",
+    "Convert": "CONVERT",
+    "Give": "You give",
+    "Receive": "You receive",
+    "GivePlaceholder": "Amount you give",
+    "ReceivePlaceholder": "Amount you receive",
+    "BonusPromoTitle": "Get $50 for a review",
+    "BonusPromoDesc": "Complete an exchange on our site and leave a review &mdash; promotion runs every month!",
+    "ExchangesTitle": "Number of exchanges",
+    "ExchangesToday": "Today",
+    "ExchangesMonth": "This month",
+    "ExchangesWeek": "This week",
     "Transaction": {
       "Title": "Converting",
       "Title2": "into",
@@ -204,9 +251,9 @@
       "WalletAddressPlaceholder": "Enter your wallet address",
       "WalletAddressError": "Please enter a valid wallet address",
       "AmountToDeposit": "Amount to deposit",
-"AmountToSend": "Amount to send",
-"EmailError": "Please enter a valid email address",
-"SendToAddress": "Send {{sourceCurrency}} to this deposit address"
+      "AmountToSend": "Amount to send",
+      "EmailError": "Please enter a valid email address",
+      "SendToAddress": "Send {{sourceCurrency}} to this deposit address"
     },
     "Global": {
       "Cancel": "Отмена"
@@ -333,7 +380,6 @@
       "SaveAddress": "Save Address",
       "Error": "Error"
     },
-    
     "Home": {
       "Welcome": "Welcome",
       "FetchingStats": "Fetching statistics...",

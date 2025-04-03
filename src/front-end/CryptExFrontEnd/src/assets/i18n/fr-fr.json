@@ -1,41 +1,684 @@
 {
+    "Global": {
+      "Loading": "Chargement...",
+      "LoadError": "Impossible de charger ce contenu correctement, veuillez réessayer plus tard.",
+      "Saving": "Sauvegarde...",
+      "Cancel": "Annuler"
+    },
     "Header": {
-        "NavBar": {
-            "Home": "Accueil",
-            "BuySell": "Acheter / Vendre",
-            "MyWallets": "Mes porte-feuilles",
-            "DepositWithdraw": "Déposer / Retirer",
-            "Contact": "Nous contacter",
-            "OpenUserMenu": "Ouvrir le menu"
-        },
-        "UserMenu": {
-            "Login": "Se connecter",
-            "SignUp": "S'inscrire",
-            "MyAccount": "Mon compte",
-            "SignOut": "Se déconnecter"
-        }
+      "NavBar": {
+        "Home": "Accueil",
+        "BuySell": "Acheter / Vendre",
+        "MyWallets": "Mes portefeuilles",
+        "Wallets": "Portefeuilles",
+        "DepositWithdraw": "Dépôt / Retrait",
+        "Premium": "Premium",
+        "Admin": "Portail administrateur",
+        "Contact": "Contact",
+        "OpenUserMenu": "Ouvrir le menu utilisateur",
+        "Transactions": "Vos transactions",
+        "AmlPolicy": "Politique AML"
+      },
+      "UserMenu": {
+        "Login": "Se connecter",
+        "SignUp": "S'inscrire",
+        "MyAccount": "Mon compte",
+        "SignOut": "Se déconnecter"
+    },
+    "AmlPolicy": {
+      "Title": "Politique AML",
+      "SubTitle": "Politique de lutte contre le blanchiment d'argent",
+      "Section1": {
+        "Title": "Dispositions générales",
+        "Content1": "Le service nord-change.com adhère aux pratiques et mesures de lutte contre la légalisation (blanchiment) des revenus d'origine criminelle et le financement du terrorisme (AML).",
+        "Content2": "Le service se réserve le droit de suspendre une transaction jusqu'à 14 jours, à condition qu'aucune demande n'ait été reçue des autorités compétentes concernant la transaction ou de retenir les fonds de l'utilisateur jusqu'à la fin de l'enquête sur l'incident."
+      },
+      "Section2": {
+        "Title": "Objectif des mesures",
+        "Content": "L'objectif de ces mesures est de démontrer que le service nord-change.com prend très au sérieux toute tentative d'utiliser sa plateforme à des fins illégales."
+      },
+      "Section3": {
+        "Title": "Mises en garde",
+        "Content": "Le service nord-change.com met en garde les utilisateurs contre toute tentative d'utilisation de la plateforme pour légitimer des fonds obtenus illégalement, financer le terrorisme, commettre toute forme de fraude, ainsi que contre l'utilisation de la plateforme pour l'achat de biens et services interdits."
+      },
+      "Section4": {
+        "Title": "Conditions pour prévenir les opérations illégales",
+        "Content": "Pour prévenir les opérations de nature illégale, le service nord-change.com établit des conditions pour toutes les demandes créées par l'utilisateur :",
+        "Point1": "L'expéditeur et le destinataire du paiement dans la demande doivent être la même personne. Les transferts en faveur de tiers sont strictement interdits lors de l'utilisation des services du Service.",
+        "Point2": "Toutes les données de contact fournies par l'utilisateur dans la demande, ainsi que toute autre donnée personnelle transmise à travers le Service, doivent être à jour et totalement véridiques.",
+        "Point3": "Il est strictement interdit pour l'utilisateur de créer des demandes en utilisant des serveurs proxy anonymes ou toute autre connexion Internet anonyme.",
+        "Point4": "L'utilisateur consent à ce que le Service enregistre, traite et conserve toutes les données relatives à son activité et ses informations personnelles pendant toute la durée d'utilisation du Service.",
+        "Point5": "L'utilisateur consent à ce que le service en ligne effectue toute recherche que le service en ligne jugera nécessaire, ainsi qu'à faire appel à des tiers pour atteindre les objectifs de ces recherches.",
+        "Point6": "Pour procéder à la vérification d'identité (KYC), l'utilisateur autorise le Service à faire appel à des services spécialisés (tiers).",
+        "Point7": "L'utilisateur consent à ce que toutes les transactions effectuées soient vérifiées par le service AML Amlbot. Les adresses de portefeuille de toutes les transactions feront l'objet d'une vérification AML automatique.",
+        "Point8": "Pour le remboursement, il faut fournir une capture d'écran (vidéo) du transfert depuis le portefeuille, ainsi que le hash de la transaction et l'adresse de la cryptomonnaie indiquée dans l'email de la demande d'échange.",
+        "Point9": "Le remboursement ne peut être effectué que sur le compte de l'utilisateur indiqué dans la demande ou à partir duquel le Service a reçu les actifs, sauf dans le cas prévu au point 4.10 de la politique.",
+        "Point10": "Le Service peut faire des exceptions et effectuer un remboursement sur un compte utilisateur différent de celui indiqué dans la demande, si le remboursement concerne un actif cryptographique ou des jetons.",
+        "Point11": "La commission du Service pour le remboursement est prélevée sur le montant de l'actif remboursé à l'utilisateur.",
+        "Point12": "Le remboursement ne peut être effectué que pour un montant n'excédant pas la somme de l'actif envoyée par l'utilisateur sur les comptes du Service pour l'échange.",
+        "Point13": "Pour les remboursements prévus par la politique, le Service prélève une commission de 3%.",
+        "Point22": "Le service d'échange ne procède pas à une vérification KYC complète de vos documents d'identité, c'est pourquoi les services AML peuvent marquer nos transactions comme P2P Exchange High Risk, Risky Exchange, ce qui peut correspondre à un niveau de risque allant jusqu'à 50%.",
+        "Point26": "Le Service se réserve également le droit d'imputer les frais liés au remboursement des fonds reçus de l'utilisateur dans les cas suivants :\n- Refus de la banque du bénéficiaire de transférer les fonds.\n- Limites du bénéficiaire et impossibilité de transférer par d'autres moyens.\n- Violation de l'accord en vigueur."
+      },
+      "Section5": {
+        "Title": "Droits de l'administration du Service",
+        "Content": "En cas de soupçons fondés par l'administration du Service que l'utilisateur tente d'utiliser les services pour blanchir de l'argent ou pour effectuer toute autre opération illégale, l'administration se réserve le droit de :",
+        "Point1": "Suspendre l'opération d'échange de l'utilisateur pendant l'enquête ;",
+        "Point2": "Rembourser les fonds conformément au point 4.9, après déduction des commissions selon les points 4.11, 4.12, 4.13 ;",
+        "Point3": "Demander des informations supplémentaires concernant les paiements."
+      },
+      "Section6": {
+        "Title": "Transmission d'informations",
+        "Content": "Toutes les informations fournies par le client peuvent être transmises aux autorités compétentes dans les cas suivants :",
+        "Point1": "Sur demande des forces de l'ordre ;",
+        "Point2": "Sur décision des tribunaux de différentes instances ;",
+        "Point3": "Sur demande des administrations des systèmes de paiement."
+      }
+    },
+    "Currencies": {
+      "USD": "Dollar américain (USD)",
+      "CHF": "Franc suisse (CHF)",
+      "EUR": "Euro (EUR)",
+      "GBP": "Livre sterling (GBP)",
+      "CAD": "Dollar canadien (CAD)",
+      "AUD": "Dollar australien (AUD)",
+      "JPY": "Yen japonais (JPY)"
     },
     "Footer": {
-        "LanguageAndCurrency": {
-            "Title": "Langue & Devise",
-            "Language": "Langue",
-            "Currency": "Devise",
-            "ChangingLang": "Changement de la langue...",
-            "ChangingCurrency": "Changement de la devise..."
+      "LanguageAndCurrency": {
+        "Title": "Langue et devise",
+        "Language": "Langue",
+        "Currency": "Devise",
+        "ChangingLang": "Changement de langue...",
+        "ChangingCurrency": "Changement de devise..."
+      },
+      "Newsletter": {
+        "Subscribe": "Abonnez-vous à notre newsletter",
+        "Description": "Les dernières nouvelles, articles et ressources envoyés à votre email chaque semaine.",
+        "Placeholder": "Entrez votre email",
+        "Submit": "S'abonner"
+      },
+      "Nav": {
+        "Title": "Navigation",
+        "Home": "Accueil",
+        "BuySell": "Acheter / Vendre",
+        "Contact": "Contact",
+        "DepositWithdraw": "Dépôt / Retrait"
+      },
+      "Copyright": "2017-2025 Nord-change - Tous droits réservés."
+    },
+    "Home": {
+      "HeaderSmallLine": "Qui sommes-nous ?",
+      "HeaderMessage": "Découvrez le monde des cryptomonnaies en quelques minutes",
+      "HeaderDesc": "Nord-change est une plateforme d'échange entre monnaies fiduciaires et cryptomonnaies",
+      "JoinBtn": "Échanger maintenant",
+      "Partners": "Nos partenaires",
+      "Faq": {
+        "Title": "Questions fréquemment posées",
+        "Q1": "Comment puis-je échanger des cryptomonnaies entre elles ?",
+        "A1": "Pour échanger des cryptomonnaies, rendez-vous dans la section 'Acheter / Vendre', sélectionnez la cryptomonnaie que vous souhaitez donner dans le champ 'Vous donnez', puis choisissez celle que vous souhaitez recevoir dans le champ 'Vous recevez' et entrez le montant à échanger.",
+        "Q2": "Comment puis-je échanger des monnaies fiduciaires contre des cryptomonnaies ?",
+        "A2": "Pour échanger entre monnaies fiduciaires et cryptomonnaies, rendez-vous dans la section 'Acheter / Vendre', sélectionnez la devise que vous souhaitez échanger dans le champ 'Vous donnez', puis choisissez la devise que vous souhaitez recevoir dans le champ 'Vous recevez', entrez le montant et cliquez sur 'Échanger'."
+      },
+      "OurCryptos": "Nos cryptomonnaies",
+      "Pricing": "Tarifs",
+      "PricingDesc": "Si vous n'êtes pas satisfait, contactez-nous dans les 14 premiers jours et nous vous rembourserons intégralement.",
+      "Exchange": {
+        "Title": "Convertisseur",
+        "Description": "Conversion rapide et fiable des devises 24/7. Nous offrons des taux avantageux, un traitement instantané des transactions et un support 24h/24. Essayez notre service dès aujourd'hui !",
+        "Give": "Vous donnez",
+        "Receive": "Vous recevez",
+        "ConvertButton": "Échanger"
+      }
+    },
+    "Transactions": {
+      "Title": "Vos transactions",
+      "NoTransactions": "Vous n'avez pas encore de transactions",
+      "StartTrading": "Commencer à trader",
+      "From": "Envoyé",
+      "To": "Reçu",
+      "Rate": "Taux de change",
+      "Date": "Date",
+      "TransactionHash": "Hash de la transaction",
+      "SuccessfulTransaction": "Transaction confirmée",
+      "PendingConfirmation": "En attente de confirmation",
+      "SendToAddress": "Veuillez envoyer les fonds à cette adresse :",
+      "ConfirmTransfer": "Après l'envoi, indiquez le hash de la transaction :",
+      "Confirm": "Confirmer"
+    },
+    "Premium": {
+      "Title": "Premium",
+      "Pay": {
+        "Title": "Obtenir le premium",
+        "FirstName": "Prénom",
+        "LastName": "Nom de famille",
+        "CCNumber": "Numéro de carte de crédit",
+        "Expiracy": "Date d'expiration",
+        "Cvc": "CVC",
+        "FirstNamePH": "Prénom",
+        "LastNamePH": "Nom de famille",
+        "CCNumberPH": "Numéro de carte de crédit",
+        "ExpiracyPH": "Date d'expiration (MM/AA)",
+        "CvcPH": "CVC (code au verso)",
+        "Submit": "S'abonner"
+      },
+      "Manage": {
+        "Title": "Gérer l'abonnement",
+        "Cancel": "Annuler l'abonnement",
+        "Perks": "Vos avantages"
+      },
+      "PromoCard": {
+        "Title": "Adhésion premium mensuelle",
+        "Desc": "Avec un compte premium, vous bénéficiez de plusieurs avantages sur notre plateforme",
+        "Included": "Ce qui est inclus",
+        "PrivForum": "Accès au forum privé",
+        "MemResx": "Ressources pour les membres",
+        "AnnualConvs": "Accès à la conférence annuelle",
+        "NoFees": "Pas de frais de transaction",
+        "Pay": {
+          "Freq": "Paiement mensuel",
+          "Policy": "Découvrez notre politique d'adhésion",
+          "Get": "Obtenir le premium"
+        }
+      }
+    },
+    "Auth": {
+      "Logout": {
+        "Title": "Se déconnecter",
+        "Description": "Êtes-vous sûr de vouloir vous déconnecter ?",
+        "Confirm": "Confirmer",
+        "Return": "Retourner"
+      }
+    },
+    "User": {
+      "MyAccount": {
+        "Title": "Informations personnelles",
+        "Desc": "Informations principales",
+        "ChangePassword": "Changer le mot de passe",
+        "BankAccount": "Compte bancaire",
+        "Address": "Adresse",
+        "Joined": "Rejoint CryptEx",
+        "Actions": {
+          "Save": "Enregistrer",
+          "Edit": "Modifier",
+          "Cancel": "Annuler"
         },
-        "Newsletter": {
-            "Subscribe": "Abonnez-vous à notre newsletter !",
-            "Description": "Les dernières nouvelles, articles, et ressources, envoyés directement à votre boite mail hebdomadairement.",
-            "Placeholder": "Entrez votre email",
-            "Submit": "S'abonner"
-        },
-        "Nav": {
-            "Title": "Navigations",
-            "Home": "Accueil",
-            "BuySell": "Acheter / Vendre",
-            "Contact": "Nous contacter",
-            "DepositWithdraw": "Déposer / Retirer"
-        },
-        "Copyright": "2021 CryptEx - Tout droits réservés."
+        "BasicInfo": {
+          "NoPhoneNumber": "Téléphone non défini.",
+          "NoEmail": "Email non défini.",
+          "NoBirthDay": "Date de naissance non définie.",
+          "NoAddress": "Adresse non définie.",
+          "NoIban": "Aucun compte bancaire lié. Ajoutez-le maintenant pour retirer des fonds fiduciaires !"
+        }
+      }
+    },
+    "BuySell": {
+      "Title": "Convertir des actifs",
+      "Desc": "Sélectionnez l'actif à convertir en un autre",
+      "Placeholder": "Entrez le montant à convertir",
+      "Convert": "CONVERTIR",
+      "Give": "Vous donnez",
+      "Receive": "Vous recevez",
+      "GivePlaceholder": "Montant que vous donnez",
+      "ReceivePlaceholder": "Montant que vous recevez",
+      "BonusPromoTitle": "Obtenez 50 $ pour un avis",
+      "BonusPromoDesc": "Effectuez un échange sur notre site et laissez un avis &mdash; l'offre est valable chaque mois !",
+      "ExchangesTitle": "Nombre d'échanges",
+      "ExchangesToday": "Aujourd'hui",
+      "ExchangesMonth": "Ce mois-ci",
+      "ExchangesWeek": "Cette semaine",
+      "Transaction": {
+        "Title": "Conversion",
+        "Title2": "en",
+        "InProgress": "Conversion en cours",
+        "Done": "Conversion terminée",
+        "Failed": "Conversion échouée",
+        "Continue": "Continuer vers mes portefeuilles"
+      },
+      "ManualDeposit": {
+        "Title": "Dépôt manuel de cryptomonnaies",
+        "Description": "Veuillez indiquer votre email et l'adresse pour recevoir le dépôt.",
+        "YourEmail": "Votre email",
+        "Amount": "Montant",
+        "GetAddress": "Obtenir l'adresse pour le dépôt",
+        "DepositInstructions": "Instructions pour le dépôt",
+        "DepositAddress": "Adresse de dépôt",
+        "Instructions": "Veuillez envoyer votre cryptomonnaie à cette adresse. Votre dépôt sera crédité sur votre compte après confirmation de la transaction sur la blockchain (généralement entre 15 et 60 minutes).",
+        "Done": "Terminé",
+        "WalletInstructions": "Veuillez indiquer votre portefeuille {{ targetCurrency }} où vous recevrez les fonds convertis.",
+        "WalletAddressLabel": "Votre adresse de portefeuille {{ targetCurrency }} pour la réception",
+        "WalletAddressPlaceholder": "Entrez l'adresse de votre portefeuille",
+        "WalletAddressError": "Veuillez entrer une adresse de portefeuille valide",
+        "AmountToDeposit": "Montant à déposer",
+        "AmountToSend": "Montant à envoyer",
+        "EmailError": "Veuillez entrer une adresse email correcte",
+        "Cancel": "Annuler",
+        "SendToAddress": "Envoyez {{sourceCurrency}} à cette adresse de dépôt"
+      },
+      "Global": {
+        "Cancel": "Annuler"
+      },
+      "Preview": {
+        "Title": "Aperçu de la transaction",
+        "Confirm": "Confirmer",
+        "Cancel": "Annuler",
+        "Rate": "Taux de change",
+        "Price": "Ce que vous recevrez",
+        "TimeLeft1": "Il vous reste",
+        "TimeLeft2": "secondes pour confirmer la transaction."
+      }
+    },
+    "Wallets": {
+      "HideEmptyWallets": "Masquer les portefeuilles vides"
+    },
+    "DepositWithdraw": {
+      "Title": "Type de dépôt/retrait",
+      "Type": {
+        "Fiat": "Fiduciaire",
+        "Crypto": "Crypto"
+      },
+      "History": {
+        "Title": "Historique des dépôts",
+        "None": "Vous n'avez pas encore effectué de dépôts !"
+      },
+      "Both": {
+        "DepositBtn": "DÉPOSER",
+        "WithdrawBtn": "RETRACTER",
+        "EnterAny": "Entrez n'importe quel",
+        "Amount": "montant."
+      },
+      "Fiat": {
+        "Deposit": "Déposer des fonds fiduciaires",
+        "NoFee": "En tant qu'utilisateur premium, votre transaction est sans frais !",
+        "Fee": "Une commission de 2% sera appliquée à votre dépôt. Obtenez un compte premium pour éviter les frais !",
+        "Withdraw": "Retirer des fonds fiduciaires",
+        "Destination": "Destination du transfert :",
+        "NoAccount": "Aucun compte bancaire lié. Veuillez accéder à 'Mon compte' pour le lier et retirer des fonds fiduciaires.",
+        "Refused": "Votre compte bancaire a été refusé. Veuillez contacter notre support.",
+        "NotProcessed": "Votre compte bancaire n'est pas encore traité, veuillez réessayer plus tard."
+      },
+      "Crypto": {
+        "Deposit": "Déposer des cryptos",
+        "Withdraw": "Retirer des cryptos",
+        "Desc": "Sélectionnez la cryptomonnaie à déposer.",
+        "Address": "Envoyez n'importe quelle",
+        "Address2": "à cette adresse, et elle apparaîtra sur votre compte en moins de 15 minutes.",
+        "Warning": "AVERTISSEMENT : Veuillez vous assurer d'envoyer uniquement",
+        "Warning2": "à cette adresse, sinon vos fonds seront perdus."
+      }
+    },
+    "PaymentStatus": {
+      "Status": {
+        "-1": "Non traité",
+        "0": "Échec",
+        "1": "Succès",
+        "2": "En attente"
+      }
+    },
+    "BankAccountStatus": {
+      "-1": "Non traité",
+      "1": "Approuvé",
+      "0": "Refusé"
+    },
+    "Contact": {
+      "ContactUs": "Contactez-nous",
+      "Description": "Notre équipe est prête à écouter vos questions",
+      "Address": {
+        "Title": "Adresse",
+        "Line1": "Rue de Genève 63",
+        "Line2": "1002 Lausanne"
+      },
+      "Form": {
+        "FullName": "Nom complet",
+        "Email": "Email",
+        "Phone": "Téléphone",
+        "Message": "Message",
+        "Submit": "Envoyer"
+      }
+    },
+    "Admin": {
+      "ShortTitles": {
+        "Home": "Accueil",
+        "SearchUser": "Rechercher des utilisateurs",
+        "Deposits": "Voir les derniers dépôts",
+        "BankAccounts": "Voir les comptes bancaires en attente",
+        "WalletAddresses": "Gérer les adresses de portefeuilles",
+        "PendingTransactions": "Transactions en attente"
+      },
+      "PendingTransactions": {
+        "Title": "Transactions d'échange de devises en attente",
+        "NoTransactions": "Aucune transaction en attente trouvée.",
+        "User": "Utilisateur",
+        "From": "De",
+        "To": "À",
+        "Amount": "Montant",
+        "Rate": "Taux de change",
+        "Date": "Date",
+        "Actions": "Actions",
+        "Approve": "Approuver",
+        "Reject": "Rejeter",
+        "Status": "Statut"
+      },
+      "WalletAddresses": {
+        "Title": "Gestion des adresses de portefeuilles crypto",
+        "Description": "Configurez les adresses de portefeuilles pour chaque cryptomonnaie. Les utilisateurs utiliseront ces adresses pour déposer leurs actifs crypto.",
+        "NoWallets": "Aucun portefeuille crypto trouvé.",
+        "EnterAddress": "Entrez l'adresse du portefeuille",
+        "Save": "Enregistrer l'adresse",
+        "FiatCurrencies": "Devises fiduciaires",
+        "NoFiatWallets": "Aucun portefeuille fiduciaire trouvé.",
+        "SaveAddress": "Enregistrer l'adresse",
+        "Error": "Erreur"
+      },
+      "Home": {
+        "Welcome": "Bienvenue",
+        "FetchingStats": "Récupération des statistiques...",
+        "TotalUsers": "Nombre total d'utilisateurs :",
+        "NewUsers24h": "Nouveaux utilisateurs (24h) :",
+        "NewUsers7d": "Nouveaux utilisateurs (7j) :",
+        "NewUsers30d": "Nouveaux utilisateurs (30j) :",
+        "TotalTraded": "Volume total échangé :",
+        "TotalTraded24h": "Volume total échangé (24h) :",
+        "TotalTraded7d": "Volume total échangé (7j) :",
+        "TotalTraded30d": "Volume total échangé (30j) :"
+      },
+      "SearchUser": {
+        "Title": "Recherche d'utilisateur",
+        "InputPlaceholder": "Entrez votre recherche...",
+        "NoneFound": "Aucun résultat trouvé."
+      },
+      "UserPage": {
+        "Title": "Page administrateur",
+        "ActivateUser": "Activer le compte utilisateur",
+        "DeactivateUser": "Désactiver le compte utilisateur",
+        "NoIban": "Cet utilisateur n'a pas de compte bancaire lié.",
+        "ApproveBankAccount": "Approuver le compte bancaire",
+        "DisapproveBankAccount": "Refuser le compte bancaire",
+        "Status": {
+          "0": "Statut non défini",
+          "1": "Actif",
+          "-1": "Inactif"
+        }
+      },
+      "BankAccount": {
+        "Title": "Comptes bancaires en attente d'approbation",
+        "NoResult": "Aucun compte bancaire en attente d'approbation."
+      },
+      "Deposits": {
+        "Title": "Dépôts des utilisateurs (les 100 derniers)",
+        "NoResult": "Aucun dépôt trouvé."
+      }
+    },
+    "Forbidden": {
+      "Title": "Interdit (403)",
+      "Description": "Une erreur s'est produite lors de la tentative d'accès au contenu demandé, celui-ci peut être indisponible pour l'une des raisons suivantes :",
+      "List": {
+        "Item1": "Vous n'êtes pas connecté.",
+        "Item2": "Vous n'avez pas accès au contenu demandé."
+      },
+      "ReturnButton": "Retour à l'accueil"
+    },
+    "Unauthorized": {
+      "Title": "Non autorisé (401)",
+      "Description": "Pour accéder à ce contenu, veuillez vous connecter.",
+      "ContinueButton": "Se connecter",
+      "ReturnButton": "Retour à l'accueil"
+    },
+    "NotFound": {
+      "Title": "Non trouvé (404)",
+      "Description": "Le contenu demandé n'a pas été trouvé.",
+      "ReturnButton": "Retour à l'accueil"
+    },
+    "Countries": {
+      "AF": "Afghanistan",
+      "AL": "Albanie",
+      "DZ": "Algérie",
+      "AS": "Samoa américaines",
+      "AD": "Andorre",
+      "AO": "Angola",
+      "AI": "Anguilla",
+      "AQ": "Antarctique",
+      "AG": "Antigua-et-Barbuda",
+      "AR": "Argentine",
+      "AM": "Arménie",
+      "AW": "Aruba",
+      "AU": "Australie",
+      "AT": "Autriche",
+      "AZ": "Azerbaïdjan",
+      "BS": "Bahamas",
+      "BH": "Bahreïn",
+      "BD": "Bangladesh",
+      "BB": "Barbade",
+      "BY": "Biélorussie",
+      "BE": "Belgique",
+      "BZ": "Belize",
+      "BJ": "Bénin",
+      "BM": "Bermudes",
+      "BT": "Bhoutan",
+      "BO": "Bolivie",
+      "BQ": "Bonaire, Saint-Eustache et Saba",
+      "BA": "Bosnie-Herzégovine",
+      "BW": "Botswana",
+      "BV": "Île Bouvet",
+      "BR": "Brésil",
+      "IO": "Territoire britannique dans l'océan Indien",
+      "BN": "Brunei Darussalam",
+      "BG": "Bulgarie",
+      "BF": "Burkina Faso",
+      "BI": "Burundi",
+      "CV": "Cap-Vert",
+      "KH": "Cambodge",
+      "CM": "Cameroun",
+      "CA": "Canada",
+      "KY": "Îles Caïmans",
+      "CF": "République centrafricaine",
+      "TD": "Tchad",
+      "CL": "Chili",
+      "CN": "Chine",
+      "CX": "Île Christmas",
+      "CC": "Îles Cocos (Keeling)",
+      "CO": "Colombie",
+      "KM": "Comores",
+      "CD": "République démocratique du Congo",
+      "CG": "Congo",
+      "CK": "Îles Cook",
+      "CR": "Costa Rica",
+      "HR": "Croatie",
+      "CU": "Cuba",
+      "CW": "Curaçao",
+      "CY": "Chypre",
+      "CZ": "République tchèque",
+      "CI": "Côte d'Ivoire",
+      "DK": "Danemark",
+      "DJ": "Djibouti",
+      "DM": "Dominique",
+      "DO": "République dominicaine",
+      "EC": "Équateur",
+      "EG": "Égypte",
+      "SV": "Salvador",
+      "GQ": "Guinée équatoriale",
+      "ER": "Érythrée",
+      "EE": "Estonie",
+      "SZ": "Eswatini",
+      "ET": "Éthiopie",
+      "FK": "Îles Malouines",
+      "FO": "Îles Féroé",
+      "FJ": "Fidji",
+      "FI": "Finlande",
+      "FR": "France",
+      "GF": "Guyane française",
+      "PF": "Polynésie française",
+      "TF": "Terres australes françaises",
+      "GA": "Gabon",
+      "GM": "Gambie",
+      "GE": "Géorgie",
+      "DE": "Allemagne",
+      "GH": "Ghana",
+      "GI": "Gibraltar",
+      "GR": "Grèce",
+      "GL": "Groenland",
+      "GD": "Grenade",
+      "GP": "Guadeloupe",
+      "GU": "Guam",
+      "GT": "Guatemala",
+      "GG": "Guernesey",
+      "GN": "Guinée",
+      "GW": "Guinée-Bissau",
+      "GY": "Guyana",
+      "HT": "Haïti",
+      "HM": "Île Heard et îles McDonald",
+      "VA": "Vatican",
+      "HN": "Honduras",
+      "HK": "Hong Kong",
+      "HU": "Hongrie",
+      "IS": "Islande",
+      "IN": "Inde",
+      "ID": "Indonésie",
+      "IR": "Iran",
+      "IQ": "Irak",
+      "IE": "Irlande",
+      "IM": "Île de Man",
+      "IL": "Israël",
+      "IT": "Italie",
+      "JM": "Jamaïque",
+      "JP": "Japon",
+      "JE": "Jersey",
+      "JO": "Jordanie",
+      "KZ": "Kazakhstan",
+      "KE": "Kenya",
+      "KI": "Kiribati",
+      "KP": "Corée du Nord",
+      "KR": "Corée du Sud",
+      "KW": "Koweït",
+      "KG": "Kirghizistan",
+      "LA": "Laos",
+      "LV": "Lettonie",
+      "LB": "Liban",
+      "LS": "Lesotho",
+      "LR": "Liberia",
+      "LY": "Libye",
+      "LI": "Liechtenstein",
+      "LT": "Lituanie",
+      "LU": "Luxembourg",
+      "MO": "Macao",
+      "MG": "Madagascar",
+      "MW": "Malawi",
+      "MY": "Malaisie",
+      "MV": "Maldives",
+      "ML": "Mali",
+      "MT": "Malte",
+      "MH": "Îles Marshall",
+      "MQ": "Martinique",
+      "MR": "Mauritanie",
+      "MU": "Maurice",
+      "YT": "Mayotte",
+      "MX": "Mexique",
+      "FM": "Micronésie, États fédérés",
+      "MD": "Moldavie, République",
+      "MC": "Monaco",
+      "MN": "Mongolie",
+      "ME": "Monténégro",
+      "MS": "Montserrat",
+      "MA": "Maroc",
+      "MZ": "Mozambique",
+      "MM": "Myanmar",
+      "NA": "Namibie",
+      "NR": "Nauru",
+      "NP": "Népal",
+      "NL": "Pays-Bas",
+      "NC": "Nouvelle-Calédonie",
+      "NZ": "Nouvelle-Zélande",
+      "NI": "Nicaragua",
+      "NE": "Niger",
+      "NG": "Nigéria",
+      "NU": "Niue",
+      "NF": "Île Norfolk",
+      "MP": "Îles Mariannes du Nord",
+      "NO": "Norvège",
+      "OM": "Oman",
+      "PK": "Pakistan",
+      "PW": "Palaos",
+      "PS": "Palestine, État",
+      "PA": "Panama",
+      "PG": "Papouasie-Nouvelle-Guinée",
+      "PY": "Paraguay",
+      "PE": "Pérou",
+      "PH": "Philippines",
+      "PN": "Îles Pitcairn",
+      "PL": "Pologne",
+      "PT": "Portugal",
+      "PR": "Porto Rico",
+      "QA": "Qatar",
+      "MK": "Macédoine du Nord",
+      "RO": "Roumanie",
+      "RU": "Fédération de Russie",
+      "RW": "Ruanda",
+      "RE": "La Réunion",
+      "BL": "Saint-Barthélemy",
+      "SH": "Île Sainte-Hélène, Ascension et Tristan da Cunha",
+      "KN": "Saint-Kitts-et-Nevis",
+      "LC": "Sainte-Lucie",
+      "MF": "Saint-Martin (partie française)",
+      "PM": "Saint-Pierre-et-Miquelon",
+      "VC": "Saint-Vincent et les Grenadines",
+      "WS": "Samoa",
+      "SM": "Saint-Marin",
+      "ST": "São Tomé-et-Principe",
+      "SA": "Arabie Saoudite",
+      "SN": "Sénégal",
+      "RS": "Serbie",
+      "SC": "Seychelles",
+      "SL": "Sierra Leone",
+      "SG": "Singapour",
+      "SX": "Sint Maarten (partie néerlandaise)",
+      "SK": "Slovaquie",
+      "SI": "Slovénie",
+      "SB": "Îles Salomon",
+      "SO": "Somalie",
+      "ZA": "Afrique du Sud",
+      "GS": "Géorgie du Sud-et-les Îles Sandwich du Sud",
+      "SS": "Soudan du Sud",
+      "ES": "Espagne",
+      "LK": "Sri Lanka",
+      "SD": "Soudan",
+      "SR": "Suriname",
+      "SJ": "Spitzbergen et Jan Mayen",
+      "SE": "Suède",
+      "CH": "Suisse",
+      "SY": "République arabe syrienne",
+      "TW": "Taïwan (province de Chine)",
+      "TJ": "Tadjikistan",
+      "TZ": "Tanzanie, République-Unie",
+      "TH": "Thaïlande",
+      "TL": "Timor-Leste",
+      "TG": "Togo",
+      "TK": "Tokelau",
+      "TO": "Tonga",
+      "TT": "Trinité-et-Tobago",
+      "TN": "Tunisie",
+      "TR": "Turquie",
+      "TM": "Turkménistan",
+      "TC": "Îles Turques-et-Caïques",
+      "TV": "Tuvalu",
+      "UG": "Ouganda",
+      "UA": "Ukraine",
+      "AE": "Émirats arabes unis",
+      "GB": "Royaume-Uni",
+      "UM": "Îles mineures éloignées des États-Unis",
+      "US": "États-Unis d'Amérique",
+      "UY": "Uruguay",
+      "UZ": "Ouzbékistan",
+      "VU": "Vanuatu",
+      "VE": "Venezuela",
+      "VN": "Viêt Nam",
+      "VG": "Îles Vierges britanniques",
+      "VI": "Îles Vierges des États-Unis",
+      "WF": "Wallis-et-Futuna",
+      "EH": "Sahara occidental",
+      "YE": "Yémen",
+      "ZM": "Zambie",
+      "ZW": "Zimbabwe",
+      "AX": "Îles Åland"
     }
-}
+  }
+}  

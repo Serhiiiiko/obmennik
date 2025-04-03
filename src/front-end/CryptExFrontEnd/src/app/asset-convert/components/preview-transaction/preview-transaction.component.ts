@@ -33,15 +33,15 @@ export class PreviewTransactionComponent implements OnInit, OnDestroy {
   
   // Cryptocurrency prices in USD (fallback values if API doesn't provide)
   cryptoPrices: {[key: string]: number} = {
-    'BTC': 61250.00,
-    'ETH': 3350.00,
-    'LTC': 85.50,
-    'XRP': 0.55,
-    'ADA': 0.45,
-    'ATOM': 9.25,
-    'ZEC': 28.75,
-    'BNB': 580.00,
-    'TON': 5.95,
+    'BTC': 87500.00,
+    'ETH': 2014.90,
+    'LTC': 92.50,
+    'XRP': 2.35,
+    'ADA': 0.74,
+    'ATOM': 4.85,
+    'ZEC': 37.91,
+    'BNB': 639.75,
+    'TON': 3.95,
     'USDT': 1.00,
     'USDT-BEP20': 1.00,
     'UST-TRC20': 1.00

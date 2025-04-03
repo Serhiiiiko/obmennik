@@ -16,6 +16,7 @@ import { StatusBadgeComponent } from './components/status-badge/status-badge.com
 import { HomeExchangeComponent } from './components/home/home-exchange/home-exchange.component';
 import { TestimonialCarouselComponent } from './components/home/testimonial-carousel/testimonial-carousel.component';
 import { ChatWidgetComponent } from './components/chat-widget/chat-widget.component';
+import { AmlPolicyComponent } from './components/aml-policy/aml-policy.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ChatWidgetComponent } from './components/chat-widget/chat-widget.compon
     HomeExchangeComponent,
     StatusBadgeComponent,
     TestimonialCarouselComponent,
-    ChatWidgetComponent
+    ChatWidgetComponent,
+    AmlPolicyComponent
   ],
   imports: [
     CommonModule,
