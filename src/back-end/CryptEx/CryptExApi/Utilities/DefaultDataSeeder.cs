@@ -106,6 +106,7 @@ namespace CryptExApi.Utilities
         };
 
 
+
         public static readonly Dictionary<string, decimal> CryptoUsdExchangeRates = new()
         {
             // These are fallback rates in case the Coinbase API fails
