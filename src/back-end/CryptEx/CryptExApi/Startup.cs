@@ -84,17 +84,8 @@ namespace CryptExApi
                 {
                     y.AllowAnyMethod();
                     y.AllowAnyHeader();
-                    y.AllowCredentials();
-                    //y.AllowAnyOrigin(); //We allow any origin because we aren't a real website.
-                    y.WithOrigins(
-                        "http://localhost:5000",
-                        "https://localhost:5001",
-                        "http://localhost:4200",
-                        "https://cryptex-trade.tech",
-                        "https://www.cryptex-trade.tech",
-                        "https://api.cryptex-trade.tech"
-                    );
-                    //y.WithOrigins("cryptex-trade.tech", "www.cryptex-trade.tech");
+                    y.AllowAnyOrigin(); //We allow any origin because we aren't a real website.
+                    
                 });
             });
 
