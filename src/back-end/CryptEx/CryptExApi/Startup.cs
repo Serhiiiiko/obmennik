@@ -84,7 +84,7 @@ namespace CryptExApi
                 {
                     y.AllowAnyMethod();
                     y.AllowAnyHeader();
-                    y.AllowAnyOrigin(); //We allow any origin because we aren't a real website.
+                    y.AllowAnyOrigin();
                     
                 });
             });
