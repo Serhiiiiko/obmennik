@@ -1,0 +1,610 @@
+[
+  {
+    "Id": "6d19ebb2-eb71-4240-db80-08dd52c7044f",
+    "ExpirationUtc": "2025-02-18T22:28:08.0778843",
+    "LeftId": "7fd53744-76fb-43d2-94c5-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00003100"
+  },
+  {
+    "Id": "279c4312-e8b7-473e-26f6-08dd5343b908",
+    "ExpirationUtc": "2025-02-22T13:21:48.8600129",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "d689af3b-53ef-497d-b8b1-08dd5343acb9",
+    "ExchangeRate": "0.00001033"
+  },
+  {
+    "Id": "46de26bd-1085-429f-26f7-08dd5343b908",
+    "ExpirationUtc": "2025-02-22T13:23:18.2173331",
+    "LeftId": "da15803f-13c1-495f-94cc-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "d689af3b-53ef-497d-b8b1-08dd5343acb9",
+    "ExchangeRate": "0.02824000"
+  },
+  {
+    "Id": "372d146c-a5f1-4aaa-26f8-08dd5343b908",
+    "ExpirationUtc": "2025-02-22T13:29:09.8999232",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "d689af3b-53ef-497d-b8b1-08dd5343acb9",
+    "ExchangeRate": "0.00001033"
+  },
+  {
+    "Id": "7d8293b6-d8f3-4623-dd86-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T10:29:36.3148684",
+    "LeftId": "7fd53744-76fb-43d2-94c5-08dd52c703bd",
+    "RightId": "ca004a86-e481-454e-94c7-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.79000000"
+  },
+  {
+    "Id": "06d7c5ce-9ff2-4e82-dd87-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T10:29:51.3051845",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001039"
+  },
+  {
+    "Id": "fcb833e7-56ba-442a-dd8c-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T10:34:27.592375",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001039"
+  },
+  {
+    "Id": "7b441525-3d67-43d8-dd92-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T10:49:51.4017403",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001040"
+  },
+  {
+    "Id": "bd5ecc92-6317-4cb0-dd95-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T10:57:26.0819175",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001040"
+  },
+  {
+    "Id": "712c399a-5ef0-4133-dd97-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T11:03:42.6706166",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001040"
+  },
+  {
+    "Id": "c1d78871-cd75-46f9-dd9a-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T11:11:46.4174605",
+    "LeftId": "7fd53744-76fb-43d2-94c5-08dd52c703bd",
+    "RightId": "ca004a86-e481-454e-94c7-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.79000000"
+  },
+  {
+    "Id": "51b66e54-b787-44a8-dd9b-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T11:34:49.367705",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001040"
+  },
+  {
+    "Id": "53bb8c88-f21b-4851-dd9c-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T11:35:07.6542035",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001040"
+  },
+  {
+    "Id": "3c893ef8-ecce-4bd9-dd9d-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T16:44:58.8498821",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001047"
+  },
+  {
+    "Id": "b0a3fb03-0663-4832-dd9e-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T18:27:38.9521163",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001043"
+  },
+  {
+    "Id": "f6bf2790-77c8-4cf5-dd9f-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T18:48:40.8190783",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001045"
+  },
+  {
+    "Id": "0d0aedc3-0ebf-48e1-dda0-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T19:28:27.3436955",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001043"
+  },
+  {
+    "Id": "0150fe25-eaee-4cbc-dda1-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T19:30:10.1416719",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001043"
+  },
+  {
+    "Id": "313d24b0-f5b7-4cd2-dda2-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T19:37:21.0125175",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001043"
+  },
+  {
+    "Id": "4d573a2e-7ee4-43ed-dda3-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T19:37:30.4257541",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "7fd53744-76fb-43d2-94c5-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.91000000"
+  },
+  {
+    "Id": "e48b521e-9e93-4135-dda4-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T19:42:16.5381545",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001043"
+  },
+  {
+    "Id": "7b44fed3-2f0b-473f-dda5-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T20:59:23.7106146",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001044"
+  },
+  {
+    "Id": "39ae5490-049f-43fc-dda6-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T21:21:49.5374867",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001045"
+  },
+  {
+    "Id": "03b486b1-3a78-4366-dda7-08dd53f4d4c7",
+    "ExpirationUtc": "2025-02-23T21:29:31.4427711",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001045"
+  },
+  {
+    "Id": "8b3294da-96b5-4f1e-e0b9-08dd5770b47c",
+    "ExpirationUtc": "2025-02-27T20:53:53.2055606",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001197"
+  },
+  {
+    "Id": "01b005e6-7c7d-48d7-e0ba-08dd5770b47c",
+    "ExpirationUtc": "2025-02-27T20:55:32.0427983",
+    "LeftId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "RightId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "83540.42000000"
+  },
+  {
+    "Id": "edefa33d-2f3c-4342-e0bb-08dd5770b47c",
+    "ExpirationUtc": "2025-02-27T21:15:49.3942039",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001195"
+  },
+  {
+    "Id": "e94167cb-9484-46c3-e0be-08dd5770b47c",
+    "ExpirationUtc": "2025-02-27T21:16:21.9377315",
+    "LeftId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "RightId": "275ca7f8-e897-4f23-94ca-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "12475000.00000000"
+  },
+  {
+    "Id": "cebe31c0-b4ac-4187-a12c-08dd6209a968",
+    "ExpirationUtc": "2025-03-13T08:35:10.779287",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001210"
+  },
+  {
+    "Id": "1049584e-bc8c-4ab8-4177-08dd620a1974",
+    "ExpirationUtc": "2025-03-13T08:37:07.2537463",
+    "LeftId": "4415fce7-9bd1-49cb-94d0-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00107300"
+  },
+  {
+    "Id": "d4b6e714-f740-442b-4179-08dd620a1974",
+    "ExpirationUtc": "2025-03-13T08:39:44.8671508",
+    "LeftId": "4a81c51f-612b-43b5-94d4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00000257"
+  },
+  {
+    "Id": "9183be99-4cc2-4033-417a-08dd620a1974",
+    "ExpirationUtc": "2025-03-13T08:57:30.578471",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001207"
+  },
+  {
+    "Id": "0adaca7b-e132-4cfd-417b-08dd620a1974",
+    "ExpirationUtc": "2025-03-13T09:12:25.3482639",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001203"
+  },
+  {
+    "Id": "16ffde51-2673-4893-f7fc-08dd630f7aab",
+    "ExpirationUtc": "2025-03-14T15:48:08.9519409",
+    "LeftId": "8c198a1c-3fbc-49f8-94d5-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00007100"
+  },
+  {
+    "Id": "50d6e170-2785-46d0-f7fd-08dd630f7aab",
+    "ExpirationUtc": "2025-03-14T15:48:27.0840415",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001178"
+  },
+  {
+    "Id": "2e647940-a7ee-4ec2-3f0d-08dd63115c1d",
+    "ExpirationUtc": "2025-03-14T16:01:36.7301398",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001178"
+  },
+  {
+    "Id": "9eea70b4-bf0c-40c8-3f0e-08dd63115c1d",
+    "ExpirationUtc": "2025-03-14T16:01:44.480153",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001178"
+  },
+  {
+    "Id": "4c823d22-f91f-4405-3f0f-08dd63115c1d",
+    "ExpirationUtc": "2025-03-14T16:29:15.8068593",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001185"
+  },
+  {
+    "Id": "8a25bef8-5561-48db-3f10-08dd63115c1d",
+    "ExpirationUtc": "2025-03-14T16:32:39.4266238",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001188"
+  },
+  {
+    "Id": "583f3f68-4336-41ee-cc71-08dd631a4b6b",
+    "ExpirationUtc": "2025-03-14T17:05:34.1913894",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001181"
+  },
+  {
+    "Id": "1fbe069c-8b7a-4281-cc72-08dd631a4b6b",
+    "ExpirationUtc": "2025-03-14T17:05:40.837929",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001181"
+  },
+  {
+    "Id": "4af1eb60-2836-4751-bd1c-08dd631a75bc",
+    "ExpirationUtc": "2025-03-14T17:06:45.1289775",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001181"
+  },
+  {
+    "Id": "8fd85b14-e43b-4620-9035-08dd631b415a",
+    "ExpirationUtc": "2025-03-14T17:12:26.7907354",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001182"
+  },
+  {
+    "Id": "2e7fc3be-0520-46f6-9036-08dd631b415a",
+    "ExpirationUtc": "2025-03-14T17:17:45.559746",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001183"
+  },
+  {
+    "Id": "9395f550-f83b-489b-a778-08dd631d452c",
+    "ExpirationUtc": "2025-03-14T17:26:52.2053923",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001183"
+  },
+  {
+    "Id": "bd974e45-ace9-4131-a779-08dd631d452c",
+    "ExpirationUtc": "2025-03-14T17:27:38.3087593",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001185"
+  },
+  {
+    "Id": "92346267-5e32-46df-a77a-08dd631d452c",
+    "ExpirationUtc": "2025-03-14T17:27:44.1401339",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001186"
+  },
+  {
+    "Id": "3366cbd3-4521-4926-a77b-08dd631d452c",
+    "ExpirationUtc": "2025-03-14T17:28:19.087595",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001186"
+  },
+  {
+    "Id": "5cec1c00-0556-4eeb-a77c-08dd631d452c",
+    "ExpirationUtc": "2025-03-14T17:30:41.2014449",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001185"
+  },
+  {
+    "Id": "8495d913-59e3-4fe0-a77d-08dd631d452c",
+    "ExpirationUtc": "2025-03-14T17:34:38.8015864",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001186"
+  },
+  {
+    "Id": "3fed718c-1126-4973-efde-08dd6323f0fa",
+    "ExpirationUtc": "2025-03-14T18:15:04.6578794",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001184"
+  },
+  {
+    "Id": "8ac692df-4d53-483f-0a56-08dd632c8786",
+    "ExpirationUtc": "2025-03-14T19:18:38.6393241",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001179"
+  },
+  {
+    "Id": "4d3f8b9b-2e2d-441e-0a58-08dd632c8786",
+    "ExpirationUtc": "2025-03-14T19:28:13.1590731",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001181"
+  },
+  {
+    "Id": "deb4df55-58d9-4edc-0a63-08dd632c8786",
+    "ExpirationUtc": "2025-03-14T19:51:20.9258336",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001182"
+  },
+  {
+    "Id": "ba169569-4b31-4255-baae-08dd63497267",
+    "ExpirationUtc": "2025-03-14T22:43:46.4788927",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001185"
+  },
+  {
+    "Id": "36019eba-d60b-4de5-bab5-08dd63497267",
+    "ExpirationUtc": "2025-03-14T22:58:51.7326773",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001184"
+  },
+  {
+    "Id": "88948697-e9c9-49dd-ac96-08dd63a9a8cd",
+    "ExpirationUtc": "2025-03-15T12:58:04.4825052",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001189"
+  },
+  {
+    "Id": "6947cfac-e887-434f-ac97-08dd63a9a8cd",
+    "ExpirationUtc": "2025-03-15T13:08:31.8562637",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001187"
+  },
+  {
+    "Id": "314e05a8-8373-4dc5-ac98-08dd63a9a8cd",
+    "ExpirationUtc": "2025-03-15T13:08:45.3652661",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001186"
+  },
+  {
+    "Id": "f7790bcc-3daa-4cb7-ac99-08dd63a9a8cd",
+    "ExpirationUtc": "2025-03-15T13:09:16.3463603",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399",
+    "ExchangeRate": "0.00001186"
+  },
+  {
+    "Id": "187eb18a-6b17-462b-ac9a-08dd63a9a8cd",
+    "ExpirationUtc": "2025-03-15T13:11:36.5071827",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001186"
+  },
+  {
+    "Id": "e97bbecb-bf4e-4d12-b41b-08dd64628948",
+    "ExpirationUtc": "2025-03-16T08:15:12.9279016",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001187"
+  },
+  {
+    "Id": "d3e7ff10-4eef-4a33-b41c-08dd64628948",
+    "ExpirationUtc": "2025-03-16T08:15:23.7964527",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001187"
+  },
+  {
+    "Id": "b0f8383a-bafe-4edc-7d37-08dd64bc68ad",
+    "ExpirationUtc": "2025-03-16T20:37:32.8985141",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "8e8413c3-f263-4979-94cd-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "1.00005000"
+  },
+  {
+    "Id": "bc3081a9-9498-49fd-b249-08dd64c24b98",
+    "ExpirationUtc": "2025-03-16T21:19:41.0648978",
+    "LeftId": "da15803f-13c1-495f-94cc-08dd52c703bd",
+    "RightId": "c1e666d8-6907-4cf1-7cec-08dd646cf0ea",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "3.13619832"
+  },
+  {
+    "Id": "741560e7-a3aa-4c8a-c063-08dd64d6333c",
+    "ExpirationUtc": "2025-03-16T23:42:10.1670555",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001208"
+  },
+  {
+    "Id": "3661d95f-f4e0-4f14-c064-08dd64d6333c",
+    "ExpirationUtc": "2025-03-16T23:45:28.06645",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001210"
+  },
+  {
+    "Id": "0be197b4-0cdf-406a-c065-08dd64d6333c",
+    "ExpirationUtc": "2025-03-16T23:46:59.7712172",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001211"
+  },
+  {
+    "Id": "5cf250f1-6a69-4023-c066-08dd64d6333c",
+    "ExpirationUtc": "2025-03-16T23:47:10.7697127",
+    "LeftId": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "RightId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00001211"
+  },
+  {
+    "Id": "c57ad691-6b9a-4705-ea0c-08dd6591fc66",
+    "ExpirationUtc": "2025-03-17T22:06:23.5730146",
+    "LeftId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "RightId": "da15803f-13c1-495f-94cc-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "43.46881113"
+  },
+  {
+    "Id": "1cf887cb-e1b1-4d17-76a0-08dd664082d2",
+    "ExpirationUtc": "2025-03-18T18:55:41.5233952",
+    "LeftId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "RightId": "da15803f-13c1-495f-94cc-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "43.36513443"
+  },
+  {
+    "Id": "704427c8-7324-4d8a-5382-08dd6643710a",
+    "ExpirationUtc": "2025-03-18T19:16:40.1781048",
+    "LeftId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "RightId": "da15803f-13c1-495f-94cc-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "43.38394794"
+  },
+  {
+    "Id": "9349f980-0e3f-4e5d-06cc-08dd664ca72a",
+    "ExpirationUtc": "2025-03-18T20:22:36.4553835",
+    "LeftId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "RightId": "da15803f-13c1-495f-94cc-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "43.32755633"
+  },
+  {
+    "Id": "bc8be683-bebb-4418-c3f8-08dd66fa8c63",
+    "ExpirationUtc": "2025-03-19T17:07:23.9641319",
+    "LeftId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "RightId": "da15803f-13c1-495f-94cc-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "41.42502071"
+  },
+  {
+    "Id": "51fa9c6f-93e9-4bab-c3f9-08dd66fa8c63",
+    "ExpirationUtc": "2025-03-19T17:07:32.3067441",
+    "LeftId": "78737cc2-c6ea-46dc-94cf-08dd52c703bd",
+    "RightId": "4415fce7-9bd1-49cb-94d0-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "0.00805077"
+  },
+  {
+    "Id": "988ad74d-29c7-4a3b-735a-08dd74a06d14",
+    "ExpirationUtc": "2025-04-06T01:57:32.9916436",
+    "LeftId": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "RightId": "da15803f-13c1-495f-94cc-08dd52c703bd",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399",
+    "ExchangeRate": "46.24277457"
+  }
+]

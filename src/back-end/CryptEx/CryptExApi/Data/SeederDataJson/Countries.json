@@ -1,0 +1,998 @@
+[
+  {
+    "Id": "804d9077-b2ad-488b-1f63-08dd52c703c3",
+    "Iso31661Alpha2Code": "AF"
+  },
+  {
+    "Id": "1e39ee19-85c2-4590-1f64-08dd52c703c3",
+    "Iso31661Alpha2Code": "AL"
+  },
+  {
+    "Id": "d4d2179e-dbe9-4b96-1f65-08dd52c703c3",
+    "Iso31661Alpha2Code": "DZ"
+  },
+  {
+    "Id": "a967814e-6d19-4663-1f66-08dd52c703c3",
+    "Iso31661Alpha2Code": "AS"
+  },
+  {
+    "Id": "410ebca8-c225-490a-1f67-08dd52c703c3",
+    "Iso31661Alpha2Code": "AD"
+  },
+  {
+    "Id": "9e1b1bb9-84e7-4737-1f68-08dd52c703c3",
+    "Iso31661Alpha2Code": "AO"
+  },
+  {
+    "Id": "334d078a-affb-474d-1f69-08dd52c703c3",
+    "Iso31661Alpha2Code": "AI"
+  },
+  {
+    "Id": "95cdfae1-8b01-4308-1f6a-08dd52c703c3",
+    "Iso31661Alpha2Code": "AQ"
+  },
+  {
+    "Id": "d78c063d-5d60-421a-1f6b-08dd52c703c3",
+    "Iso31661Alpha2Code": "AG"
+  },
+  {
+    "Id": "290fc353-a48e-44ff-1f6c-08dd52c703c3",
+    "Iso31661Alpha2Code": "AR"
+  },
+  {
+    "Id": "48931a2e-5222-4cb7-1f6d-08dd52c703c3",
+    "Iso31661Alpha2Code": "AM"
+  },
+  {
+    "Id": "4a07dbf6-ea37-4ce1-1f6e-08dd52c703c3",
+    "Iso31661Alpha2Code": "AW"
+  },
+  {
+    "Id": "fa5d1d53-8d11-484b-1f6f-08dd52c703c3",
+    "Iso31661Alpha2Code": "AU"
+  },
+  {
+    "Id": "ecc9d2b7-349a-4724-1f70-08dd52c703c3",
+    "Iso31661Alpha2Code": "AT"
+  },
+  {
+    "Id": "7e124920-bd06-442a-1f71-08dd52c703c3",
+    "Iso31661Alpha2Code": "AZ"
+  },
+  {
+    "Id": "b492e766-7630-45b8-1f72-08dd52c703c3",
+    "Iso31661Alpha2Code": "BS"
+  },
+  {
+    "Id": "372a48a6-990c-44b5-1f73-08dd52c703c3",
+    "Iso31661Alpha2Code": "BH"
+  },
+  {
+    "Id": "01d21570-c10e-4d89-1f74-08dd52c703c3",
+    "Iso31661Alpha2Code": "BD"
+  },
+  {
+    "Id": "0f3fd92b-de8e-41d9-1f75-08dd52c703c3",
+    "Iso31661Alpha2Code": "BB"
+  },
+  {
+    "Id": "903a6a71-736b-4511-1f76-08dd52c703c3",
+    "Iso31661Alpha2Code": "BY"
+  },
+  {
+    "Id": "b5023ada-21d6-4944-1f77-08dd52c703c3",
+    "Iso31661Alpha2Code": "BE"
+  },
+  {
+    "Id": "995a1c3f-853e-4608-1f78-08dd52c703c3",
+    "Iso31661Alpha2Code": "BZ"
+  },
+  {
+    "Id": "10da6c61-acf6-401c-1f79-08dd52c703c3",
+    "Iso31661Alpha2Code": "BJ"
+  },
+  {
+    "Id": "8da6e4b0-6468-4f5b-1f7a-08dd52c703c3",
+    "Iso31661Alpha2Code": "BM"
+  },
+  {
+    "Id": "f645063d-24b9-4afb-1f7b-08dd52c703c3",
+    "Iso31661Alpha2Code": "BT"
+  },
+  {
+    "Id": "e8e92d5a-a5c4-4751-1f7c-08dd52c703c3",
+    "Iso31661Alpha2Code": "BO"
+  },
+  {
+    "Id": "73107817-9fe1-4774-1f7d-08dd52c703c3",
+    "Iso31661Alpha2Code": "BQ"
+  },
+  {
+    "Id": "13ccbbd7-7e72-4707-1f7e-08dd52c703c3",
+    "Iso31661Alpha2Code": "BA"
+  },
+  {
+    "Id": "7beeffab-1d53-49d8-1f7f-08dd52c703c3",
+    "Iso31661Alpha2Code": "BW"
+  },
+  {
+    "Id": "023697d8-ac88-47aa-1f80-08dd52c703c3",
+    "Iso31661Alpha2Code": "BV"
+  },
+  {
+    "Id": "c2b5dab0-f946-40c7-1f81-08dd52c703c3",
+    "Iso31661Alpha2Code": "BR"
+  },
+  {
+    "Id": "b6e157a9-d702-4afb-1f82-08dd52c703c3",
+    "Iso31661Alpha2Code": "IO"
+  },
+  {
+    "Id": "c48d3aa2-3d97-4fc1-1f83-08dd52c703c3",
+    "Iso31661Alpha2Code": "BN"
+  },
+  {
+    "Id": "c6eee6c5-f9fe-4041-1f84-08dd52c703c3",
+    "Iso31661Alpha2Code": "BG"
+  },
+  {
+    "Id": "d7c18a26-4fca-484c-1f85-08dd52c703c3",
+    "Iso31661Alpha2Code": "BF"
+  },
+  {
+    "Id": "f4bd751e-df92-4f9b-1f86-08dd52c703c3",
+    "Iso31661Alpha2Code": "BI"
+  },
+  {
+    "Id": "2342eadd-41bb-4307-1f87-08dd52c703c3",
+    "Iso31661Alpha2Code": "CV"
+  },
+  {
+    "Id": "9c2f0daf-ba70-4756-1f88-08dd52c703c3",
+    "Iso31661Alpha2Code": "KH"
+  },
+  {
+    "Id": "8568ca5d-3b12-44f1-1f89-08dd52c703c3",
+    "Iso31661Alpha2Code": "CM"
+  },
+  {
+    "Id": "b935dbbc-d3c5-4bef-1f8a-08dd52c703c3",
+    "Iso31661Alpha2Code": "CA"
+  },
+  {
+    "Id": "9afa426a-4941-40b1-1f8b-08dd52c703c3",
+    "Iso31661Alpha2Code": "KY"
+  },
+  {
+    "Id": "40d72b06-2ed7-423c-1f8c-08dd52c703c3",
+    "Iso31661Alpha2Code": "CF"
+  },
+  {
+    "Id": "33504816-a73c-4dd4-1f8d-08dd52c703c3",
+    "Iso31661Alpha2Code": "TD"
+  },
+  {
+    "Id": "50eac5e3-99f8-4d51-1f8e-08dd52c703c3",
+    "Iso31661Alpha2Code": "CL"
+  },
+  {
+    "Id": "f728e163-657f-4808-1f8f-08dd52c703c3",
+    "Iso31661Alpha2Code": "CN"
+  },
+  {
+    "Id": "ad485b7a-bf2f-43e6-1f90-08dd52c703c3",
+    "Iso31661Alpha2Code": "CX"
+  },
+  {
+    "Id": "0ba76962-5a1e-4d69-1f91-08dd52c703c3",
+    "Iso31661Alpha2Code": "CC"
+  },
+  {
+    "Id": "31fd14e9-ce40-4b58-1f92-08dd52c703c3",
+    "Iso31661Alpha2Code": "CO"
+  },
+  {
+    "Id": "9268f194-8209-4f0f-1f93-08dd52c703c3",
+    "Iso31661Alpha2Code": "KM"
+  },
+  {
+    "Id": "93153948-a9a7-4f60-1f94-08dd52c703c3",
+    "Iso31661Alpha2Code": "CD"
+  },
+  {
+    "Id": "9e377ac9-a95d-4401-1f95-08dd52c703c3",
+    "Iso31661Alpha2Code": "CG"
+  },
+  {
+    "Id": "838a5ff7-9685-4cce-1f96-08dd52c703c3",
+    "Iso31661Alpha2Code": "CK"
+  },
+  {
+    "Id": "a9bcac1a-fc28-4da0-1f97-08dd52c703c3",
+    "Iso31661Alpha2Code": "CR"
+  },
+  {
+    "Id": "9cbaa48e-eacc-4b80-1f98-08dd52c703c3",
+    "Iso31661Alpha2Code": "HR"
+  },
+  {
+    "Id": "420d5a18-ef87-4eb8-1f99-08dd52c703c3",
+    "Iso31661Alpha2Code": "CU"
+  },
+  {
+    "Id": "994da4d8-a931-48bd-1f9a-08dd52c703c3",
+    "Iso31661Alpha2Code": "CW"
+  },
+  {
+    "Id": "b7b1cf92-18c4-4ef1-1f9b-08dd52c703c3",
+    "Iso31661Alpha2Code": "CY"
+  },
+  {
+    "Id": "5d4c83fd-1682-45d0-1f9c-08dd52c703c3",
+    "Iso31661Alpha2Code": "CZ"
+  },
+  {
+    "Id": "0a347e55-4622-4b4f-1f9d-08dd52c703c3",
+    "Iso31661Alpha2Code": "CI"
+  },
+  {
+    "Id": "e3e4da84-3c02-4362-1f9e-08dd52c703c3",
+    "Iso31661Alpha2Code": "DK"
+  },
+  {
+    "Id": "260aa104-fba5-42d9-1f9f-08dd52c703c3",
+    "Iso31661Alpha2Code": "DJ"
+  },
+  {
+    "Id": "26e735a0-39c7-4dcd-1fa0-08dd52c703c3",
+    "Iso31661Alpha2Code": "DM"
+  },
+  {
+    "Id": "54794fcf-31ce-4aec-1fa1-08dd52c703c3",
+    "Iso31661Alpha2Code": "DO"
+  },
+  {
+    "Id": "976acd69-a066-41da-1fa2-08dd52c703c3",
+    "Iso31661Alpha2Code": "EC"
+  },
+  {
+    "Id": "c89fdaf5-e1d9-42ad-1fa3-08dd52c703c3",
+    "Iso31661Alpha2Code": "EG"
+  },
+  {
+    "Id": "ba2bb957-e495-4ad2-1fa4-08dd52c703c3",
+    "Iso31661Alpha2Code": "SV"
+  },
+  {
+    "Id": "8eafbfef-e6b4-4ebe-1fa5-08dd52c703c3",
+    "Iso31661Alpha2Code": "GQ"
+  },
+  {
+    "Id": "e6a66713-d000-4b79-1fa6-08dd52c703c3",
+    "Iso31661Alpha2Code": "ER"
+  },
+  {
+    "Id": "aa293b94-b49f-46b2-1fa7-08dd52c703c3",
+    "Iso31661Alpha2Code": "EE"
+  },
+  {
+    "Id": "39c68d1a-6c45-4bff-1fa8-08dd52c703c3",
+    "Iso31661Alpha2Code": "SZ"
+  },
+  {
+    "Id": "f9f4e619-439c-4655-1fa9-08dd52c703c3",
+    "Iso31661Alpha2Code": "ET"
+  },
+  {
+    "Id": "d1744ccc-3155-48a0-1faa-08dd52c703c3",
+    "Iso31661Alpha2Code": "FK"
+  },
+  {
+    "Id": "0bfab630-c41b-4594-1fab-08dd52c703c3",
+    "Iso31661Alpha2Code": "FO"
+  },
+  {
+    "Id": "647b7e51-2ade-499c-1fac-08dd52c703c3",
+    "Iso31661Alpha2Code": "FJ"
+  },
+  {
+    "Id": "5f46f153-0fd6-46b1-1fad-08dd52c703c3",
+    "Iso31661Alpha2Code": "FI"
+  },
+  {
+    "Id": "62c408e2-3eee-45fc-1fae-08dd52c703c3",
+    "Iso31661Alpha2Code": "FR"
+  },
+  {
+    "Id": "20b9a2ff-9093-4c23-1faf-08dd52c703c3",
+    "Iso31661Alpha2Code": "GF"
+  },
+  {
+    "Id": "c3038ad2-7dd0-40ed-1fb0-08dd52c703c3",
+    "Iso31661Alpha2Code": "PF"
+  },
+  {
+    "Id": "44b3b839-e598-4713-1fb1-08dd52c703c3",
+    "Iso31661Alpha2Code": "TF"
+  },
+  {
+    "Id": "0a91a596-99e8-4697-1fb2-08dd52c703c3",
+    "Iso31661Alpha2Code": "GA"
+  },
+  {
+    "Id": "f9cb8350-d0d1-4673-1fb3-08dd52c703c3",
+    "Iso31661Alpha2Code": "GM"
+  },
+  {
+    "Id": "c81b1ebe-3497-4a47-1fb4-08dd52c703c3",
+    "Iso31661Alpha2Code": "GE"
+  },
+  {
+    "Id": "94dc26ed-dec1-4d25-1fb5-08dd52c703c3",
+    "Iso31661Alpha2Code": "DE"
+  },
+  {
+    "Id": "a2bde839-fdc6-4b58-1fb6-08dd52c703c3",
+    "Iso31661Alpha2Code": "GH"
+  },
+  {
+    "Id": "f68c8117-58cd-47d6-1fb7-08dd52c703c3",
+    "Iso31661Alpha2Code": "GI"
+  },
+  {
+    "Id": "41186565-1254-487f-1fb8-08dd52c703c3",
+    "Iso31661Alpha2Code": "GR"
+  },
+  {
+    "Id": "0c77cee7-4f61-40f5-1fb9-08dd52c703c3",
+    "Iso31661Alpha2Code": "GL"
+  },
+  {
+    "Id": "aee579fc-341e-4975-1fba-08dd52c703c3",
+    "Iso31661Alpha2Code": "GD"
+  },
+  {
+    "Id": "c14f385c-23aa-4738-1fbb-08dd52c703c3",
+    "Iso31661Alpha2Code": "GP"
+  },
+  {
+    "Id": "850a9ed2-7710-433f-1fbc-08dd52c703c3",
+    "Iso31661Alpha2Code": "GU"
+  },
+  {
+    "Id": "2334c0b6-d94d-4cc0-1fbd-08dd52c703c3",
+    "Iso31661Alpha2Code": "GT"
+  },
+  {
+    "Id": "74d61e17-c7dc-4ea3-1fbe-08dd52c703c3",
+    "Iso31661Alpha2Code": "GG"
+  },
+  {
+    "Id": "e76dea30-c630-4c67-1fbf-08dd52c703c3",
+    "Iso31661Alpha2Code": "GN"
+  },
+  {
+    "Id": "87262713-87aa-4441-1fc0-08dd52c703c3",
+    "Iso31661Alpha2Code": "GW"
+  },
+  {
+    "Id": "a648d3bb-49cb-4232-1fc1-08dd52c703c3",
+    "Iso31661Alpha2Code": "GY"
+  },
+  {
+    "Id": "60704d98-1c19-4b9d-1fc2-08dd52c703c3",
+    "Iso31661Alpha2Code": "HT"
+  },
+  {
+    "Id": "46c8d95d-e599-4e5a-1fc3-08dd52c703c3",
+    "Iso31661Alpha2Code": "HM"
+  },
+  {
+    "Id": "ad58e2ae-4dd3-42e1-1fc4-08dd52c703c3",
+    "Iso31661Alpha2Code": "VA"
+  },
+  {
+    "Id": "c03c4ba9-7c48-4efa-1fc5-08dd52c703c3",
+    "Iso31661Alpha2Code": "HN"
+  },
+  {
+    "Id": "3abbbabc-531a-4422-1fc6-08dd52c703c3",
+    "Iso31661Alpha2Code": "HK"
+  },
+  {
+    "Id": "50524590-87d2-4fc2-1fc7-08dd52c703c3",
+    "Iso31661Alpha2Code": "HU"
+  },
+  {
+    "Id": "7d39bbfb-3d14-4aa9-1fc8-08dd52c703c3",
+    "Iso31661Alpha2Code": "IS"
+  },
+  {
+    "Id": "d482570f-005d-4ff5-1fc9-08dd52c703c3",
+    "Iso31661Alpha2Code": "IN"
+  },
+  {
+    "Id": "9f80dee3-a162-4f65-1fca-08dd52c703c3",
+    "Iso31661Alpha2Code": "ID"
+  },
+  {
+    "Id": "4b012406-3c4b-4987-1fcb-08dd52c703c3",
+    "Iso31661Alpha2Code": "IR"
+  },
+  {
+    "Id": "ea7f9c1b-90e9-4c39-1fcc-08dd52c703c3",
+    "Iso31661Alpha2Code": "IQ"
+  },
+  {
+    "Id": "4f320ce4-ad06-4574-1fcd-08dd52c703c3",
+    "Iso31661Alpha2Code": "IE"
+  },
+  {
+    "Id": "da4b2d63-e338-4d26-1fce-08dd52c703c3",
+    "Iso31661Alpha2Code": "IM"
+  },
+  {
+    "Id": "25d23aeb-f1b2-4397-1fcf-08dd52c703c3",
+    "Iso31661Alpha2Code": "IL"
+  },
+  {
+    "Id": "5ec0bd64-cabf-4e42-1fd0-08dd52c703c3",
+    "Iso31661Alpha2Code": "IT"
+  },
+  {
+    "Id": "2534eaac-9244-4848-1fd1-08dd52c703c3",
+    "Iso31661Alpha2Code": "JM"
+  },
+  {
+    "Id": "efc9e216-1f0f-4399-1fd2-08dd52c703c3",
+    "Iso31661Alpha2Code": "JP"
+  },
+  {
+    "Id": "add6ea41-e215-4b0f-1fd3-08dd52c703c3",
+    "Iso31661Alpha2Code": "JE"
+  },
+  {
+    "Id": "46272e14-6662-4cce-1fd4-08dd52c703c3",
+    "Iso31661Alpha2Code": "JO"
+  },
+  {
+    "Id": "c043ffa0-73fb-425e-1fd5-08dd52c703c3",
+    "Iso31661Alpha2Code": "KZ"
+  },
+  {
+    "Id": "2072a475-c406-4cb6-1fd6-08dd52c703c3",
+    "Iso31661Alpha2Code": "KE"
+  },
+  {
+    "Id": "a08d2b72-e894-4d9a-1fd7-08dd52c703c3",
+    "Iso31661Alpha2Code": "KI"
+  },
+  {
+    "Id": "3d3927f4-cd37-49fc-1fd8-08dd52c703c3",
+    "Iso31661Alpha2Code": "KP"
+  },
+  {
+    "Id": "73295118-69ba-4801-1fd9-08dd52c703c3",
+    "Iso31661Alpha2Code": "KR"
+  },
+  {
+    "Id": "a08fe02d-3e17-4b62-1fda-08dd52c703c3",
+    "Iso31661Alpha2Code": "KW"
+  },
+  {
+    "Id": "706773f5-d502-44a2-1fdb-08dd52c703c3",
+    "Iso31661Alpha2Code": "KG"
+  },
+  {
+    "Id": "81ed801d-6bc9-464e-1fdc-08dd52c703c3",
+    "Iso31661Alpha2Code": "LA"
+  },
+  {
+    "Id": "42a86d07-13f7-4ee0-1fdd-08dd52c703c3",
+    "Iso31661Alpha2Code": "LV"
+  },
+  {
+    "Id": "09e0c442-68ac-4429-1fde-08dd52c703c3",
+    "Iso31661Alpha2Code": "LB"
+  },
+  {
+    "Id": "54ad0f14-903d-4418-1fdf-08dd52c703c3",
+    "Iso31661Alpha2Code": "LS"
+  },
+  {
+    "Id": "9232f75e-52a4-474e-1fe0-08dd52c703c3",
+    "Iso31661Alpha2Code": "LR"
+  },
+  {
+    "Id": "61e40d25-ddc7-42f6-1fe1-08dd52c703c3",
+    "Iso31661Alpha2Code": "LY"
+  },
+  {
+    "Id": "2a757aab-c737-468a-1fe2-08dd52c703c3",
+    "Iso31661Alpha2Code": "LI"
+  },
+  {
+    "Id": "8c1d02ca-8340-444d-1fe3-08dd52c703c3",
+    "Iso31661Alpha2Code": "LT"
+  },
+  {
+    "Id": "7a822c36-b44d-45d3-1fe4-08dd52c703c3",
+    "Iso31661Alpha2Code": "LU"
+  },
+  {
+    "Id": "ad3d4f85-c75f-47a0-1fe5-08dd52c703c3",
+    "Iso31661Alpha2Code": "MO"
+  },
+  {
+    "Id": "b144a4c2-6fae-425b-1fe6-08dd52c703c3",
+    "Iso31661Alpha2Code": "MG"
+  },
+  {
+    "Id": "8546fb6d-4c18-4a4a-1fe7-08dd52c703c3",
+    "Iso31661Alpha2Code": "MW"
+  },
+  {
+    "Id": "52a60464-1b66-4c25-1fe8-08dd52c703c3",
+    "Iso31661Alpha2Code": "MY"
+  },
+  {
+    "Id": "5dcc6fad-cf8f-4633-1fe9-08dd52c703c3",
+    "Iso31661Alpha2Code": "MV"
+  },
+  {
+    "Id": "61bdc8ee-72c9-4df4-1fea-08dd52c703c3",
+    "Iso31661Alpha2Code": "ML"
+  },
+  {
+    "Id": "46e495ba-c284-4fbc-1feb-08dd52c703c3",
+    "Iso31661Alpha2Code": "MT"
+  },
+  {
+    "Id": "d6aa3ac1-4c93-4046-1fec-08dd52c703c3",
+    "Iso31661Alpha2Code": "MH"
+  },
+  {
+    "Id": "86b4e774-947a-4712-1fed-08dd52c703c3",
+    "Iso31661Alpha2Code": "MQ"
+  },
+  {
+    "Id": "89f6cd3c-3dc7-4737-1fee-08dd52c703c3",
+    "Iso31661Alpha2Code": "MR"
+  },
+  {
+    "Id": "d1b69b24-8f46-44e4-1fef-08dd52c703c3",
+    "Iso31661Alpha2Code": "MU"
+  },
+  {
+    "Id": "420359b2-9e6c-43bc-1ff0-08dd52c703c3",
+    "Iso31661Alpha2Code": "YT"
+  },
+  {
+    "Id": "46b004f6-af4d-41dc-1ff1-08dd52c703c3",
+    "Iso31661Alpha2Code": "MX"
+  },
+  {
+    "Id": "ebc3278b-8d45-4bf8-1ff2-08dd52c703c3",
+    "Iso31661Alpha2Code": "FM"
+  },
+  {
+    "Id": "d0ef5c13-d445-43b8-1ff3-08dd52c703c3",
+    "Iso31661Alpha2Code": "MD"
+  },
+  {
+    "Id": "0674a116-caaf-407e-1ff4-08dd52c703c3",
+    "Iso31661Alpha2Code": "MC"
+  },
+  {
+    "Id": "51daf133-be12-4a21-1ff5-08dd52c703c3",
+    "Iso31661Alpha2Code": "MN"
+  },
+  {
+    "Id": "d458b144-3aa7-41a6-1ff6-08dd52c703c3",
+    "Iso31661Alpha2Code": "ME"
+  },
+  {
+    "Id": "9780739d-320a-4d39-1ff7-08dd52c703c3",
+    "Iso31661Alpha2Code": "MS"
+  },
+  {
+    "Id": "1b56eb81-713b-4cb9-1ff8-08dd52c703c3",
+    "Iso31661Alpha2Code": "MA"
+  },
+  {
+    "Id": "690f09fb-e8d7-4cf7-1ff9-08dd52c703c3",
+    "Iso31661Alpha2Code": "MZ"
+  },
+  {
+    "Id": "d6682234-9fa0-4403-1ffa-08dd52c703c3",
+    "Iso31661Alpha2Code": "MM"
+  },
+  {
+    "Id": "109c9d6b-8790-49ca-1ffb-08dd52c703c3",
+    "Iso31661Alpha2Code": "NA"
+  },
+  {
+    "Id": "6d204163-ae2b-4bd8-1ffc-08dd52c703c3",
+    "Iso31661Alpha2Code": "NR"
+  },
+  {
+    "Id": "10e1310d-36d6-49b7-1ffd-08dd52c703c3",
+    "Iso31661Alpha2Code": "NP"
+  },
+  {
+    "Id": "4114dff8-a547-4fe3-1ffe-08dd52c703c3",
+    "Iso31661Alpha2Code": "NL"
+  },
+  {
+    "Id": "963893cf-1ab7-4bf0-1fff-08dd52c703c3",
+    "Iso31661Alpha2Code": "NC"
+  },
+  {
+    "Id": "ce7e410b-7305-486a-2000-08dd52c703c3",
+    "Iso31661Alpha2Code": "NZ"
+  },
+  {
+    "Id": "98865fca-51e5-47ce-2001-08dd52c703c3",
+    "Iso31661Alpha2Code": "NI"
+  },
+  {
+    "Id": "cccf353f-ffd4-4407-2002-08dd52c703c3",
+    "Iso31661Alpha2Code": "NE"
+  },
+  {
+    "Id": "13ee5610-225f-490b-2003-08dd52c703c3",
+    "Iso31661Alpha2Code": "NG"
+  },
+  {
+    "Id": "a661cc92-b82b-4fc4-2004-08dd52c703c3",
+    "Iso31661Alpha2Code": "NU"
+  },
+  {
+    "Id": "26c4f066-759d-4fc4-2005-08dd52c703c3",
+    "Iso31661Alpha2Code": "NF"
+  },
+  {
+    "Id": "727fd579-ac43-447b-2006-08dd52c703c3",
+    "Iso31661Alpha2Code": "MP"
+  },
+  {
+    "Id": "43ab7826-8682-490a-2007-08dd52c703c3",
+    "Iso31661Alpha2Code": "NO"
+  },
+  {
+    "Id": "eb04458e-26d3-4187-2008-08dd52c703c3",
+    "Iso31661Alpha2Code": "OM"
+  },
+  {
+    "Id": "421310f7-7abd-4e8f-2009-08dd52c703c3",
+    "Iso31661Alpha2Code": "PK"
+  },
+  {
+    "Id": "7e9a144d-467b-4445-200a-08dd52c703c3",
+    "Iso31661Alpha2Code": "PW"
+  },
+  {
+    "Id": "0281c721-8549-4a68-200b-08dd52c703c3",
+    "Iso31661Alpha2Code": "PS"
+  },
+  {
+    "Id": "44e413ef-cca8-4e7f-200c-08dd52c703c3",
+    "Iso31661Alpha2Code": "PA"
+  },
+  {
+    "Id": "8b08fb14-3343-4ca3-200d-08dd52c703c3",
+    "Iso31661Alpha2Code": "PG"
+  },
+  {
+    "Id": "47e9e234-788c-474b-200e-08dd52c703c3",
+    "Iso31661Alpha2Code": "PY"
+  },
+  {
+    "Id": "328c273d-13be-48b8-200f-08dd52c703c3",
+    "Iso31661Alpha2Code": "PE"
+  },
+  {
+    "Id": "c863186e-ecbd-4f9e-2010-08dd52c703c3",
+    "Iso31661Alpha2Code": "PH"
+  },
+  {
+    "Id": "dd212f57-469f-4bed-2011-08dd52c703c3",
+    "Iso31661Alpha2Code": "PN"
+  },
+  {
+    "Id": "fb60f62e-e705-4bd2-2012-08dd52c703c3",
+    "Iso31661Alpha2Code": "PL"
+  },
+  {
+    "Id": "210c1363-11e3-46f2-2013-08dd52c703c3",
+    "Iso31661Alpha2Code": "PT"
+  },
+  {
+    "Id": "ed857a4e-610f-4f1e-2014-08dd52c703c3",
+    "Iso31661Alpha2Code": "PR"
+  },
+  {
+    "Id": "12f61cd5-2f34-4fcc-2015-08dd52c703c3",
+    "Iso31661Alpha2Code": "QA"
+  },
+  {
+    "Id": "95a9e306-f2a9-44e1-2016-08dd52c703c3",
+    "Iso31661Alpha2Code": "MK"
+  },
+  {
+    "Id": "4079fc70-b40a-40d1-2017-08dd52c703c3",
+    "Iso31661Alpha2Code": "RO"
+  },
+  {
+    "Id": "343077f3-7623-4f05-2018-08dd52c703c3",
+    "Iso31661Alpha2Code": "RU"
+  },
+  {
+    "Id": "7f420f06-327a-48bc-2019-08dd52c703c3",
+    "Iso31661Alpha2Code": "RW"
+  },
+  {
+    "Id": "46f12c50-3994-413c-201a-08dd52c703c3",
+    "Iso31661Alpha2Code": "RE"
+  },
+  {
+    "Id": "407b9984-65fc-4dd1-201b-08dd52c703c3",
+    "Iso31661Alpha2Code": "BL"
+  },
+  {
+    "Id": "721584ff-146f-471e-201c-08dd52c703c3",
+    "Iso31661Alpha2Code": "SH"
+  },
+  {
+    "Id": "a50e7515-99d7-4e33-201d-08dd52c703c3",
+    "Iso31661Alpha2Code": "KN"
+  },
+  {
+    "Id": "ff1c666c-c8c9-494e-201e-08dd52c703c3",
+    "Iso31661Alpha2Code": "LC"
+  },
+  {
+    "Id": "1de24e01-ed69-46cf-201f-08dd52c703c3",
+    "Iso31661Alpha2Code": "MF"
+  },
+  {
+    "Id": "34b07197-9da8-482e-2020-08dd52c703c3",
+    "Iso31661Alpha2Code": "PM"
+  },
+  {
+    "Id": "115db044-6581-44a5-2021-08dd52c703c3",
+    "Iso31661Alpha2Code": "VC"
+  },
+  {
+    "Id": "2692cefa-e8b4-49f3-2022-08dd52c703c3",
+    "Iso31661Alpha2Code": "WS"
+  },
+  {
+    "Id": "fade80a7-767d-4a35-2023-08dd52c703c3",
+    "Iso31661Alpha2Code": "SM"
+  },
+  {
+    "Id": "0ec32ad7-45ec-41a3-2024-08dd52c703c3",
+    "Iso31661Alpha2Code": "ST"
+  },
+  {
+    "Id": "9021e471-5b70-4d83-2025-08dd52c703c3",
+    "Iso31661Alpha2Code": "SA"
+  },
+  {
+    "Id": "4f8a6718-9b48-49d9-2026-08dd52c703c3",
+    "Iso31661Alpha2Code": "SN"
+  },
+  {
+    "Id": "ed927b90-b774-48ec-2027-08dd52c703c3",
+    "Iso31661Alpha2Code": "RS"
+  },
+  {
+    "Id": "4cecf3cc-a864-402b-2028-08dd52c703c3",
+    "Iso31661Alpha2Code": "SC"
+  },
+  {
+    "Id": "0a194cf6-8019-4aaa-2029-08dd52c703c3",
+    "Iso31661Alpha2Code": "SL"
+  },
+  {
+    "Id": "ac831309-f804-4306-202a-08dd52c703c3",
+    "Iso31661Alpha2Code": "SG"
+  },
+  {
+    "Id": "6662c539-8867-49b1-202b-08dd52c703c3",
+    "Iso31661Alpha2Code": "SX"
+  },
+  {
+    "Id": "1b49938d-531b-4ca8-202c-08dd52c703c3",
+    "Iso31661Alpha2Code": "SK"
+  },
+  {
+    "Id": "1886a1d2-2ede-49e4-202d-08dd52c703c3",
+    "Iso31661Alpha2Code": "SI"
+  },
+  {
+    "Id": "50234b07-1696-45f8-202e-08dd52c703c3",
+    "Iso31661Alpha2Code": "SB"
+  },
+  {
+    "Id": "ceae6e8f-2e9e-4ea5-202f-08dd52c703c3",
+    "Iso31661Alpha2Code": "SO"
+  },
+  {
+    "Id": "31cd0afe-e32d-446a-2030-08dd52c703c3",
+    "Iso31661Alpha2Code": "ZA"
+  },
+  {
+    "Id": "fd3da4b6-4dce-4572-2031-08dd52c703c3",
+    "Iso31661Alpha2Code": "GS"
+  },
+  {
+    "Id": "a036f7af-4a3e-4844-2032-08dd52c703c3",
+    "Iso31661Alpha2Code": "SS"
+  },
+  {
+    "Id": "139b80ec-fddd-4b18-2033-08dd52c703c3",
+    "Iso31661Alpha2Code": "ES"
+  },
+  {
+    "Id": "a11e2f88-4089-4b64-2034-08dd52c703c3",
+    "Iso31661Alpha2Code": "LK"
+  },
+  {
+    "Id": "256bad13-ccfd-43bc-2035-08dd52c703c3",
+    "Iso31661Alpha2Code": "SD"
+  },
+  {
+    "Id": "f88fb3d1-e52f-46ac-2036-08dd52c703c3",
+    "Iso31661Alpha2Code": "SR"
+  },
+  {
+    "Id": "0ccc637a-d00c-4c7b-2037-08dd52c703c3",
+    "Iso31661Alpha2Code": "SJ"
+  },
+  {
+    "Id": "6f7f3d0d-2b67-4e57-2038-08dd52c703c3",
+    "Iso31661Alpha2Code": "SE"
+  },
+  {
+    "Id": "70c82094-6339-43fc-2039-08dd52c703c3",
+    "Iso31661Alpha2Code": "CH"
+  },
+  {
+    "Id": "8932638b-cb1a-45f8-203a-08dd52c703c3",
+    "Iso31661Alpha2Code": "SY"
+  },
+  {
+    "Id": "f1eda6d4-a125-48fa-203b-08dd52c703c3",
+    "Iso31661Alpha2Code": "TW"
+  },
+  {
+    "Id": "c3818d79-4527-4802-203c-08dd52c703c3",
+    "Iso31661Alpha2Code": "TJ"
+  },
+  {
+    "Id": "3c9626ad-4364-4871-203d-08dd52c703c3",
+    "Iso31661Alpha2Code": "TZ"
+  },
+  {
+    "Id": "36592804-c5e0-49f4-203e-08dd52c703c3",
+    "Iso31661Alpha2Code": "TH"
+  },
+  {
+    "Id": "c6d0b2d5-11ea-4f54-203f-08dd52c703c3",
+    "Iso31661Alpha2Code": "TL"
+  },
+  {
+    "Id": "5e5bb450-2595-4220-2040-08dd52c703c3",
+    "Iso31661Alpha2Code": "TG"
+  },
+  {
+    "Id": "f3f40e21-aa8b-4dfd-2041-08dd52c703c3",
+    "Iso31661Alpha2Code": "TK"
+  },
+  {
+    "Id": "002f64a6-b0a3-4098-2042-08dd52c703c3",
+    "Iso31661Alpha2Code": "TO"
+  },
+  {
+    "Id": "25530efe-38ff-41d2-2043-08dd52c703c3",
+    "Iso31661Alpha2Code": "TT"
+  },
+  {
+    "Id": "5ccecef7-29bc-48a2-2044-08dd52c703c3",
+    "Iso31661Alpha2Code": "TN"
+  },
+  {
+    "Id": "cc8ecbc4-bec7-4637-2045-08dd52c703c3",
+    "Iso31661Alpha2Code": "TR"
+  },
+  {
+    "Id": "ecb58ffd-1e95-43b5-2046-08dd52c703c3",
+    "Iso31661Alpha2Code": "TM"
+  },
+  {
+    "Id": "72e6ee86-caa1-4dba-2047-08dd52c703c3",
+    "Iso31661Alpha2Code": "TC"
+  },
+  {
+    "Id": "7dbd48db-dc87-4c3c-2048-08dd52c703c3",
+    "Iso31661Alpha2Code": "TV"
+  },
+  {
+    "Id": "e1217a8d-51bb-4afa-2049-08dd52c703c3",
+    "Iso31661Alpha2Code": "UG"
+  },
+  {
+    "Id": "3bb9ba80-09c7-45d9-204a-08dd52c703c3",
+    "Iso31661Alpha2Code": "UA"
+  },
+  {
+    "Id": "9f2d333b-3d4d-4af0-204b-08dd52c703c3",
+    "Iso31661Alpha2Code": "AE"
+  },
+  {
+    "Id": "87b77073-161e-4052-204c-08dd52c703c3",
+    "Iso31661Alpha2Code": "GB"
+  },
+  {
+    "Id": "2105c72e-1578-41c7-204d-08dd52c703c3",
+    "Iso31661Alpha2Code": "UM"
+  },
+  {
+    "Id": "40df7a86-cbe1-4aa7-204e-08dd52c703c3",
+    "Iso31661Alpha2Code": "US"
+  },
+  {
+    "Id": "dd7f1500-3a3e-4576-204f-08dd52c703c3",
+    "Iso31661Alpha2Code": "UY"
+  },
+  {
+    "Id": "03f62971-937d-4170-2050-08dd52c703c3",
+    "Iso31661Alpha2Code": "UZ"
+  },
+  {
+    "Id": "e09d88b0-feb0-48d6-2051-08dd52c703c3",
+    "Iso31661Alpha2Code": "VU"
+  },
+  {
+    "Id": "0b2d5eec-9b1b-4256-2052-08dd52c703c3",
+    "Iso31661Alpha2Code": "VE"
+  },
+  {
+    "Id": "71940bf4-384a-4d11-2053-08dd52c703c3",
+    "Iso31661Alpha2Code": "VN"
+  },
+  {
+    "Id": "fed939c8-1499-4bec-2054-08dd52c703c3",
+    "Iso31661Alpha2Code": "VG"
+  },
+  {
+    "Id": "7b50dc46-d10f-4b0d-2055-08dd52c703c3",
+    "Iso31661Alpha2Code": "VI"
+  },
+  {
+    "Id": "011ac73c-6a3b-4483-2056-08dd52c703c3",
+    "Iso31661Alpha2Code": "WF"
+  },
+  {
+    "Id": "30b921db-b27f-4f5c-2057-08dd52c703c3",
+    "Iso31661Alpha2Code": "EH"
+  },
+  {
+    "Id": "a1a3d563-c393-413d-2058-08dd52c703c3",
+    "Iso31661Alpha2Code": "YE"
+  },
+  {
+    "Id": "62f0c30f-4ceb-4e14-2059-08dd52c703c3",
+    "Iso31661Alpha2Code": "ZM"
+  },
+  {
+    "Id": "20f51bf5-3637-4c5c-205a-08dd52c703c3",
+    "Iso31661Alpha2Code": "ZW"
+  },
+  {
+    "Id": "b162d4cd-b2fc-4c02-205b-08dd52c703c3",
+    "Iso31661Alpha2Code": "AX"
+  }
+]

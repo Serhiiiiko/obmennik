@@ -1,0 +1,18 @@
+[
+  {
+    "MigrationId": "20210619215022_Initial",
+    "ProductVersion": "5.0.6"
+  },
+  {
+    "MigrationId": "20250311183417_ManualSendCrypto",
+    "ProductVersion": "5.0.6"
+  },
+  {
+    "MigrationId": "20250312121431_SetupWalletManually",
+    "ProductVersion": "5.0.6"
+  },
+  {
+    "MigrationId": "20250315094254_AddAnonymousExchanges",
+    "ProductVersion": "5.0.6"
+  }
+]

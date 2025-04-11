@@ -1,0 +1,44 @@
+[
+  {
+    "Id": "39dbc12c-fa17-4ed2-aa98-08dd52c70453",
+    "Amount": "1000000.00",
+    "Status": 1,
+    "PriceLockId": "6d19ebb2-eb71-4240-db80-08dd52c7044f",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399"
+  },
+  {
+    "Id": "8f840f04-7128-4dff-461e-08dd53fab417",
+    "Amount": "13.00",
+    "Status": -1,
+    "PriceLockId": "c1d78871-cd75-46f9-dd9a-08dd53f4d4c7",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399"
+  },
+  {
+    "Id": "104bef6e-4566-40a3-c212-08dd64c24e9c",
+    "Amount": "-1.00",
+    "Status": -1,
+    "PriceLockId": "bc3081a9-9498-49fd-b249-08dd64c24b98",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399"
+  },
+  {
+    "Id": "61709a21-de27-4bf0-18d9-08dd659202d9",
+    "Amount": "1.00",
+    "Status": -1,
+    "PriceLockId": "c57ad691-6b9a-4705-ea0c-08dd6591fc66",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399"
+  },
+  {
+    "Id": "e9fa5d28-246f-439f-c84e-08dd66408405",
+    "Amount": "12.00",
+    "Status": -1,
+    "PriceLockId": "1cf887cb-e1b1-4d17-76a0-08dd664082d2",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399"
+  },
+  {
+    "Id": "bb855a1d-4ad9-4f06-d71d-08dd664371fe",
+    "Amount": "1.00",
+    "Status": -1,
+    "PriceLockId": "704427c8-7324-4d8a-5382-08dd6643710a",
+    "UserId": "2c3e0f10-a9a1-4a95-1a63-08dd52c70399"
+  }
+]

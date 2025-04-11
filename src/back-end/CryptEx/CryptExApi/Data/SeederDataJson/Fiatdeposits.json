@@ -1,0 +1,11 @@
+[
+  {
+    "Id": "e442c958-2fa2-4c76-01f1-08dd52c7044d",
+    "Amount": "20000000.00",
+    "Status": 1,
+    "CreationDate": "2025-02-18T22:28:08.0591557",
+    "StripeSessionId": "TESTSESSIONID",
+    "WalletId": "7fd53744-76fb-43d2-94c5-08dd52c703bd",
+    "UserId": "25954add-8e79-4404-1a64-08dd52c70399"
+  }
+]

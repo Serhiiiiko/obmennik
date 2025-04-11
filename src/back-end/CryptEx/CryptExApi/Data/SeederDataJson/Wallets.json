@@ -1,0 +1,250 @@
+[
+  {
+    "Id": "ef1a7897-5c36-4262-94c4-08dd52c703bd",
+    "Ticker": "USD",
+    "FullName": "US Dollar",
+    "Type": 1,
+    "AdminWalletAddress": "31516334нпав3513",
+    "IsAddressConfigured": "1"
+  },
+  {
+    "Id": "7fd53744-76fb-43d2-94c5-08dd52c703bd",
+    "Ticker": "CHF",
+    "FullName": "Swiss Franc",
+    "Type": 1,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "8d70b029-8be8-40d6-94c6-08dd52c703bd",
+    "Ticker": "EUR",
+    "FullName": "Euro",
+    "Type": 1,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "ca004a86-e481-454e-94c7-08dd52c703bd",
+    "Ticker": "GBP",
+    "FullName": "British Pound",
+    "Type": 1,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "21ceb787-5544-4d30-94c8-08dd52c703bd",
+    "Ticker": "CAD",
+    "FullName": "Canadian Dollar",
+    "Type": 1,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "a9506f6a-83a1-4dbc-94c9-08dd52c703bd",
+    "Ticker": "AUD",
+    "FullName": "Australian Dollar",
+    "Type": 1,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "275ca7f8-e897-4f23-94ca-08dd52c703bd",
+    "Ticker": "JPY",
+    "FullName": "Japan Yen",
+    "Type": 1,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "d488c3d9-a757-4846-94cb-08dd52c703bd",
+    "Ticker": "BTC",
+    "FullName": "Bitcoin",
+    "Type": 2,
+    "AdminWalletAddress": "bc1qdsxw8394jctc7em7qcnmdkzpdja4ggxfc22sds",
+    "IsAddressConfigured": "1"
+  },
+  {
+    "Id": "da15803f-13c1-495f-94cc-08dd52c703bd",
+    "Ticker": "ETH",
+    "FullName": "Ethereum",
+    "Type": 2,
+    "AdminWalletAddress": "0x5C7bEeAc83082d309267E0f3dfDe4A779E39b5c7",
+    "IsAddressConfigured": "1"
+  },
+  {
+    "Id": "8e8413c3-f263-4979-94cd-08dd52c703bd",
+    "Ticker": "DAI",
+    "FullName": "Dai",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "80a45a5d-0449-461a-94ce-08dd52c703bd",
+    "Ticker": "USDC",
+    "FullName": "USD Coin",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "78737cc2-c6ea-46dc-94cf-08dd52c703bd",
+    "Ticker": "ADA",
+    "FullName": "Cardano",
+    "Type": 2,
+    "AdminWalletAddress": "addr1qx054ar6xj7ahapc0te7pfcjf8ut85n7v275p8ejq7wl4a0lt4rqwl3jnauq86ar34ws6x0ujlcqc6cdmptg47rghs8sq4d4em",
+    "IsAddressConfigured": "1"
+  },
+  {
+    "Id": "4415fce7-9bd1-49cb-94d0-08dd52c703bd",
+    "Ticker": "LTC",
+    "FullName": "Litecoin",
+    "Type": 2,
+    "AdminWalletAddress": "ltc1qewmt8jv2pwr37h9n8yexm809hn079q90xf3450",
+    "IsAddressConfigured": "1"
+  },
+  {
+    "Id": "c32fb76c-3df4-4bfb-94d1-08dd52c703bd",
+    "Ticker": "ENJ",
+    "FullName": "Enjin",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "0ea941f9-1816-4e88-94d2-08dd52c703bd",
+    "Ticker": "COMP",
+    "FullName": "Compound",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "d6c78e79-4df0-428a-94d3-08dd52c703bd",
+    "Ticker": "AAVE",
+    "FullName": "Aave",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "4a81c51f-612b-43b5-94d4-08dd52c703bd",
+    "Ticker": "MATIC",
+    "FullName": "Polygon",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "8c198a1c-3fbc-49f8-94d5-08dd52c703bd",
+    "Ticker": "UNI",
+    "FullName": "Uniswap",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "04cc2284-a050-4282-94d6-08dd52c703bd",
+    "Ticker": "DOGE",
+    "FullName": "Dogecoin",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "3a438d4b-8cd7-4399-94d7-08dd52c703bd",
+    "Ticker": "MKR",
+    "FullName": "Maker",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "8255dcbe-f822-4ec0-94d8-08dd52c703bd",
+    "Ticker": "XTZ",
+    "FullName": "Tezos",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "af168b71-84a3-47f5-94d9-08dd52c703bd",
+    "Ticker": "GRT",
+    "FullName": "The Graph",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "34c0f269-8967-4da6-94da-08dd52c703bd",
+    "Ticker": "LINK",
+    "FullName": "Chainlink",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "418cf128-44e0-4b75-7ceb-08dd646cf0ea",
+    "Ticker": "XRP",
+    "FullName": "Ripple",
+    "Type": 2,
+    "AdminWalletAddress": "rG2jhdobkYsqoQv5aAVej8eF2B8hwpUyf5",
+    "IsAddressConfigured": "1"
+  },
+  {
+    "Id": "c1e666d8-6907-4cf1-7cec-08dd646cf0ea",
+    "Ticker": "BNB",
+    "FullName": "Binance Coin",
+    "Type": 2,
+    "AdminWalletAddress": "0x5C7bEeAc83082d309267E0f3dfDe4A779E39b5c7",
+    "IsAddressConfigured": "1"
+  },
+  {
+    "Id": "4b629161-c1ea-494d-7ced-08dd646cf0ea",
+    "Ticker": "USDT",
+    "FullName": "Tether",
+    "Type": 2,
+    "AdminWalletAddress": null,
+    "IsAddressConfigured": "0"
+  },
+  {
+    "Id": "c99f4e7e-a660-4d9d-7cee-08dd646cf0ea",
+    "Ticker": "USDT-BEP20",
+    "FullName": "Tether BEP 20",
+    "Type": 2,
+    "AdminWalletAddress": "0x5C7bEeAc83082d309267E0f3dfDe4A779E39b5c7",
+    "IsAddressConfigured": "1"
+  },
+  {
+    "Id": "f0524864-56f7-47e5-7cef-08dd646cf0ea",
+    "Ticker": "ATOM",
+    "FullName": "Cosmos",
+    "Type": 2,
+    "AdminWalletAddress": "cosmos15zmm697hgehuhpp9vgjh89wyyvauwfsxty5wh9",
+    "IsAddressConfigured": "1"
+  },
+  {
+    "Id": "9c808b85-2785-4e52-7cf0-08dd646cf0ea",
+    "Ticker": "ZEC",
+    "FullName": "Zcash",
+    "Type": 2,
+    "AdminWalletAddress": "t1ar7L74WuJ1XZ2f3UpfKxXsHEJ2hxsG6zr",
+    "IsAddressConfigured": "1"
+  },
+  {
+    "Id": "de4ac1b2-7119-4aa4-7cf1-08dd646cf0ea",
+    "Ticker": "TON",
+    "FullName": "Toncoin",
+    "Type": 2,
+    "AdminWalletAddress": "UQD7YXnqTVtBomW2BPKrGDLiLTO5pES2CnwwRnxtw_fLhK-M",
+    "IsAddressConfigured": "1"
+  },
+  {
+    "Id": "f786a8c5-95ed-4335-7cf2-08dd646cf0ea",
+    "Ticker": "UST-TRC20",
+    "FullName": "Terra USD TRC 20",
+    "Type": 2,
+    "AdminWalletAddress": "TFj6cMTNCmrnEQvhXRwXE2oKQDVN6cz8G7",
+    "IsAddressConfigured": "1"
+  }
+]
