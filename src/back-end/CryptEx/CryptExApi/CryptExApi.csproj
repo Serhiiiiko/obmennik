@@ -29,6 +29,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
   </ItemGroup>
 
+  <ItemGroup>                                                            
+    <Content Include=\"Data/SeederDataJson/**\">                           
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>        
+    </Content>                                                           
+  </ItemGroup> 
+
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
