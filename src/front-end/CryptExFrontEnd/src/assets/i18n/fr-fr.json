@@ -144,6 +144,7 @@
       "PendingConfirmation": "En attente de confirmation",
       "SendToAddress": "Veuillez envoyer les fonds à cette adresse :",
       "ConfirmTransfer": "Après l'envoi, indiquez le hash de la transaction :",
+      "Refresh": "Rafraîchir",
       "Confirm": "Confirmer"
     },
     "Premium": {
@@ -227,6 +228,8 @@
       "ExchangesToday": "Aujourd'hui",
       "ExchangesMonth": "Ce mois-ci",
       "ExchangesWeek": "Cette semaine",
+      "SelectAssetFrom": "Sélectionnez l'actif à partir duquel vous souhaitez échanger",
+      "SelectAssetTo": "Sélectionnez l'actif vers lequel vous souhaitez échanger",
       "Transaction": {
         "Title": "Conversion",
         "Title2": "en",

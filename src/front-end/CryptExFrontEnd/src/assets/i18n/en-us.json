@@ -144,6 +144,7 @@
     "PendingConfirmation": "Pending Confirmation",
     "SendToAddress": "Please send funds to this address:",
     "ConfirmTransfer": "After sending, enter the transaction hash:",
+    "Refresh": "Refresh",
     "Confirm": "Confirm"
   },
   "Premium": {
@@ -227,6 +228,8 @@
     "ExchangesToday": "Today",
     "ExchangesMonth": "This month",
     "ExchangesWeek": "This week",
+    "SelectAssetFrom": "Select an asset to convert from",
+    "SelectAssetTo": "Select an asset to convert to",
     "Transaction": {
       "Title": "Converting",
       "Title2": "into",

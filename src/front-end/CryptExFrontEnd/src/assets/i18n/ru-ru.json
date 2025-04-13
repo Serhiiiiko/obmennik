@@ -143,6 +143,7 @@
     "PendingConfirmation": "Ожидает подтверждения",
     "SendToAddress": "Пожалуйста, отправьте средства на этот адрес:",
     "ConfirmTransfer": "После отправки, укажите хеш транзакции:",
+    "Refresh": "Обновить",
     "Confirm": "Подтвердить"
   },
   "Premium": {
@@ -226,6 +227,8 @@
     "ExchangesToday": "За сегодня",
     "ExchangesMonth": "За месяц",
     "ExchangesWeek": "За неделю",
+    "SelectAssetFrom": "Выберите валюту для обмена",
+    "SelectAssetTo": "Выберите валюту для получения",
     "Transaction": {
       "Title": "Конвертация",
       "Title2": "в",

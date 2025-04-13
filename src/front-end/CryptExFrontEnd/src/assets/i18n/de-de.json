@@ -145,6 +145,7 @@
       "PendingConfirmation": "Bestätigung ausstehend",
       "SendToAddress": "Bitte senden Sie die Gelder an diese Adresse:",
       "ConfirmTransfer": "Nach dem Senden geben Sie den Transaktions-Hash an:",
+      "Refresh": "Aktualisieren",
       "Confirm": "Bestätigen"
     },
     "Premium": {
@@ -228,6 +229,8 @@
       "ExchangesToday": "Heute",
       "ExchangesMonth": "Diesen Monat",
       "ExchangesWeek": "Diese Woche",
+      "SelectAssetFrom": "Wählen Sie die Währung aus, die Sie umrechnen möchten",
+      "SelectAssetTo": "Wählen Sie die Währung aus, die Sie erhalten möchten",
       "Transaction": {
         "Title": "Konvertierung",
         "Title2": "in",
