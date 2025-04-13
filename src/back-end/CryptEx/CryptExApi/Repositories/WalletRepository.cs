@@ -335,7 +335,7 @@ namespace CryptExApi.Repositories
 
         public async Task<Wallet> GetFiatFull(Guid id) => dbContext.Wallets.Single(x => x.Id == id);
 
-        public async Task<Wallet> GetFiatFull(string ticker) => dbContext.Wallets.Single(x => x.Ticker == ticker);
+        public async Task<Wallet> GetFiatFull(string ticker) => dbContext.Wallets.FirstOrDefault(w => w.Ticker == ticker);
 
         public async Task<WalletViewModel> GetCryptoFull(Guid id, string currency)
         {
