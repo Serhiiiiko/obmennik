@@ -197,7 +197,7 @@ namespace CryptExApi
 
                     await DefaultDataSeeder.Seed(scope.ServiceProvider);
                     await scope.ServiceProvider.GetService<IDataSeeder>()?.Seed(scope.ServiceProvider);
-                    await JsonDataSeeder.SeedFromJson(scope.ServiceProvider);
+                    //await JsonDataSeeder.SeedFromJson(scope.ServiceProvider);
                 }).Wait();
             }
 
