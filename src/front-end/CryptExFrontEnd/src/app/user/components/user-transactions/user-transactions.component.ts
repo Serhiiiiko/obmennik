@@ -1,4 +1,3 @@
-// src/app/user/components/user-transactions/user-transactions.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssetConvertService } from 'src/app/asset-convert/services/asset-convert.service';
 import { AdminService } from 'src/app/admin/services/admin.service';
@@ -8,6 +7,7 @@ import { AlertType, SnackBarCreate } from 'src/app/components/snackbar/snack-bar
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Subscription, interval } from 'rxjs';
 import { AnonymousExchangeConfirmationDto } from 'src/app/asset-convert/models/anonymous-exchange-request-dto';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-transactions',
@@ -20,16 +20,14 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
   expandedTransactionId: string | null = null;
   loading = true;
   paymentStatusRef = PaymentStatus;
-  debugInfo: string = '';
-  showDebugPanel: boolean = false;
-  signalRStatus: string = 'Unknown';
   lastUpdate: string = null;
   userEmail: string = '';
   newTransactionHash: string = '';
   isConfirming: boolean = false;
+  userId: string = null;
   
   // Pagination properties
-  pageSize: number = 5; // Use smaller page size for user transactions since they're more detailed
+  pageSize: number = 5;
   currentPage: number = 1;
   totalPages: number = 1;
   
@@ -38,29 +36,43 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
   
   private subscription: Subscription;
   private refreshSubscription: Subscription;
-  private signalRSubscription: Subscription;
   private connectionStatusSubscription: Subscription;
 
   constructor(
     private assetConvertService: AssetConvertService,
     private adminService: AdminService,
     private snackbar: SnackbarService,
-    public authService: AuthService
+    public authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit() {
-    this.debugInfo = 'Component initialized at ' + new Date().toISOString();
     console.log('User transactions component initialized');
     
-    // Get user email from localStorage for guest users
+    // Get authenticated user ID if available
+    if (this.authService.IsAuthenticated) {
+      try {
+        const userData = JSON.parse(localStorage.getItem("user"));
+        if (userData && userData.id) {
+          this.userId = userData.id;
+          console.log('Authenticated user ID:', this.userId);
+        }
+      } catch (error) {
+        console.error('Error retrieving user data:', error);
+      }
+    }
+    
+    // For guest users, get email from localStorage for filtering
     if (!this.authService.IsAuthenticated) {
       try {
+        // Create a hash of the session/device to use with guest transactions
+        this.generateGuestIdentifier();
+        
         const storedTransactions = localStorage.getItem('anonymousTransactions');
         if (storedTransactions) {
           const transactions = JSON.parse(storedTransactions);
           if (transactions.length > 0 && transactions[0].userEmail) {
             this.userEmail = transactions[0].userEmail;
-            this.debugInfo += '\nFound user email in stored transactions: ' + this.userEmail;
           }
         }
       } catch (error) {
@@ -68,23 +80,25 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
       }
     }
     
-    // Subscribe to transaction updates first
+    // Subscribe to transaction updates
     this.subscription = this.assetConvertService.transactionUpdated$.subscribe(updatedTransaction => {
       if (updatedTransaction) {
-        console.log('Received transaction update:', updatedTransaction);
-        this.updateTransactionInList(updatedTransaction);
+        // Only update if this transaction belongs to the current user
+        if (this.isUserTransaction(updatedTransaction)) {
+          console.log('Received valid transaction update:', updatedTransaction);
+          this.updateTransactionInList(updatedTransaction);
+        }
       }
     });
     
-    // Monitor connection status
+    // Monitor connection status if available
     if (this.assetConvertService['connectionStatus$']) {
       this.connectionStatusSubscription = this.assetConvertService['connectionStatus$'].subscribe(status => {
-        this.signalRStatus = status;
-        this.debugInfo += `\nSignalR connection status changed to: ${status}`;
+        // Connection status updates
       });
     }
     
-    // Then load initial transactions
+    // Load initial transactions
     this.loadTransactions();
     
     // Set up auto-refresh every 60 seconds
@@ -92,17 +106,16 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
       this.refreshTransactions();
     });
     
-    // Safety net - if loading still true after 10 seconds, set to false
+    // Safety timeout
     setTimeout(() => {
       if (this.loading) {
-        console.log('Loading timeout reached, setting loading to false');
         this.loading = false;
       }
     }, 10000);
   }
   
   ngOnDestroy(): void {
-    // Clean up subscriptions to prevent memory leaks
+    // Clean up subscriptions
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
@@ -111,96 +124,110 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
       this.refreshSubscription.unsubscribe();
     }
     
-    if (this.signalRSubscription) {
-      this.signalRSubscription.unsubscribe();
-    }
-    
     if (this.connectionStatusSubscription) {
       this.connectionStatusSubscription.unsubscribe();
     }
   }
   
-  // Helper method to sort transactions by date in descending order (newest first)
+  // Generate a unique identifier for guest users based on their browser fingerprint
+  private generateGuestIdentifier(): string {
+    if (this.userEmail) return this.userEmail;
+    
+    let guestId = localStorage.getItem('guestIdentifier');
+    if (!guestId) {
+      // Create a simple fingerprint based on available browser data
+      const browserData = [
+        navigator.userAgent,
+        navigator.language,
+        screen.width,
+        screen.height,
+        new Date().getTimezoneOffset()
+      ].join('|');
+      
+      // Create a hash from the browser data
+      let hash = 0;
+      for (let i = 0; i < browserData.length; i++) {
+        hash = ((hash << 5) - hash) + browserData.charCodeAt(i);
+        hash |= 0; // Convert to 32bit integer
+      }
+      
+      guestId = `guest-${Math.abs(hash).toString(16)}`;
+      localStorage.setItem('guestIdentifier', guestId);
+    }
+    
+    return guestId;
+  }
+  
+  // Check if a transaction belongs to the current user
+  private isUserTransaction(transaction: any): boolean {
+    if (!transaction) return false;
+    
+    // For authenticated users, check the userId
+    if (this.authService.IsAuthenticated && this.userId) {
+      return transaction.userId === this.userId;
+    }
+    
+    // For guest users, check the email or transaction hash
+    if (!this.authService.IsAuthenticated) {
+      if (this.userEmail && transaction.userEmail) {
+        return transaction.userEmail.toLowerCase() === this.userEmail.toLowerCase();
+      }
+      
+      // Alternative check using guest identifier if available
+      const guestId = this.generateGuestIdentifier();
+      if (transaction.guestIdentifier && transaction.guestIdentifier === guestId) {
+        return true;
+      }
+      
+      // For legacy transactions in localStorage
+      try {
+        const storedTransactions = JSON.parse(localStorage.getItem('anonymousTransactions') || '[]');
+        return storedTransactions.some(tx => tx.id === transaction.id);
+      } catch (e) {
+        return false;
+      }
+    }
+    
+    return false;
+  }
+  
+  // Sort transactions by date (newest first)
   private sortTransactionsByDateDesc(transactions: any[]): any[] {
     if (!transactions || transactions.length === 0) return transactions;
     
     return transactions.sort((a, b) => {
       const dateA = new Date(a.creationDate || a.date || 0);
       const dateB = new Date(b.creationDate || b.date || 0);
-      return dateB.getTime() - dateA.getTime(); // Descending order (newest first)
+      return dateB.getTime() - dateA.getTime(); // Descending order
     });
   }
   
-  checkSignalRConnection(): void {
-    // Get the current connection status directly from the service
-    const status = this.assetConvertService['getConnectionStatus'] ? 
-                   this.assetConvertService['getConnectionStatus']() : 'Unknown';
-    this.signalRStatus = status;
-    this.debugInfo += `\nSignalR current status: ${status}`;
-    
-    this.snackbar.ShowSnackbar(new SnackBarCreate(
-      "SignalR Status", 
-      `Connection is ${status}`, 
-      status === 'Connected' ? AlertType.Success : AlertType.Warning
-    ));
-    
-    // If not connected, try to restart
-    if (status !== 'Connected' && this.assetConvertService['rebuildConnection']) {
-      this.debugInfo += '\nAttempting to rebuild SignalR connection...';
-      this.assetConvertService['rebuildConnection']();
-    }
-  }
-  
-  clearLocalStorage(): void {
-    try {
-      localStorage.removeItem('anonymousTransactions');
-      this.debugInfo += '\nLocal storage cleared';
-      this.snackbar.ShowSnackbar(new SnackBarCreate(
-        "Cache Cleared", 
-        "Local transaction cache has been cleared", 
-        AlertType.Success
-      ));
-      
-      // Reload transactions from server
-      setTimeout(() => {
-        this.refreshTransactionsFromServer();
-      }, 500);
-    } catch (error) {
-      console.error('Error clearing localStorage:', error);
-      this.debugInfo += `\nError clearing localStorage: ${error.message}`;
-    }
-  }
-  
+  // Update a transaction in the list
   updateTransactionInList(updatedTransaction: any): void {
     this.lastUpdate = new Date().toLocaleTimeString();
     
-    // Add to debug info
-    this.debugInfo += `\n${this.lastUpdate} - Updated transaction ${updatedTransaction.id} to status ${updatedTransaction.status}`;
-
     if (!updatedTransaction || !updatedTransaction.id) {
       console.warn('Received invalid transaction update:', updatedTransaction);
       return;
     }
     
-    console.log('Updating transaction in list:', updatedTransaction);
-    console.log('Current transaction list:', this.transactions);
+    // Add security check - verify this transaction belongs to the current user
+    if (!this.isUserTransaction(updatedTransaction)) {
+      console.warn('Received transaction update for another user, ignoring:', updatedTransaction);
+      return;
+    }
     
     const index = this.transactions.findIndex(t => t.id === updatedTransaction.id);
     
     if (index !== -1) {
-      console.log(`Found transaction at index ${index}, current status: ${this.transactions[index].status}, new status: ${updatedTransaction.status}`);
-      
-      // Only update if the status has actually changed
       const oldStatus = this.transactions[index].status;
       const newStatus = updatedTransaction.status;
       
-      // Create a deep copy of the transaction to ensure all properties are preserved
+      // Create a deep copy of the transaction for updating
       const updatedTx = {
         ...this.transactions[index],  // Keep all original properties
         ...updatedTransaction         // Update with new properties
       };
-      
-      console.log('Updated transaction object:', updatedTx);
       
       // Replace the transaction in the array
       this.transactions[index] = updatedTx;
@@ -217,29 +244,14 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
         ));
       }
       
-      // Sort the transactions by date (newest first)
-      this.transactions = this.sortTransactionsByDateDesc(this.transactions);
-      
-      // Force Angular change detection and update pagination
-      this.transactions = [...this.transactions];
+      // Sort and update UI
+      this.transactions = this.sortTransactionsByDateDesc([...this.transactions]);
       this.updatePagination();
     } else {
-      // This is a new transaction, add it to the list
-      console.log('New transaction, adding to list:', updatedTransaction);
-      
-      // Only add the transaction if:
-      // 1. User is authenticated, or
-      // 2. User is guest but the transaction matches their email
-      if (this.authService.IsAuthenticated || 
-          (updatedTransaction.userEmail && this.userEmail && 
-           updatedTransaction.userEmail.toLowerCase() === this.userEmail.toLowerCase())) {
+      // This is a new transaction, add it only if it belongs to the current user
+      if (this.isUserTransaction(updatedTransaction)) {
         this.transactions.push(updatedTransaction);
-        
-        // Sort the transactions by date (newest first)
-        this.transactions = this.sortTransactionsByDateDesc(this.transactions);
-        
-        // Force Angular change detection and update pagination
-        this.transactions = [...this.transactions];
+        this.transactions = this.sortTransactionsByDateDesc([...this.transactions]);
         this.updatePagination();
         
         this.snackbar.ShowSnackbar(new SnackBarCreate(
@@ -251,190 +263,162 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     }
   }
   
-  // Add a specific method to force refresh from the server
+  // Force refresh from server
   refreshTransactionsFromServer(): void {
     console.log('Forcing refresh from server');
     this.loading = true;
     
-    // Make specific API calls to get the latest transaction status
-    this.assetConvertService.forceRefreshTransactions().then(result => {
-      this.loading = false;
-      if (result.success && Array.isArray(result.content)) {
-        console.log('Retrieved latest transactions from server:', result.content.length);
-        
-        // Filter transactions based on user authentication
-        let relevantTransactions = result.content;
-        
-        // For guest users, filter by email
-        if (!this.authService.IsAuthenticated && this.userEmail) {
-          relevantTransactions = result.content.filter(tx => 
-            tx.userEmail && tx.userEmail.toLowerCase() === this.userEmail.toLowerCase()
+    // Use different approaches for authenticated vs guest users
+    if (this.authService.IsAuthenticated) {
+      // For authenticated users, get their transactions through the API
+      this.assetConvertService.GetTransactions(null).then(result => {
+        this.loading = false;
+        if (result.success && Array.isArray(result.content)) {
+          this.transactions = this.sortTransactionsByDateDesc(result.content);
+          this.updatePagination();
+          
+          this.snackbar.ShowSnackbar(new SnackBarCreate(
+            "Refresh Complete", 
+            "Transaction list updated", 
+            AlertType.Success
+          ));
+        }
+      }).catch(error => {
+        this.loading = false;
+        this.handleErrorResponse(error);
+      });
+    } else {
+      // For guest users, try to get exchanges they created
+      this.loadGuestTransactions();
+      
+      // We can also try to get updates from the API, but only for exchanges they created
+      this.assetConvertService.forceRefreshTransactions().then(result => {
+        this.loading = false;
+        if (result.success && Array.isArray(result.content)) {
+          // Filter transactions to only include those with matching email
+          const relevantTransactions = result.content.filter(tx => 
+            this.isUserTransaction(tx)
           );
-          console.log('Filtered for guest user, found:', relevantTransactions.length);
-        }
-        
-        // Update existing transactions with fresh data
-        for (const freshTx of relevantTransactions) {
-          if (freshTx && freshTx.id) {
-            const index = this.transactions.findIndex(t => t.id === freshTx.id);
-            if (index !== -1) {
-              // Update with fresh data
-              this.transactions[index] = {
-                ...this.transactions[index],
-                ...freshTx
-              };
-            } else {
-              // Add new transaction
-              this.transactions.push(freshTx);
-            }
+          
+          // Update the transactions list
+          for (const tx of relevantTransactions) {
+            this.updateTransactionInList(tx);
           }
+          
+          this.snackbar.ShowSnackbar(new SnackBarCreate(
+            "Refresh Complete", 
+            "Transaction list updated", 
+            AlertType.Success
+          ));
         }
-        
-        // Sort the transactions by date (newest first)
-        this.transactions = this.sortTransactionsByDateDesc(this.transactions);
-        
-        // Force Angular change detection and update pagination
-        this.transactions = [...this.transactions];
-        this.updatePagination();
-        
-        this.snackbar.ShowSnackbar(new SnackBarCreate(
-          "Refresh Complete", 
-          "Transaction list updated from server", 
-          AlertType.Success
-        ));
-      }
-    }).catch(error => {
-      this.loading = false;
-      console.error('Error refreshing from server:', error);
-      this.snackbar.ShowSnackbar(new SnackBarCreate(
-        "Refresh Error", 
-        "Could not retrieve latest transaction data", 
-        AlertType.Error
-      ));
-    });
+      }).catch(error => {
+        this.loading = false;
+        this.handleErrorResponse(error);
+      });
+    }
   }
   
-  // Modify manualRefresh to use the new method
+  // Manual refresh button handler
   manualRefresh(): void {
     this.refreshTransactionsFromServer();
   }
   
-  // Add lifecycle hook to force refresh when component becomes active
-  ngAfterViewInit() {
-    // Force a refresh shortly after the component initializes
-    setTimeout(() => {
-      this.refreshTransactionsFromServer();
-    }, 1000);
-  }
-
+  // Automatic refresh (less aggressive)
   refreshTransactions(): void {
     console.log('Refreshing transactions automatically');
-    // We don't set loading=true here to avoid UI flickering during refresh
     this.tryMultipleApproaches(false);
   }
 
+  // Initial load of transactions
   loadTransactions(): void {
     this.loading = true;
-    this.debugInfo = 'Starting to load transactions...';
     console.log('Loading transactions, auth status:', this.authService.IsAuthenticated);
-   
-    // Try different approaches to get transactions
     this.tryMultipleApproaches(true);
   }
 
+  // Load guest transactions from localStorage
+  loadGuestTransactions(): void {
+    try {
+      const storedTransactions = localStorage.getItem('anonymousTransactions');
+      if (storedTransactions) {
+        const localTransactions = JSON.parse(storedTransactions);
+        
+        // Filter transactions to only those belonging to this user/email
+        const filteredTransactions = localTransactions.filter(tx => this.isUserTransaction(tx));
+        
+        console.log(`Loaded ${filteredTransactions.length} guest transactions from localStorage`);
+        
+        // Update transactions safely
+        this.mergeTransactions(filteredTransactions);
+      }
+    } catch (error) {
+      console.error('Error loading from localStorage:', error);
+    }
+  }
+
+  // Try multiple approaches to get transactions safely
   tryMultipleApproaches(showLoading: boolean = true): void {
-    // First, load transactions from all possible sources and combine them
-    Promise.all([
-      // 1. Try to get transactions from asset convert service
-      this.assetConvertService.GetTransactions(null).catch(error => {
-        console.warn('Error fetching from GetTransactions:', error);
-        return { success: false, content: [] };
-      }),
-      
-      // 2. Try to get anonymous exchanges (approved and pending)
-      this.assetConvertService.GetAnonymousExchanges().catch(error => {
-        console.warn('Error fetching from GetAnonymousExchanges:', error);
-        return { success: false, content: [] };
-      }),
-      
-      // 3. Try to get user transactions from admin service if available
-      this.adminService.GetUserTransactions ? 
-        this.adminService.GetUserTransactions().catch(error => {
-          console.warn('Error fetching from GetUserTransactions:', error);
-          return { success: false, content: [] };
-        }) : 
-        Promise.resolve({ success: false, content: [] })
-    ]).then(results => {
-      // Process results from all sources
-      let allTransactions = [];
-      
-      results.forEach((result, index) => {
+    if (this.authService.IsAuthenticated) {
+      // For authenticated users, use the regular API endpoints
+      this.assetConvertService.GetTransactions(null).then(result => {
+        if (showLoading) this.loading = false;
+        
         if (result.success && Array.isArray(result.content)) {
-          console.log(`Source ${index + 1} returned ${result.content.length} transactions`);
-          allTransactions = [...allTransactions, ...result.content];
+          // We can trust these transactions as they're from the authenticated API
+          this.mergeTransactions(result.content);
+        } else if (showLoading) {
+          this.showLoadingError();
+        }
+      }).catch(error => {
+        if (showLoading) {
+          this.loading = false;
+          this.handleErrorResponse(error);
         }
       });
-      
-      // Also add any approved/rejected transactions from localStorage
-      this.loadFromLocalStorage();
-      
-      // Process all fetched transactions
-      if (allTransactions.length > 0) {
-        this.mergeTransactions(allTransactions);
-        console.log(`Combined ${allTransactions.length} transactions from all sources`);
-      } else {
-        console.log('No transactions found from API sources');
-      }
-      
-      if (showLoading) {
-        this.loading = false;
-        this.updatePagination();
-      }
-    }).catch(error => {
-      console.error('Error in combined transaction fetch:', error);
-      if (showLoading) {
-        this.loading = false;
-        this.showLoadingError();
-      }
-    });
-  }
-  
-  handleTransactionResult(result: any, methodName: string, showLoading: boolean): void {
-    if (showLoading) this.loading = false;
-    console.log(`${methodName} result:`, result);
-    this.debugInfo += `\n${methodName} result: ${JSON.stringify(result)}`;
-    
-    if (result && result.success) {
-      if (Array.isArray(result.content)) {
-        // Merge with existing transactions, updating status for existing ones
-        this.mergeTransactions(result.content);
-        console.log('Transactions loaded successfully, count:', this.transactions.length);
-        this.debugInfo += `\nLoaded ${this.transactions.length} transactions`;
-        this.updatePagination();
-      } else {
-        console.warn('Expected array but got:', typeof result.content);
-        this.debugInfo += `\nUnexpected response format: ${typeof result.content}`;
-        // Try to convert to array if possible
-        this.mergeTransactions([result.content]);
-        this.updatePagination();
-      }
-    } else if (showLoading) {
-      this.showLoadingError();
+    } else {
+      // For guest users, just load from localStorage
+      if (showLoading) this.loading = false;
+      this.loadGuestTransactions();
     }
   }
   
+  // Error handler
+  handleErrorResponse(error: any): void {
+    console.error('API error:', error);
+    
+    if (error && error.status === 401) {
+      // Unauthorized - redirect to login
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Authentication Required", 
+        "Please log in to view your transactions", 
+        AlertType.Warning
+      ));
+      this.router.navigate(['/login']);
+    } else if (error && error.status === 403) {
+      // Forbidden - user doesn't have permission
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Access Denied", 
+        "You don't have permission to view these transactions", 
+        AlertType.Error
+      ));
+    } else {
+      // Generic error
+      this.snackbar.ShowSnackbar(new SnackBarCreate(
+        "Error", 
+        "Could not load transactions. Please try again later.", 
+        AlertType.Error
+      ));
+    }
+  }
+  
+  // Safely merge transactions, ensuring we only get user's transactions
   mergeTransactions(newTransactions: any[]): void {
     if (!newTransactions || newTransactions.length === 0) return;
     
-    // For guest users, filter by email
-    if (!this.authService.IsAuthenticated && this.userEmail) {
-      newTransactions = newTransactions.filter(tx => 
-        tx.userEmail && tx.userEmail.toLowerCase() === this.userEmail.toLowerCase()
-      );
-      console.log('Filtered transactions for guest user:', newTransactions.length);
-    }
+    // Filter to only include the current user's transactions
+    newTransactions = newTransactions.filter(tx => this.isUserTransaction(tx));
     
-    // Create a deep copy of existing transactions to avoid reference issues
+    // Create a deep copy of existing transactions
     let updatedTransactions = [...this.transactions];
     
     // Process each new transaction
@@ -443,12 +427,9 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
         const existingIndex = updatedTransactions.findIndex(t => t.id === newTransaction.id);
         
         if (existingIndex >= 0) {
-          // Update existing transaction - CRITICAL: preserve status if newer transaction doesn't have it
+          // Update existing transaction
           const existingStatus = updatedTransactions[existingIndex].status;
           
-          // Only update status if:
-          // 1. New transaction has a defined status AND
-          // 2. Either the existing transaction has no status OR the new status is more final
           const shouldUpdateStatus = 
             newTransaction.status !== undefined && 
             (existingStatus === undefined || 
@@ -457,7 +438,6 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
           updatedTransactions[existingIndex] = {
             ...updatedTransactions[existingIndex],  
             ...newTransaction,                     
-            
             status: shouldUpdateStatus ? newTransaction.status : existingStatus
           };
           
@@ -470,17 +450,13 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
       }
     }
     
-    // Sort transactions by date (newest first)
-    updatedTransactions = this.sortTransactionsByDateDesc(updatedTransactions);
-    
-    // Replace the transactions array (creates a new reference for Angular change detection)
-    this.transactions = updatedTransactions;
+    // Sort and update
+    this.transactions = this.sortTransactionsByDateDesc(updatedTransactions);
     this.updatePagination();
   }
   
-  // Helper method to determine if a status is more "final" than another
+  // Determine if a status is more "final" than another
   isMoreFinalStatus(newStatus: PaymentStatus, oldStatus: PaymentStatus): boolean {
-    // Define status priority (higher number = more final)
     const statusPriority = {
       [PaymentStatus.notProcessed]: 1,
       [PaymentStatus.awaitingVerification]: 2,
@@ -489,15 +465,13 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
       [PaymentStatus.success]: 5
     };
     
-    // A status is more final if it has higher priority
     return statusPriority[newStatus] > statusPriority[oldStatus];
   }
   
+  // Format exchange rate
   formatExchangeRate(transaction: any): string {
-    // Get the exchange rate from either pair.rate or exchangeRate property
     const rate = transaction.pair?.rate || transaction.exchangeRate || 0;
     
-    // Format the rate based on its magnitude for better readability
     if (rate === 0) return '0';
     
     if (rate < 0.0001) return rate.toExponential(4);
@@ -505,39 +479,34 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     if (rate < 1) return rate.toFixed(4);
     if (rate < 100) return rate.toFixed(2);
     
-    // For very large rates, round to 2 decimal places
     return rate.toLocaleString(undefined, { 
       maximumFractionDigits: 2,
       minimumFractionDigits: 2
     });
   }
   
-  // Add this method to calculate the resulting amount
+  // Calculate the resulting amount
   calculateResultAmount(transaction: any): string {
     const amount = transaction.amount || transaction.sourceAmount || 0;
     const rate = transaction.pair?.rate || transaction.exchangeRate || 0;
     const result = amount * rate;
     
-    // Format result based on its magnitude
     if (result === 0) return '0';
     
     if (result < 0.0001) return result.toExponential(4);
     if (result < 0.01) return result.toFixed(6);
     if (result < 1000) return result.toFixed(4);
     
-    // For larger numbers, use locale string with 2 decimal places
     return result.toLocaleString(undefined, { 
       maximumFractionDigits: 2,
       minimumFractionDigits: 2
     });
   }
   
-  // Add method to show notification about status changes
+  // Handle status change notifications
   showStatusChangeNotification(oldStatus: PaymentStatus, newStatus: PaymentStatus): void {
-    // Don't show notifications for certain status transitions
     if (oldStatus === newStatus) return;
     
-    // Only show notifications for transitions to final states
     if (newStatus === PaymentStatus.success || newStatus === PaymentStatus.failed) {
       const statusText = this.getTransactionStatusText(newStatus);
       this.snackbar.ShowSnackbar(new SnackBarCreate(
@@ -547,33 +516,8 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
       ));
     }
   }
-
-  loadFromLocalStorage(): void {
-    try {
-      const storedTransactions = localStorage.getItem('anonymousTransactions');
-      if (storedTransactions) {
-        const localTransactions = JSON.parse(storedTransactions);
-        console.log('Local storage transactions:', localTransactions);
-        this.debugInfo += '\nLocal storage transactions found: ' + localTransactions.length;
-        
-        // For guest users, set the email if found
-        if (!this.authService.IsAuthenticated && localTransactions.length > 0) {
-          const firstTx = localTransactions[0];
-          if (firstTx && firstTx.userEmail && !this.userEmail) {
-            this.userEmail = firstTx.userEmail;
-            this.debugInfo += '\nExtracted user email: ' + this.userEmail;
-          }
-        }
-        
-        // Merge with existing transactions
-        this.mergeTransactions(localTransactions);
-      }
-    } catch (error) {
-      console.error('Error loading from localStorage:', error);
-      this.debugInfo += '\nError loading from localStorage: ' + error.message;
-    }
-  }
-
+  
+  // Error message
   showLoadingError(): void {
     this.loading = false;
     this.snackbar.ShowSnackbar(new SnackBarCreate(
@@ -583,14 +527,16 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     ));
   }
 
+  // Toggle transaction details view
   toggleTransactionDetails(transactionId: string): void {
     if (this.expandedTransactionId === transactionId) {
-      this.expandedTransactionId = null; // Collapse if already expanded
+      this.expandedTransactionId = null;
     } else {
-      this.expandedTransactionId = transactionId; // Expand this transaction
+      this.expandedTransactionId = transactionId;
     }
   }
 
+  // Get CSS class for transaction status
   getTransactionStatusClass(status: PaymentStatus): string {
     switch (status) {
       case PaymentStatus.success:
@@ -606,6 +552,7 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Get text for transaction status
   getTransactionStatusText(status: PaymentStatus): string {
     switch(status) {
       case PaymentStatus.success:
@@ -623,6 +570,7 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Format date for display
   getFormattedDate(dateString: string): string {
     if (!dateString) return 'N/A';
     
@@ -640,6 +588,7 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Copy to clipboard
   copyToClipboard(text: string): void {
     navigator.clipboard.writeText(text).then(() => {
       this.snackbar.ShowSnackbar(new SnackBarCreate(
@@ -656,14 +605,7 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     });
   }
   
-  // Add helper methods to safely get image paths and data
-  hasValidCurrencies(transaction: any): boolean {
-    return (
-      (transaction?.pair?.left?.ticker || transaction?.sourceWalletTicker) &&
-      (transaction?.pair?.right?.ticker || transaction?.destinationWalletTicker)
-    );
-  }
-
+  // Helper methods for accessing transaction data safely
   getSourceTicker(transaction: any): string {
     return transaction?.sourceWallet?.ticker || 
            transaction?.pair?.left?.ticker || 
@@ -683,7 +625,7 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     return typeof amount === 'number' ? amount.toLocaleString() : amount.toString();
   }
  
-  // New method to confirm transaction manually
+  // Confirm transaction manually
   confirmTransaction(transaction: any): void {
     if (!transaction || this.isConfirming) return;
     if (!this.newTransactionHash) {
@@ -744,9 +686,6 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
       return;
     }
     
-    // Make sure transactions are always sorted by date (newest first)
-    this.transactions = this.sortTransactionsByDateDesc(this.transactions);
-    
     this.totalPages = Math.ceil(this.transactions.length / this.pageSize);
     
     // Ensure current page is within valid range
@@ -759,8 +698,6 @@ export class UserTransactionsComponent implements OnInit, OnDestroy {
     
     // Create a deep copy to avoid reference issues
     this.paginatedTransactions = this.transactions.slice(startIndex, endIndex).map(t => ({...t}));
-    
-    console.log(`Pagination updated: page ${this.currentPage} of ${this.totalPages}, showing ${this.paginatedTransactions.length} transactions`);
   }
 
   changePage(pageNumber: number): void {
