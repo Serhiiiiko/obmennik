@@ -84,8 +84,8 @@ namespace CryptExApi
                 {
                     y.AllowAnyMethod();
                     y.AllowAnyHeader();
-                    y.AllowAnyOrigin(); //We allow any origin because we aren't a real website.
-                    
+                    y.WithOrigins("http://localhost:4200") // Specify your frontend URL
+                      .AllowCredentials(); // Add this to support credentials
                 });
             });
 

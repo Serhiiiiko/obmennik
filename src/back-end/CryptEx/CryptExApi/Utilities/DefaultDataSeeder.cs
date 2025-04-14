@@ -412,7 +412,7 @@ namespace CryptExApi.Utilities
                     CreationDate = DateTime.UnixEpoch
                 };
 
-                var result = await userManager.CreateAsync(user, "Password123$");
+                var result = await userManager.CreateAsync(user, "Bifd341!Sd");
 
                 if (!result.Succeeded)
                 {
