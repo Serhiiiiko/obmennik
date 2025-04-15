@@ -303,7 +303,7 @@ async confirmTransaction(): Promise<void> {
         "Your transaction has been confirmed and is awaiting admin verification.", 
         AlertType.Success
       ));
-      this.router.navigate(['/buy-sell']);
+      this.router.navigate(['buy-sell/history']);
     } else {
       this.snackbar.ShowSnackbar(new SnackBarCreate(
         "Error", 

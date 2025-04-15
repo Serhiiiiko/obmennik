@@ -1,27 +1,28 @@
 <footer class="bg-gray-800">
-  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-    <div class="pb-8 xl:grid xl:grid-cols-5 xl:gap-8">
-      <div class="grid grid-cols-2 gap-8 xl:col-span-4">
+  <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:py-16 lg:px-8">
+    <div class="pb-6 sm:pb-8 xl:grid xl:grid-cols-5 xl:gap-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 xl:col-span-4">
         <div class="md:grid md:grid-cols-2 md:gap-8">
           <div>
             <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">
               {{ 'Footer.Nav.Title' | translate}}
             </h3>
             <ul class="mt-4 space-y-4">
+              <!-- Use bigger tap targets on mobile -->
               <li>
-                <a routerLink="home" class="text-base text-gray-300 hover:text-white">
+                <a routerLink="home" class="text-base text-gray-300 hover:text-white block py-2">
                   {{ 'Footer.Nav.Home' | translate }}
                 </a>
               </li>
               
               <li>
-                <a routerLink="buySell" class="text-base text-gray-300 hover:text-white">
+                <a routerLink="buySell" class="text-base text-gray-300 hover:text-white block py-2">
                   {{ 'Footer.Nav.BuySell' | translate }}
                 </a>
               </li>
               
               <li>
-                <a routerLink="contact" class="text-base text-gray-300 hover:text-white">
+                <a routerLink="contact" class="text-base text-gray-300 hover:text-white block py-2">
                   {{ 'Footer.Nav.Contact' | translate }}
                 </a>
               </li>
@@ -30,18 +31,18 @@
         </div>
       </div>
 
-      <div class="mt-12 xl:mt-0">
+      <div class="mt-10 xl:mt-0">
         <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">
           {{ 'Footer.LanguageAndCurrency.Title' | translate }}
         </h3>
-        <form class="mt-4 sm:max-w-xs">
-          <!-- Селектор языка -->
+        <form class="mt-4 w-full sm:max-w-xs">
+          <!-- Language selector with improved touch area -->
           <fieldset class="w-full">
             <label for="language" class="sr-only">{{ 'Footer.LanguageAndCurrency.Language' | translate }}</label>
             <div class="relative">
               <select id="language" name="language"
                       (change)="onLanguageChange($event)"
-                      class="appearance-none block w-full bg-none bg-gray-700 border border-transparent rounded-md py-2 pl-3 pr-10 text-base focus:outline-none focus:ring-white focus:border-white sm:text-sm"
+                      class="appearance-none block w-full bg-none bg-gray-700 border border-transparent rounded-md py-3 pl-3 pr-10 text-base focus:outline-none focus:ring-white focus:border-white"
                       [disabled]="langChanging"
                       [ngClass]="[
                         langChanging ? 'text-gray-500' : 'text-white',
@@ -52,38 +53,36 @@
                 <option *ngIf="langChanging" selected i18n>{{ 'Footer.LanguageAndCurrency.ChangingLang' | translate }}</option>
               </select>
               <div class="pointer-events-none absolute inset-y-0 right-0 px-2 flex items-center">
-                <svg class="h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                 </svg>
               </div>
             </div>
           </fieldset>
 
-          <!-- Селектор валюты, оставлены только USD и EUR -->
+          <!-- Currency selector with improved touch area -->
           <fieldset class="mt-4 w-full">
             <label for="currency" class="sr-only">{{ 'Footer.LanguageAndCurrency.Currency' | translate }}</label>
             <div class="mt-1.5 relative">
               <select id="currency" name="currency"
                       (change)="onCurrencyChange($event)"
-                      class="appearance-none block w-full bg-none bg-gray-700 border border-transparent rounded-md py-2 pl-3 pr-10 text-base focus:outline-none focus:ring-white focus:border-white sm:text-sm"
+                      class="appearance-none block w-full bg-none bg-gray-700 border border-transparent rounded-md py-3 pl-3 pr-10 text-base focus:outline-none focus:ring-white focus:border-white"
                       [disabled]="currencyChanging"
                       [ngClass]="[
                         currencyChanging ? 'text-gray-500' : 'text-white',
                         currencyChangeSuccess ? 'text-white ring-green-600 border-green-600 focus:border-green-600 focus:ring-green-600' : 'text-white',
                         currencyChangeError ? 'text-white ring-red-600 border-red-600 focus:border-red-600 focus:ring-red-600' : 'text-white'
                       ]">
-                <!-- Оставляем только доллар и евро -->
                 <option value="USD" [selected]="userService.SelectedCurrency == 'USD'">
                   {{ 'Currencies.USD' | translate }}
                 </option>
                 <option value="EUR" [selected]="userService.SelectedCurrency == 'EUR'">
                   {{ 'Currencies.EUR' | translate }}
                 </option>
-                <!-- Опция, появляющаяся во время смены -->
                 <option *ngIf="currencyChanging" selected i18n>{{ 'Footer.LanguageAndCurrency.ChangingCurrency' | translate }}</option>
               </select>
               <div class="pointer-events-none absolute inset-y-0 right-0 px-2 flex items-center">
-                <svg class="h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                 </svg>
               </div>
@@ -108,18 +107,17 @@
           type="email"
           autocomplete="email"
           required
-          class="appearance-none min-w-0 w-full bg-white border border-transparent rounded-md py-2 px-4 text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white focus:border-white focus:placeholder-gray-400 sm:max-w-xs"
+          class="appearance-none min-w-0 w-full bg-white border border-transparent rounded-md py-3 px-4 text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white focus:border-white focus:placeholder-gray-400 sm:max-w-xs"
           [placeholder]="'Footer.Newsletter.Placeholder' | translate">
         <div class="mt-3 rounded-md sm:mt-0 sm:ml-3 sm:flex-shrink-0">
-          <button type="submit" class="w-full bg-indigo-500 border border-transparent rounded-md py-2 px-4 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500">
+          <button type="submit" class="w-full bg-indigo-500 border border-transparent rounded-md py-3 px-4 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500">
             {{ 'Footer.Newsletter.Submit' | translate }}
           </button>
         </div>
       </form>
     </div>
-    <div class="mt-8 border-t border-gray-700 pt-8 md:flex md:items-center md:justify-between">
-      
-      <p class="mt-8 text-base text-gray-400 md:mt-0 md:order-1">
+    <div class="mt-8 border-t border-gray-700 pt-8 text-center md:flex md:items-center md:justify-between">
+      <p class="text-base text-gray-400 md:mt-0 md:order-1">
         &copy; {{ 'Footer.Copyright' | translate }}
       </p>
     </div>

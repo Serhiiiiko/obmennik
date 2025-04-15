@@ -23,7 +23,7 @@
       <div class="bg-gray-50 rounded-lg p-4 mb-5">
         <div class="grid grid-cols-3 items-center">
           <div class="col-span-1">
-            <span class="text-sm text-gray-500 block">From</span>
+            <span class="text-sm text-gray-500 block">{{ 'BuySell.Preview.From' | translate }}</span>
             <span class="text-lg font-semibold">{{ lock.pair.left.ticker }}</span>
           </div>
           
@@ -34,19 +34,19 @@
           </div>
           
           <div class="col-span-1 text-right">
-            <span class="text-sm text-gray-500 block">To</span>
+            <span class="text-sm text-gray-500 block">{{ 'BuySell.Preview.To' | translate }}</span>
             <span class="text-lg font-semibold">{{ lock.pair.right.ticker }}</span>
           </div>
         </div>
         
         <div class="flex justify-between mt-4 border-t border-gray-200 pt-4">
           <div>
-            <span class="text-sm text-gray-500 block">Exchange rate:</span>
+            <span class="text-sm text-gray-500 block">{{ 'BuySell.Preview.ExchangeRate' | translate }}</span>
             <span class="font-medium">{{ lock.pair.rate }}</span>
           </div>
           
           <div *ngIf="dto.amount" class="text-right">
-            <span class="text-sm text-gray-500 block">You will receive:</span>
+            <span class="text-sm text-gray-500 block">{{ 'BuySell.Preview.YouWillReceive' | translate }}</span>
             <span class="font-medium">{{ lock.pair.right.ticker }} {{ getResultPrice() }}</span>
           </div>
         </div>
@@ -55,8 +55,10 @@
       <!-- Amount input field with minimum value info -->
       <div class="mb-6">
         <div class="flex justify-between">
-          <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Enter amount:</label>
-          <span class="text-sm text-indigo-600 font-medium">Minimum value: ${{ minimumUsdValue }} (≈ {{ getMinimumCryptoAmount() }} {{ lock.pair.left.ticker }})</span>
+          <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">{{ 'BuySell.Preview.EnterAmount' | translate }}</label>
+          <span class="text-sm text-indigo-600 font-medium">
+            {{ 'BuySell.Preview.MinimumValue' | translate:{ usdValue: minimumUsdValue, cryptoAmount: getMinimumCryptoAmount(), cryptoTicker: lock.pair.left.ticker } }}
+          </span>
         </div>
         <div class="relative rounded-md shadow-sm">
           <input 
@@ -67,9 +69,8 @@
             (input)="amountChanged($event.target.value)"
             class="block w-full pr-12 py-3 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             [ngClass]="{'border-red-500 bg-red-50': amountError}"
-            placeholder="Enter an amount to convert"
+            placeholder="{{ 'BuySell.Preview.EnterAmountPlaceholder' | translate }}"
           >
-
         </div>
         <!-- Error message display -->
         <div *ngIf="amountError" class="mt-2 text-sm text-red-600 flex items-center">
@@ -81,30 +82,31 @@
         
         <!-- USD value indicator -->
         <div *ngIf="dto.amount && calculateUsdValue(dto.amount) > 0" class="mt-2 text-sm text-gray-600">
-          Approximate transaction value: <span class="font-semibold">${{ calculateUsdValue(dto.amount).toFixed(2) }} USD</span>
+          {{ 'BuySell.Preview.ApproxTransactionValue' | translate:{ transactionValue: calculateUsdValue(dto.amount).toFixed(2) } }}
         </div>
       </div>
 
-      <!-- Button disabled based on isAmountValid() -->
+      <!-- Confirm button -->
       <button type="button"
-            [disabled]="!isAmountValid()"
-            [style]="{'background-color': !isAmountValid() ? '#a5b4fc' : '#6366f1'}"
-            class="flex justify-center items-center w-full mt-4 py-3 px-4 border border-transparent rounded-md shadow-sm text-white font-medium focus:outline-none"
-            (click)="doConvert()">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-      </svg>
-      {{ 'BuySell.Preview.Confirm' | translate }}
-    </button>
+              [disabled]="!isAmountValid()"
+              [style]="{'background-color': !isAmountValid() ? '#a5b4fc' : '#6366f1'}"
+              class="flex justify-center items-center w-full mt-4 py-3 px-4 border border-transparent rounded-md shadow-sm text-white font-medium focus:outline-none"
+              (click)="doConvert()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        {{ 'BuySell.Preview.Confirm' | translate }}
+      </button>
         
-    <button type="button"
-    class="flex justify-center items-center w-full mt-3 py-3 px-4 border border-gray-300 rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-    (click)="doCancel()">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-  </svg>
-  {{ 'BuySell.Preview.Cancel' | translate }}
-  </button>
+      <!-- Cancel button -->
+      <button type="button"
+              class="flex justify-center items-center w-full mt-3 py-3 px-4 border border-gray-300 rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              (click)="doCancel()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        {{ 'BuySell.Preview.Cancel' | translate }}
+      </button>
     </div>
   </div>
 </div>

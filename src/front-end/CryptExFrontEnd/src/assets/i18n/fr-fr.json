@@ -141,6 +141,7 @@
       "Date": "Date",
       "TransactionHash": "Hash de la transaction",
       "SuccessfulTransaction": "Transaction confirmée",
+      "FailedTransaction": "Échec de la transaction",
       "PendingConfirmation": "En attente de confirmation",
       "SendToAddress": "Veuillez envoyer les fonds à cette adresse :",
       "ConfirmTransfer": "Après l'envoi, indiquez le hash de la transaction :",
@@ -268,7 +269,15 @@
         "Rate": "Taux de change",
         "Price": "Ce que vous recevrez",
         "TimeLeft1": "Il vous reste",
-        "TimeLeft2": "secondes pour confirmer la transaction."
+        "TimeLeft2": "secondes pour confirmer la transaction.",
+        "From": "De",
+    "To": "À",
+    "ExchangeRate": "Taux de change :",
+    "YouWillReceive": "Vous recevrez :",
+    "EnterAmount": "Entrez le montant :",
+    "MinimumValue": "Valeur minimale : ${{usdValue}} (≈ {{cryptoAmount}} {{cryptoTicker}})",
+    "EnterAmountPlaceholder": "Entrez un montant à convertir",
+    "ApproxTransactionValue": "Valeur approximative de la transaction : ${{transactionValue}} USD"
       }
     },
     "Wallets": {

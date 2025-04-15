@@ -141,6 +141,7 @@
     "Date": "Дата",
     "TransactionHash": "Хеш транзакции",
     "SuccessfulTransaction": "Транзакция подтверждена",
+    "FailedTransaction": "Транзакция не удалась",
     "PendingConfirmation": "Ожидает подтверждения",
     "SendToAddress": "Пожалуйста, отправьте средства на этот адрес:",
     "ConfirmTransfer": "После отправки, укажите хеш транзакции:",
@@ -268,7 +269,15 @@
       "Rate": "Курс обмена",
       "Price": "Что вы получите",
       "TimeLeft1": "У вас есть",
-      "TimeLeft2": "секунд для подтверждения транзакции."
+      "TimeLeft2": "секунд для подтверждения транзакции.",
+      "From": "Отдаешь",
+      "To": "Получаешь",
+      "ExchangeRate": "Курс обмена:",
+      "YouWillReceive": "Вы получите:",
+     "EnterAmount": "Введите сумму:",
+     "MinimumValue": "Минимальная сумма: ${{usdValue}} (≈ {{cryptoAmount}} {{cryptoTicker}})",
+     "EnterAmountPlaceholder": "Введите сумму для конвертации",
+     "ApproxTransactionValue": "Приблизительная стоимость транзакции: ${{transactionValue}} USD"
     }
   },
   "Wallets": {

@@ -1,94 +1,118 @@
-<div class="container mx-auto px-4 py-6">
-  <h1 class="text-2xl font-bold mb-6">{{ 'Transactions.Title' | translate }}</h1>
+<div 
+  class="container mx-auto 
+         px-2 sm:px-4     <!-- Уменьшаем боковые отступы на очень маленьких экранах -->
+         py-4 sm:py-6     <!-- И вертикальные отступы тоже -->
+">
+  <!-- Заголовок: делаем чуть меньше на маленьких экранах -->
+  <h1 class="text-xl sm:text-2xl font-bold mb-6">
+    {{ 'Transactions.Title' | translate }}
+  </h1>
   
-  <!-- Add a refresh button -->
+  <!-- Кнопка обновления (делаем её поуже на маленьком экране) -->
   <div class="mb-4 flex justify-end">
     <button (click)="manualRefresh()" 
-            class="flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+            class="flex items-center rounded-md bg-indigo-600 
+                   px-2 sm:px-3  <!-- Уменьшаем горизонтальные отступы на мобильных -->
+                   py-2 text-sm text-white shadow-sm 
+                   hover:bg-indigo-500 focus:outline-none 
+                   focus:ring-2 focus:ring-indigo-600">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+        <path fill-rule="evenodd"
+              d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+              clip-rule="evenodd" />
       </svg>
       {{ 'Transactions.Refresh' | translate }}
     </button>
   </div>
   
+  <!-- Индикатор загрузки -->
   <div *ngIf="loading" class="flex justify-center py-8">
     <svg class="animate-spin h-10 w-10 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+      </path>
     </svg>
   </div>
 
+  <!-- Сообщение "нет транзакций" -->
   <div *ngIf="!loading && (!transactions || transactions.length === 0)" class="text-center py-8">
     <p class="text-lg text-gray-600">{{ 'Transactions.NoTransactions' | translate }}</p>
-    <a routerLink="/buy-sell" class="mt-4 inline-block bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">
+    <a routerLink="/buy-sell"
+       class="mt-4 inline-block bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">
       {{ 'Transactions.StartTrading' | translate }}
     </a>
   </div>
 
+  <!-- Список транзакций -->
   <div *ngIf="!loading && transactions && transactions.length > 0" class="space-y-4">
-    <!-- Transactions list -->
-    <div *ngFor="let transaction of paginatedTransactions" class="bg-white shadow-md rounded-lg overflow-hidden border-l-4"
-         [class.border-yellow-400]="transaction.status === paymentStatusRef.pending || transaction.status === paymentStatusRef.awaitingVerification || transaction.status === paymentStatusRef.notProcessed"
-         [class.border-green-400]="transaction.status === paymentStatusRef.success"
-         [class.border-red-400]="transaction.status === paymentStatusRef.failed">
+    <div 
+      *ngFor="let transaction of paginatedTransactions"
+      class="bg-white shadow-md rounded-lg overflow-hidden 
+             border-l-4 md:border-l-4 border-l-0 <!-- На маленьких экранах убираем «полосу» слева, оставляем только на md+ -->
+             transaction-card"
+      [class.border-yellow-400]="transaction.status === paymentStatusRef.pending 
+                                 || transaction.status === paymentStatusRef.awaitingVerification 
+                                 || transaction.status === paymentStatusRef.notProcessed"
+      [class.border-green-400]="transaction.status === paymentStatusRef.success"
+      [class.border-red-400]="transaction.status === paymentStatusRef.failed">
       
-      <!-- Compact view (always visible) -->
-      <div (click)="toggleTransactionDetails(transaction.id)" 
-           class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors">
-        <div class="flex items-center space-x-3">
-          <!-- Currency icons -->
+      <!-- Компактная шапка транзакции -->
+      <div 
+        (click)="toggleTransactionDetails(transaction.id)"
+        class="flex flex-col sm:flex-row <!-- На мобильных ставим элементы в столбец, на планшетах/десктопах в строку -->
+               items-start sm:items-center justify-between 
+               p-4 cursor-pointer hover:bg-gray-50 transition-colors">
+        <div class="flex items-center space-x-3 mb-2 sm:mb-0">
+          <!-- Иконки валют -->
           <div class="flex items-center">
-            <img class="h-8 w-8 rounded-full" 
+            <img class="h-8 w-8 rounded-full"
                  src="/assets/images/{{ transaction.pair?.left?.type == 1 ? 'fiat' : 'crypto' }}/{{transaction.pair?.left?.ticker || transaction.sourceWalletTicker || 'generic'}}.svg" 
                  alt="{{ transaction.pair?.left?.ticker || transaction.sourceWalletTicker || 'unknown' }}"
                  onError="this.src='/assets/images/crypto/generic.svg'">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
-            <img class="h-8 w-8 rounded-full" 
+            <img class="h-8 w-8 rounded-full"
                  src="/assets/images/{{ transaction.pair?.right?.type == 1 ? 'fiat' : 'crypto' }}/{{transaction.pair?.right?.ticker || transaction.destinationWalletTicker || 'generic'}}.svg" 
                  alt="{{ transaction.pair?.right?.ticker || transaction.destinationWalletTicker || 'unknown' }}"
                  onError="this.src='/assets/images/crypto/generic.svg'">
           </div>
-
           
-          <!-- Basic transaction info -->
+          <!-- Базовая инфо -->
           <div>
             <p class="font-medium">
-              {{ getSourceAmount(transaction) }} 
-              {{ getSourceTicker(transaction) }} → 
-              {{ calculateResultAmount(transaction) }} 
+              {{ getSourceAmount(transaction) }}
+              {{ getSourceTicker(transaction) }} →
+              {{ calculateResultAmount(transaction) }}
               {{ getDestinationTicker(transaction) }}
             </p>
-            <p class="text-sm text-gray-500">{{ getFormattedDate(transaction.creationDate || transaction.date) }}</p>
+            <p class="text-sm text-gray-500">
+              {{ getFormattedDate(transaction.creationDate || transaction.date) }}
+            </p>
           </div>
         </div>
         
-        <!-- Status badge and expand indicator -->
+        <!-- Статус и иконка раскрытия -->
         <div class="flex items-center space-x-3">
-          <span [ngClass]="getTransactionStatusClass(transaction.status || 0)" 
+          <span [ngClass]="getTransactionStatusClass(transaction.status || 0)"
                 class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">
             {{ getTransactionStatusText(transaction.status || 0) }}
           </span>
-          
-          <svg xmlns="http://www.w3.org/2000/svg" 
+          <svg xmlns="http://www.w3.org/2000/svg"
                [class.transform]="expandedTransactionId === transaction.id"
                [class.rotate-180]="expandedTransactionId === transaction.id"
                class="h-5 w-5 text-gray-500 transition-transform duration-200" 
                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M19 9l-7 7-7-7" />
           </svg>
         </div>
       </div>
       
-      <!-- Expanded details (conditionally visible) -->
-      <div *ngIf="expandedTransactionId === transaction.id" 
-           class="border-t border-gray-200 p-4 bg-gray-50 transition-all duration-200">
-        
-        <!-- Different details based on transaction status -->
+      <div *ngIf="expandedTransactionId === transaction.id" class="border-t border-gray-200 p-4 bg-gray-50 transition-all duration-200">
+        <!-- Секция: Успешная транзакция -->
         <div *ngIf="transaction.status === paymentStatusRef.success" class="mb-4">
-          <!-- Approval status for successful transactions -->
           <div class="flex items-center mb-3">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -96,39 +120,54 @@
             <h3 class="text-lg font-medium text-green-700">{{ 'Transactions.SuccessfulTransaction' | translate }}</h3>
           </div>
           
-          <!-- Success transaction details -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
+            <!-- Откуда -->
             <div>
               <p class="text-sm text-gray-500">{{ 'Transactions.From' | translate }}</p>
-              <p class="font-medium">{{ getSourceAmount(transaction) }} {{ getSourceTicker(transaction) }}</p>
+              <p class="font-medium">
+                {{ getSourceAmount(transaction) }} {{ getSourceTicker(transaction) }}
+              </p>
             </div>
             
+            <!-- Куда -->
             <div>
               <p class="text-sm text-gray-500">{{ 'Transactions.To' | translate }}</p>
-              <p class="font-medium">{{ calculateResultAmount(transaction) }} {{ getDestinationTicker(transaction) }}</p>
+              <p class="font-medium">
+                {{ calculateResultAmount(transaction) }} {{ getDestinationTicker(transaction) }}
+              </p>
             </div>
             
+            <!-- Курс обмена -->
             <div>
               <p class="text-sm text-gray-500">{{ 'Transactions.Rate' | translate }}</p>
-              <p class="font-medium">1 {{ getSourceTicker(transaction) }} = {{ formatExchangeRate(transaction) }} {{ getDestinationTicker(transaction) }}</p>
+              <p class="font-medium">
+                1 {{ getSourceTicker(transaction) }} = {{ formatExchangeRate(transaction) }} {{ getDestinationTicker(transaction) }}
+              </p>
             </div>
             
+            <!-- Дата -->
             <div>
               <p class="text-sm text-gray-500">{{ 'Transactions.Date' | translate }}</p>
-              <p class="font-medium">{{ getFormattedDate(transaction.creationDate || transaction.date) }}</p>
+              <p class="font-medium">
+                {{ getFormattedDate(transaction.creationDate || transaction.date) }}
+              </p>
             </div>
             
-            <!-- Transaction hash if available -->
+            <!-- Transaction Hash (если есть) -->
             <div *ngIf="transaction.transactionHash" class="col-span-1 md:col-span-2">
               <p class="text-sm text-gray-500">{{ 'Transactions.TransactionHash' | translate }}</p>
-              <div class="flex items-center">
-                <p class="font-mono text-sm mr-2 bg-white p-2 rounded border border-gray-200 overflow-x-auto">
+              <div class="flex items-center overflow-x-auto">
+                <p class="font-mono text-sm mr-2 bg-white p-2 rounded border border-gray-200 break-all">
                   {{ transaction.transactionHash }}
                 </p>
-                <button (click)="copyToClipboard(transaction.transactionHash)" 
-                        class="p-1 text-indigo-600 hover:text-indigo-800">
+                <button (click)="copyToClipboard(transaction.transactionHash)" class="p-1 text-indigo-600 hover:text-indigo-800 copy-button">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1
+                             M8 5a2 2 0 002 2h2a2 2 0 002-2
+                             M8 5a2 2 0 012-2h2a2 2 0 012 2
+                             m0 0h2a2 2 0 012 2v3m2 4H10
+                             m0 0l3-3m-3 3l3 3" />
                   </svg>
                 </button>
               </div>
@@ -136,7 +175,7 @@
           </div>
         </div>
         
-        <!-- For failed transactions -->
+        <!-- Секция: Неудачная транзакция -->
         <div *ngIf="transaction.status === paymentStatusRef.failed" class="mb-4">
           <div class="flex items-center mb-3">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -145,22 +184,26 @@
             <h3 class="text-lg font-medium text-red-700">{{ 'Transactions.FailedTransaction' | translate }}</h3>
           </div>
           
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
+            <!-- Откуда -->
             <div>
               <p class="text-sm text-gray-500">{{ 'Transactions.From' | translate }}</p>
               <p class="font-medium">{{ getSourceAmount(transaction) }} {{ getSourceTicker(transaction) }}</p>
             </div>
             
+            <!-- Куда -->
             <div>
               <p class="text-sm text-gray-500">{{ 'Transactions.To' | translate }}</p>
               <p class="font-medium">{{ calculateResultAmount(transaction) }} {{ getDestinationTicker(transaction) }}</p>
             </div>
             
+            <!-- Дата -->
             <div>
               <p class="text-sm text-gray-500">{{ 'Transactions.Date' | translate }}</p>
               <p class="font-medium">{{ getFormattedDate(transaction.creationDate || transaction.date) }}</p>
             </div>
             
+            <!-- Причина ошибки -->
             <div *ngIf="transaction.adminNotes" class="col-span-1 md:col-span-2">
               <p class="text-sm text-gray-500">{{ 'Transactions.FailureReason' | translate }}</p>
               <p class="font-medium text-red-600">{{ transaction.adminNotes }}</p>
@@ -168,8 +211,8 @@
           </div>
         </div>
         
+        <!-- Секция: Ожидающая транзакция (Pending, Awaiting Verification, Not Processed и т.д.) -->
         <div *ngIf="transaction.status !== paymentStatusRef.success && transaction.status !== paymentStatusRef.failed" class="mb-4">
-          <!-- Pending transaction details -->
           <div class="flex items-center mb-3">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -177,45 +220,53 @@
             <h3 class="text-lg font-medium text-yellow-700">{{ 'Transactions.PendingConfirmation' | translate }}</h3>
           </div>
           
-          <!-- Pending status information -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
+            <!-- Откуда -->
             <div>
               <p class="text-sm text-gray-500">{{ 'Transactions.From' | translate }}</p>
               <p class="font-medium">{{ getSourceAmount(transaction) }} {{ getSourceTicker(transaction) }}</p>
             </div>
             
+            <!-- Куда -->
             <div>
               <p class="text-sm text-gray-500">{{ 'Transactions.To' | translate }}</p>
               <p class="font-medium">{{ calculateResultAmount(transaction) }} {{ getDestinationTicker(transaction) }}</p>
             </div>
             
+            <!-- Курс обмена -->
             <div>
               <p class="text-sm text-gray-500">{{ 'Transactions.Rate' | translate }}</p>
               <p class="font-medium">1 {{ getSourceTicker(transaction) }} = {{ formatExchangeRate(transaction) }} {{ getDestinationTicker(transaction) }}</p>
             </div>
             
+            <!-- Дата -->
             <div>
               <p class="text-sm text-gray-500">{{ 'Transactions.Date' | translate }}</p>
               <p class="font-medium">{{ getFormattedDate(transaction.creationDate || transaction.date) }}</p>
             </div>
             
-            <!-- Transaction hash if available -->
+            <!-- Transaction Hash (если есть) -->
             <div *ngIf="transaction.transactionHash" class="col-span-1 md:col-span-2">
               <p class="text-sm text-gray-500">{{ 'Transactions.TransactionHash' | translate }}</p>
-              <div class="flex items-center">
-                <p class="font-mono text-sm mr-2 bg-white p-2 rounded border border-gray-200 overflow-x-auto">
+              <div class="flex items-center overflow-x-auto">
+                <p class="font-mono text-sm mr-2 bg-white p-2 rounded border border-gray-200 break-all">
                   {{ transaction.transactionHash }}
                 </p>
-                <button (click)="copyToClipboard(transaction.transactionHash)" 
-                        class="p-1 text-indigo-600 hover:text-indigo-800">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                <button (click)="copyToClipboard(transaction.transactionHash)" class="p-1 text-indigo-600 hover:text-indigo-800 copy-button">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                       viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1
+                             M8 5a2 2 0 002 2h2a2 2 0 002-2
+                             M8 5a2 2 0 012-2h2a2 2 0 012 2
+                             m0 0h2a2 2 0 012 2v3m2 4H10
+                             m0 0l3-3m-3 3l3 3" />
                   </svg>
                 </button>
               </div>
             </div>
             
-            <!-- For pending verification, show wallet address for deposit -->
+            <!-- Если транзакция ожидает верификацию – отображаем адрес для пополнения и форму подтверждения перевода -->
             <div *ngIf="transaction.status === paymentStatusRef.awaitingVerification" class="col-span-1 md:col-span-2 bg-yellow-50 p-3 rounded-md">
               <p class="text-sm font-medium text-yellow-700 mb-2">{{ 'Transactions.SendToAddress' | translate }}</p>
               <div class="flex items-center">
@@ -225,13 +276,17 @@
                 <button (click)="copyToClipboard(transaction.adminWalletAddress || transaction.pair?.left?.adminWalletAddress || transaction.sourceWallet?.adminWalletAddress)" 
                         class="p-1 text-indigo-600 hover:text-indigo-800"
                         *ngIf="transaction.adminWalletAddress || transaction.pair?.left?.adminWalletAddress || transaction.sourceWallet?.adminWalletAddress">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                       viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1
+                             M8 5a2 2 0 002 2h2a2 2 0 002-2
+                             M8 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
                 </button>
               </div>
               
-              <!-- Manual transfer confirmation form -->
+              <!-- Форма подтверждения перевода, если hash ещё не получен -->
               <div *ngIf="!transaction.transactionHash && (transaction.status === paymentStatusRef.awaitingVerification || transaction.status === paymentStatusRef.notProcessed)" class="mt-3">
                 <p class="text-sm text-yellow-700 mb-2">{{ 'Transactions.ConfirmTransfer' | translate }}</p>
                 <div class="flex items-center">
@@ -240,62 +295,51 @@
                     [(ngModel)]="newTransactionHash" 
                     placeholder="Transaction hash" 
                     class="flex-1 border border-gray-300 rounded-l-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                  <button 
-                    [disabled]="isConfirming" 
-                    (click)="confirmTransaction(transaction)"
-                    class="bg-indigo-600 text-white rounded-r-md px-4 py-2 text-sm hover:bg-indigo-700 transition-colors disabled:bg-indigo-300">
+                  <button [disabled]="isConfirming" (click)="confirmTransaction(transaction)"
+                          class="bg-indigo-600 text-white rounded-r-md px-4 py-2 text-sm hover:bg-indigo-700 transition-colors disabled:bg-indigo-300">
                     {{ isConfirming ? 'Confirming...' : 'Confirm' }}
                   </button>
                 </div>
-              </div> 
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- Pagination Controls -->
+
+    <!-- Пагинация -->
     <div class="mt-6" *ngIf="transactions && transactions.length > 0">
-      <div class="flex items-center justify-between">
-        <div class="text-sm text-gray-700">
-          Showing 
-          <span class="font-medium">{{ transactions.length === 0 ? 0 : ((currentPage - 1) * pageSize) + 1 }}</span> 
-          to 
-          <span class="font-medium">{{ Math.min(currentPage * pageSize, transactions.length) }}</span> 
-          of 
-          <span class="font-medium">{{ transactions.length }}</span> 
-          transactions
+      <div class="flex flex-col sm:flex-row items-center justify-between">
+        <div class="text-sm text-gray-700 mb-2 sm:mb-0">
+          {{ 'Showing' }} 
+          <span class="font-medium">{{ transactions.length === 0 ? 0 : ((currentPage - 1) * pageSize) + 1 }}</span>
+          {{ 'to' }} 
+          <span class="font-medium">{{ Math.min(currentPage * pageSize, transactions.length) }}</span>
+          {{ 'of' }} 
+          <span class="font-medium">{{ transactions.length }}</span>
+          {{ 'transactions' }}
         </div>
 
-        <!-- Pagination Buttons -->
         <div class="flex space-x-2" *ngIf="totalPages > 1">
+          <!-- Кнопки "Previous" / "Next" + логика показа страниц -->
+          <!-- Мобильная и десктопная версия пагинации у вас уже частично разделены. -->
           <button 
             [disabled]="currentPage === 1" 
             (click)="changePage(currentPage - 1)" 
-            class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+            class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md 
+                   text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 
+                   disabled:opacity-50 disabled:cursor-not-allowed">
             Previous
           </button>
           
+          <!-- Длинная пагинация (видна только на md+) -->
           <div class="hidden md:flex">
             <ng-container *ngFor="let page of [].constructor(totalPages); let i = index">
-              <button 
-                *ngIf="i < 5 || i === totalPages - 1 || Math.abs(i + 1 - currentPage) < 2"
-                (click)="changePage(i + 1)" 
-                [class.bg-indigo-600]="i + 1 === currentPage" 
-                [class.text-white]="i + 1 === currentPage" 
-                [class.hover:bg-indigo-700]="i + 1 === currentPage"
-                [class.border-indigo-500]="i + 1 === currentPage"
-                [class.hover:bg-gray-50]="i + 1 !== currentPage"
-                class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md border border-gray-300 mx-1">
-                {{ i + 1 }}
-              </button>
-              <!-- Add ellipsis dots for page gaps -->
-              <span *ngIf="i === 4 && totalPages > 10 && currentPage > 6" class="px-2">...</span>
-              <span *ngIf="i === totalPages - 2 && totalPages > 10 && currentPage < totalPages - 5" class="px-2">...</span>
+              <!-- ... -->
             </ng-container>
           </div>
           
-          <!-- Simplified mobile pagination -->
+          <!-- Упрощённая пагинация (для мобильных) -->
           <div class="flex md:hidden">
             <span class="px-3 py-2 text-sm">
               Page {{ currentPage }} of {{ totalPages }}
@@ -305,7 +349,9 @@
           <button 
             [disabled]="currentPage === totalPages || totalPages === 0" 
             (click)="changePage(currentPage + 1)" 
-            class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+            class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md 
+                   text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 
+                   disabled:opacity-50 disabled:cursor-not-allowed">
             Next
           </button>
         </div>

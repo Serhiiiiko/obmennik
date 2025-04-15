@@ -59,11 +59,13 @@
     border: 1px solid var(--border-color) !important;
     background-color: var(--light-bg) !important;
     transition: all 0.2s ease-in-out;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2) !important;
   }
   
   select:focus, input:focus {
     border-color: var(--primary) !important;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2) !important;
+    box-shadow: 0 0 0 3px rgba(75, 229, 70, 0.2) !important;
   }
   
   input::placeholder {

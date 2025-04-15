@@ -6,3 +6,64 @@
 
 @import 'tailwindcss/utilities';
 //@tailwind utilities;
+/* Add to styles.scss */
+
+/* Improve tap targets for mobile */
+@media (max-width: 640px) {
+    button, 
+    [role="button"],
+    a.btn,
+    input[type="submit"],
+    input[type="button"] {
+      min-height: 48px;
+      min-width: 48px;
+      padding: 12px 16px;
+      font-size: 16px; /* Prevent auto-zoom on iOS */
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="search"],
+    select,
+    textarea {
+      font-size: 16px; /* Prevent auto-zoom on iOS */
+      padding: 12px 16px;
+    }
+    
+    /* Improve spacing */
+    .container {
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+    }
+    
+    /* Fix table overflow */
+    table {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Adjust modal widths */
+    .modal-content {
+      width: 95% !important;
+      max-width: 95% !important;
+    }
+  }
+  
+  /* Add pull-to-refresh feeling */
+  body {
+    overscroll-behavior-y: contain;
+  }
+  
+  /* Increase spacing between clickable elements */
+  .sm\:space-y-2 > * + * {
+    margin-top: 0.5rem;
+  }
+  
+  /* Fix fixed position elements for mobile */
+  .fixed-bottom {
+    bottom: env(safe-area-inset-bottom, 0);
+  }
