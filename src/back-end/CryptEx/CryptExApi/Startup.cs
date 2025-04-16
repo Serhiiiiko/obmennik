@@ -24,6 +24,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace CryptExApi
 {
@@ -84,7 +85,11 @@ namespace CryptExApi
                 {
                     y.AllowAnyMethod();
                     y.AllowAnyHeader();
-                    y.WithOrigins("http://localhost:4200") // Specify your frontend URL
+                    y.WithOrigins("http://localhost:4200",
+                        "https://nordchange.ru", // Specify your frontend URL
+                        "http://nordchange.ru",
+                        "https://www.nordchange.ru",
+                        "http://www.nordchange.ru")
                       .AllowCredentials(); // Add this to support credentials
                 });
             });

@@ -1,0 +1,26 @@
+.info-block {
+    background-color: #f0f7ff;
+    border-left: 4px solid #3b82f6;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .info-icon {
+    color: #3b82f6;
+  }
+  
+  .code-block {
+    font-family: monospace;
+    background-color: #f3f4f6;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+  
+  .save-button {
+    transition: all 0.2s ease-in-out;
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }

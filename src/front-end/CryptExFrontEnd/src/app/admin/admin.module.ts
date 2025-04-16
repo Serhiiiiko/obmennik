@@ -19,6 +19,7 @@ import { PendingTransactionsComponent } from './components/pending-transactions/
 import { ApprovedTransactionsComponent } from './components/approved-transactions/approved-transactions.component';
 import { RejectedTransactionsComponent } from './components/rejected-transactions/rejected-transactions.component';
 import { TransactionSettingsComponent } from './components/transaction-settings/transaction-settings.component';
+import { TidioSettingsComponent } from './components/tidio-settings/tidio-settings.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { TransactionSettingsComponent } from './components/transaction-settings/
     PendingTransactionsComponent,
     ApprovedTransactionsComponent,
     RejectedTransactionsComponent,
-    TransactionSettingsComponent
+    TransactionSettingsComponent,
+    TidioSettingsComponent
   ],
   imports: [
     CommonModule,

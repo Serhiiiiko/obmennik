@@ -13,6 +13,7 @@ import { SearchUserComponent } from './components/search-user/search-user.compon
 import { UserPageComponent } from './components/user-page/user-page.component';
 import { WalletAddressesComponent } from './components/wallet-addresses/wallet-addresses.component';
 import { TransactionSettingsComponent } from './components/transaction-settings/transaction-settings.component';
+import { TidioSettingsComponent } from './components/tidio-settings/tidio-settings.component';
 
 const routes: Routes = [
   {
@@ -59,7 +60,11 @@ const routes: Routes = [
       {
         path: 'rejected-transactions',
         component: RejectedTransactionsComponent
-      }
+      },
+      {
+        path: 'tidio-settings',
+        component: TidioSettingsComponent
+      } 
     ]
   }
 ];

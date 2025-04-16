@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from './user/services/user.service';
 import { TranslateService } from '@ngx-translate/core'
+import { TidioChatService } from './services/tidio-chat.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core'
 export class AppComponent {
   title = 'CryptEx';
 
-  constructor(private userService: UserService, private translateService: TranslateService) { }
+  constructor(private userService: UserService, private translateService: TranslateService, private tidioChatService: TidioChatService) { }
 
   ngOnInit(): void {
     if (!this.userService.IsLangSet) {
@@ -26,6 +27,7 @@ export class AppComponent {
     } else {
       this.translateService.use(this.userService.SelectedLang);
     }
+    this.tidioChatService.initialize();
   }
 
   isDarkMode(): boolean {
